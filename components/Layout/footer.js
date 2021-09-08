@@ -27,7 +27,7 @@ const Footer = () => {
     <div className='footer'>
       {tabOption.map(tab => {
         return (
-          <Link href={tab.href}>
+          <Link passHref href={tab.href} key={`tab-${tab.name}`}>
             <div className='footer-tab'>
               {tab.icon}
               <div style={{ fontSize: '12px', paddingTop: '5px' }}>{tab.name}</div>
