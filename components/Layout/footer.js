@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { UserOutlined, BellOutlined, HomeOutlined, TeamOutlined } from '@ant-design/icons';
+import { UserOutlined, BellOutlined, HomeOutlined, TeamOutlined } from '@ant-design/icons'
 const Footer = () => {
   const tabOption = [
     {

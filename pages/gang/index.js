@@ -1,22 +1,26 @@
 import axios from 'axios'
-import Link from 'next/link'
+
 import { API_ENDPOINT } from '../../config'
+import AddButton from '../../components/addButton'
+import Card from '../../components/card'
 
 const Gang = (props) => {
-  return props.gangs.map(gang => {
-    return (
-      <Link
-        key={gang._id}
-        href={`/gang/${gang._id}`}
-        passHref
-      >
-        <div style={{ margin: '5px', border: '1px solid pink' }}>
-          <div>{gang.name}</div>
-          <div>{`Location: ${gang.location}`}</div>
-        </div>
-      </Link>
-    )
-  })
+  return (
+    <>
+      <div>ก๊วนใกล้ฉัน</div>
+      <div style={{
+        display: 'flex',
+        width: '100%',
+        overflow: 'scroll'
+      }}>
+        {props.gangs.map(gang => {
+          return <Card key={gang._id} gang={gang} />
+        })}
+      </div>
+      <AddButton onClick={() => console.log('TODO: create gang')} />
+
+    </>
+  )
 }
 
 export async function getStaticProps() {
