@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Layout from '../../components/Layout'
 
 import { API_ENDPOINT } from '../../config'
 import AddButton from '../../components/addButton'
@@ -7,7 +8,7 @@ import Card from '../../components/card'
 const Gang = (props) => {
   return (
     <>
-      <div>ก๊วนใกล้ฉัน</div>
+      <div>ก๊วนของฉัน</div>
       <div style={{
         display: 'flex',
         width: '100%',
@@ -33,6 +34,14 @@ export async function getStaticProps() {
     },
     revalidate: 10, // In seconds
   }
+}
+
+Gang.getLayout = (page) => {
+  return (
+    <Layout>
+      {page}
+    </Layout>
+  )
 }
 
 export default Gang
