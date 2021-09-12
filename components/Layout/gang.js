@@ -1,8 +1,10 @@
 import Footer from './footer'
 import Header from './header'
 import { UnorderedListOutlined, TeamOutlined } from '@ant-design/icons'
+import { useSelector } from 'react-redux'
 
 const GangLayout = (props) => {
+  const { gang } = useSelector(state => state)
   return (
     <>
       <Header description='This is Home Page' backHref='/gang' />
@@ -11,12 +13,12 @@ const GangLayout = (props) => {
         {
           name: 'รายชื่อ',
           icon: <TeamOutlined style={{ fontSize: '24px' }} />,
-          href: '/'
+          href: `/gang/${gang._id}`
         },
         {
           name: 'คิว',
           icon: <UnorderedListOutlined style={{ fontSize: '24px' }} />,
-          href: '/gang'
+          href: `/gang/${gang._id}/match`
         }
       ]} />
     </>

@@ -5,18 +5,21 @@ import { createWrapper, HYDRATE } from 'next-redux-wrapper';
 
 const initialState = {
   user: {},
-  tick: 'init'
+  tick: 'init',
+  gang: null
 }
 
 // create your reducer
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case HYDRATE:
-      return { ...state, ...action.payload };
+      return { ...state, ...action.payload }
     case 'TICK':
-      return { ...state, tick: action.payload };
+      return { ...state, tick: action.payload }
     case 'LOGIN':
       return { ...state, user: action.payload }
+    case 'GANG':
+      return { ...state, gang: action.payload }
     default:
       return state;
   }
