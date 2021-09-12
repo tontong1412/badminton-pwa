@@ -1,8 +1,10 @@
+import Link from 'next/link'
 import { useEffect } from 'react'
 import Head from 'next/head'
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios'
 import { API_ENDPOINT } from '../../config'
+import { LeftOutlined } from '@ant-design/icons'
 
 
 const Header = (props) => {
@@ -44,7 +46,9 @@ const Header = (props) => {
         <meta name="description" content={props.description} />
       </Head>
       <div className='header'>
+        <div>{props.backHref ? <Link passHref href={props.backHref}><LeftOutlined /></Link> : null}</div>
         <div>badbay</div>
+        <div>{props.rightIcon ? props.rightIcon : null}</div>
       </div>
     </>
   )
