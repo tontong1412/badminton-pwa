@@ -1,6 +1,7 @@
 import axios from 'axios'
 import useSWR from 'swr'
 import Image from 'next/Image'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { wrapper } from '../../../redux/store'
@@ -13,12 +14,14 @@ import { Modal, AutoComplete } from 'antd'
 const fetcher = (url) => axios.get(url).then((res) => res.data)
 
 const GangID = (props) => {
+  const router = useRouter()
+  const { id } = router.query
   const { tick } = useSelector(state => state)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [value, setValue] = useState('')
   const [options, setOptions] = useState([])
   const { data, error } = useSWR(
-    `${API_ENDPOINT}/gang/${props.gang._id}`,
+    `${API_ENDPOINT}/gang/${id}`,
     fetcher
   )
   const { data: players, error: playerError } = useSWR(
@@ -39,7 +42,7 @@ const GangID = (props) => {
       }
     }
     const res = await axios.post(`${API_ENDPOINT}/gang/register`, {
-      gangID: props.gang._id,
+      gangID: id,
       player
     })
 
