@@ -1,5 +1,5 @@
 import axios from 'axios'
-import useSWR from "swr";
+import useSWR from 'swr'
 import Image from 'next/Image'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -27,16 +27,27 @@ const GangID = (props) => {
   )
 
   const showModal = () => {
-    setIsModalVisible(true);
-  };
+    setIsModalVisible(true)
+  }
 
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
+  const handleOk = async () => {
+    setIsModalVisible(false)
+    let player = players.find(player => player.displayName === value || player.displayName === value)
+    if (!player) {
+      player = {
+        displayName: value
+      }
+    }
+    const res = await axios.post(`${API_ENDPOINT}/gang/register`, {
+      gangID: props.gang._id,
+      player
+    })
+
+  }
 
   const handleCancel = () => {
-    setIsModalVisible(false);
-  };
+    setIsModalVisible(false)
+  }
 
   const onSearch = (searchText) => {
     const searchTextLower = searchText.toLowerCase()
@@ -50,18 +61,19 @@ const GangID = (props) => {
     })
     setOptions(
       !searchText ? [] : searchOptions,
-    );
+    )
   }
 
   const onSelect = (data) => {
-    console.log('onSelect', data);
+    console.log('onSelect', data)
+    setValue(data)
   }
 
   const onChange = (data) => {
     setValue(data);
   }
 
-  if (error) return "An error has occurred.";
+  if (error) return "An error has occurred."
   if (!data) return "Loading..."
   return <>
     <div style={{ fontSize: '20px' }}>{data.name} </div>
@@ -100,7 +112,8 @@ const GangID = (props) => {
         }}
         onSelect={onSelect}
         onSearch={onSearch}
-        placeholder="input here"
+        onChange={onChange}
+        placeholder="ชื่อผู้เล่น"
       />
     </Modal>
   </>
