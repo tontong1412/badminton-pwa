@@ -3,7 +3,7 @@ import Layout from '../../components/Layout'
 
 import { API_ENDPOINT } from '../../config'
 import AddButton from '../../components/addButton'
-import Card from '../../components/card'
+import Card from '../../components/gangCard'
 
 const Gang = (props) => {
   return (

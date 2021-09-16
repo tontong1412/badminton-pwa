@@ -1,6 +1,7 @@
 import Layout from '../../../components/Layout/gang'
 import Image from 'next/Image'
 import { useSelector } from 'react-redux'
+import AddButton from '../../../components/addButton'
 
 const MatchList = () => {
   const { gang } = useSelector(state => state)
@@ -37,17 +38,18 @@ const MatchList = () => {
                 </div>
               </div>
               <div>
-                <div style={{ width: '50%', borderRight: '1px solid #eee' }}>จำนวนลูก: {match.shuttlecockUsed}</div>
+                <div style={{ width: '50%' }}>จำนวนลูก: {match.shuttlecockUsed}</div>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', height: '35px', textAlign: 'center', alignItems: 'center', borderTop: '1px solid #eee' }}>
+                <div style={{ width: '50%', borderRight: '1px solid #eee' }}>แก้ไข</div>
                 <div style={{ width: '50%', borderRight: '1px solid #eee' }}>เพิ่มลูก</div>
                 <div style={{ width: '50%', borderRight: '1px solid #eee' }}>จบเกม</div>
-                {/* <div style={{ width: '50%', borderRight: '1px solid #eee' }}>bet</div> */}
               </div>
             </div>
           )
         })
       }
+      <AddButton />
     </div >
   )
 }

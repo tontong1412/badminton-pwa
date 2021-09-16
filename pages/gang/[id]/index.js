@@ -87,19 +87,12 @@ const GangID = (props) => {
     {
       data.players.map(player => {
         return (
-          <div key={player._id} style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            margin: '5px',
-            borderBottom: '1px solid #eee',
-            padding: '5px'
-          }}>
-            <div style={{ display: 'flex' }}>
-              <div style={{ width: '50px', height: '50px', borderRadius: '25px', overflow: 'hidden' }}>
+          <div key={player._id} className='gang-player'>
+            <div className='player-container'>
+              <div className='avatar'>
                 <Image src='/avatar.png' alt='' width={50} height={50} />
               </div>
-              <div style={{ marginLeft: '5px' }}>{player.displayName}</div>
+              <div className='player-name'>{player.displayName}</div>
             </div>
             <div><LogoutOutlined style={{ fontSize: '30px' }} /></div>
           </div>
