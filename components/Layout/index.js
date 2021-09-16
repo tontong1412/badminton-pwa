@@ -6,7 +6,11 @@ const AppLayout = (props) => {
   return (
     <>
       <Header description='This is Home Page' />
-      <main>{props.children}</main>
+      <main>
+        <div className='content'>
+          {props.children}
+        </div>
+      </main>
       <Footer tabOption={[
         {
           name: 'Home',

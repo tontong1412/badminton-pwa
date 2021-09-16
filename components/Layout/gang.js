@@ -9,7 +9,11 @@ const GangLayout = (props) => {
   return (
     <>
       <Header description='This is Home Page' backHref='/gang' />
-      <main>{props.children}</main>
+      <main>
+        <div className='content'>
+          {props.children}
+        </div>
+      </main>
       <Footer tabOption={[
         {
           name: 'รายชื่อ',
