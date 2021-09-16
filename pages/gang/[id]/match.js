@@ -8,7 +8,7 @@ const MatchList = () => {
   return (
     <div>
       {
-        gang.queue.map(match => {
+        gang?.queue.map(match => {
           return (
             <div key={match._id} style={{ margin: '5px', borderRadius: '5px', border: '1px solid #eee', display: 'flex', flexDirection: 'column', boxShadow: '2px 1px 10px -3px rgba(0,0,0,0.75)' }}>
               <div style={{ display: 'flex', padding: '5px' }}>
