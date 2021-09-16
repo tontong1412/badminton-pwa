@@ -1,10 +1,20 @@
-import { Button } from "antd"
+import { useSelector } from 'react-redux'
+import Greeting from '../components/greeting'
+import Layout from '../components/Layout'
 const Home = () => {
+  const state = useSelector(state => state);
   return (
     <>
-    <Button type="primary">Primary Button</Button>
-    <p>Hello</p>
+      <Greeting user={state.user} />
     </>
+  )
+}
+
+Home.getLayout = (page) => {
+  return (
+    <Layout>
+      {page}
+    </Layout>
   )
 }
 

@@ -1,28 +1,6 @@
 import Link from 'next/link'
-import { UserOutlined, BellOutlined, HomeOutlined, TeamOutlined } from '@ant-design/icons';
-const Footer = () => {
-  const tabOption = [
-    {
-      name: 'Home',
-      icon: <HomeOutlined style={{ fontSize: '24px' }} />,
-      href: '/'
-    },
-    {
-      name: 'Gang',
-      icon: <TeamOutlined style={{ fontSize: '24px' }} />,
-      href: '/gang'
-    },
-    {
-      name: 'Notifications',
-      icon: <BellOutlined style={{ fontSize: '24px' }} />,
-      href: '/noti'
-    },
-    {
-      name: 'My Account',
-      icon: <UserOutlined style={{ fontSize: '24px' }} />,
-      href: '/account'
-    }
-  ]
+
+const Footer = ({ tabOption }) => {
   return (
     <div className='footer'>
       {tabOption.map(tab => {
