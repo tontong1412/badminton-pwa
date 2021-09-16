@@ -1,6 +1,6 @@
 import axios from 'axios'
 import useSWR from 'swr'
-import Image from 'next/Image'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'

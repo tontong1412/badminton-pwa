@@ -1,5 +1,5 @@
 import axios from 'axios'
-import Image from 'next/Image'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 import logo from '../public/icon/logo.png'
 import { Form, Input, Button, Checkbox } from 'antd'
