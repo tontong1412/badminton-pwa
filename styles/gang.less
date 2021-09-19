@@ -62,3 +62,52 @@
     }
   }
 }
+
+.match-card { 
+  margin: 5px;
+  border-radius: 5px;
+  border: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 1px 10px -3px rgba(0,0,0,0.75);
+
+  .team-container {
+    display: flex;
+    padding: 5px;
+    
+    .team {
+      width: 50%;
+
+      .player-container { 
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+
+        .avatar { 
+          width: 40px;
+          height: 40px;
+          border-radius: 20px;
+          overflow: hidden;
+        }
+
+        .info {
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+
+  .controller-container { 
+    display: flex;
+    justify-content: space-between;
+    height: 35px;
+    text-align: center;
+    align-items: center;
+    border-top: 1px solid #eee;
+    
+    .controller { 
+      width: 50%; 
+      border-right: 1px solid #eee;
+    }
+  }
+}
