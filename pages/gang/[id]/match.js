@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useSWRConfig } from 'swr'
-import { Modal } from 'antd'
+import { Modal, Form, AutoComplete, Button } from 'antd'
 import axios from 'axios'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -12,8 +12,64 @@ import { API_ENDPOINT } from '../../../config'
 const MatchList = () => {
   const router = useRouter()
   const { id } = router.query
+  const [form] = Form.useForm();
   const { mutate } = useSWRConfig()
   const { gang, isLoading, isError } = useGang(id)
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [options, setOptions] = useState([])
+  const [confirmLoading, setConfirmLoading] = useState(false)
+  const [player1, setPlayer1] = useState()
+  const [player2, setPlayer2] = useState()
+  const [player3, setPlayer3] = useState()
+  const [player4, setPlayer4] = useState()
+
+  const showModal = () => {
+    setIsModalVisible(true)
+  }
+
+  const handleOk = () => {
+    setConfirmLoading(true)
+    axios.post(`${API_ENDPOINT}/gang/add-queue`, {
+      gangID: id,
+      teamA: {
+        players: [
+          gang.players.find(player => player.displayName === player1 || player.displayName === player1)._id,
+          gang.players.find(player => player.displayName === player2 || player.displayName === player2)._id
+        ]
+      },
+      teamB: {
+        players: [
+          gang.players.find(player => player.displayName === player3 || player.displayName === player3)._id,
+          gang.players.find(player => player.displayName === player4 || player.displayName === player4)._id
+        ]
+      }
+    }).then(() => {
+      mutate(`${API_ENDPOINT}/gang/${id}`)
+      setIsModalVisible(false)
+      setConfirmLoading(false)
+    })
+  }
+
+  const handleCancel = () => {
+    setIsModalVisible(false)
+    setConfirmLoading(false)
+  }
+
+  const onSearch = (searchText) => {
+    const searchTextLower = searchText.toLowerCase()
+    const searchOptions = gang.players.filter(player =>
+      player.displayName?.toLowerCase().includes(searchTextLower)
+      || player.officialName?.toLowerCase().includes(searchTextLower)
+    ).map(player => {
+      return {
+        value: player.displayName || player.officialName
+      }
+    })
+    setOptions(
+      !searchText ? [] : searchOptions,
+    )
+  }
+
   const addShuttlecock = (matchID) => {
     // update the local data immediately, but disable the revalidation
     // mutate(`${API_ENDPOINT}/gang/${id}`, { ...gang, name: newName }, false)
@@ -36,6 +92,13 @@ const MatchList = () => {
   }
   if (isError) return "An error has occurred."
   if (isLoading) return "Loading..."
+  gang.queue.sort((a, b) => {
+    if (a.status === 'finished' && (b.status === 'playing' || b.status === 'waiting')) return 1
+    else if (a.status === 'playing' && (b.status === 'finished' || b.status === 'waiting')) return -1
+    else if (a.status === 'waiting' && b.status === 'playing') return 1
+    else if (a.status === 'waiting' && b.status === 'finished') return -1
+    else return 0
+  })
   return (
     <div>
       {
@@ -70,6 +133,7 @@ const MatchList = () => {
               </div>
               <div>
                 <div style={{ width: '50%' }}>จำนวนลูก: {match.shuttlecockUsed}</div>
+                <div style={{ width: '50%' }}>สถานะ: {match.status}</div>
               </div>
               <div className='controller-container'>
                 <div className='controller'>แก้ไข</div>
@@ -80,7 +144,72 @@ const MatchList = () => {
           )
         })
       }
-      <AddButton />
+      <AddButton onClick={showModal} />
+      <Modal
+        title="เพิ่มคิว"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        confirmLoading={confirmLoading}
+        destroyOnClose>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+          <div>ผู้เล่น</div>
+          <AutoComplete
+            options={options}
+            style={{
+              width: 250,
+              marginLeft: '10px'
+            }}
+            onSelect={(data => setPlayer1(data))}
+            onSearch={onSearch}
+            onChange={data => setPlayer1(data)}
+            placeholder="ชื่อผู้เล่น"
+          />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+          <div>ผู้เล่น</div>
+          <AutoComplete
+            options={options}
+            style={{
+              width: 250,
+              marginLeft: '10px'
+            }}
+            onSelect={(data => setPlayer2(data))}
+            onSearch={onSearch}
+            onChange={data => setPlayer2(data)}
+            placeholder="ชื่อผู้เล่น"
+          />
+        </div>
+        <div style={{ width: '100%', textAlign: 'center', marginBottom: '10px' }}>เจอกับ</div>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+          <div>ผู้เล่น</div>
+          <AutoComplete
+            options={options}
+            style={{
+              width: 250,
+              marginLeft: '10px'
+            }}
+            onSelect={(data => setPlayer3(data))}
+            onSearch={onSearch}
+            onChange={data => setPlayer3(data)}
+            placeholder="ชื่อผู้เล่น"
+          />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+          <div>ผู้เล่น</div>
+          <AutoComplete
+            options={options}
+            style={{
+              width: 250,
+              marginLeft: '10px'
+            }}
+            onSelect={(data => setPlayer4(data))}
+            onSearch={onSearch}
+            onChange={data => setPlayer4(data)}
+            placeholder="ชื่อผู้เล่น"
+          />
+        </div>
+      </Modal>
     </div >
   )
 }
