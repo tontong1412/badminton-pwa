@@ -90,6 +90,25 @@ const MatchList = () => {
       })
     })
   }
+
+  const updateStatus = (matchID, matchStatus) => {
+    const status = matchStatus === 'waiting' ? 'playing' : 'finished'
+    axios.put(`${API_ENDPOINT}/match/${matchID}`, {
+      status
+    }).then(() => {
+      mutate(`${API_ENDPOINT}/gang/${id}`)
+    }).catch(() => {
+      Modal.error({
+        title: 'ผิดพลาด',
+        content: (
+          <div>
+            <p>เกิดปัญหาขณะอัพเดทข้อมูล กรุณาลองใหม่ในภายหลัง</p>
+          </div>
+        ),
+        onOk() { },
+      })
+    })
+  }
   if (isError) return "An error has occurred."
   if (isLoading) return "Loading..."
   gang.queue.sort((a, b) => {
@@ -138,7 +157,7 @@ const MatchList = () => {
               <div className='controller-container'>
                 <div className='controller'>แก้ไข</div>
                 <div className='controller' onClick={() => addShuttlecock(match._id)}>เพิ่มลูก</div>
-                <div className='controller'>จบเกม</div>
+                <div className='controller' onClick={() => updateStatus(match._id, match.status)}>{match.status === 'waiting' ? 'เริ่มเกม' : 'จบเกม'}</div>
               </div>
             </div>
           )
