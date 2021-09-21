@@ -19,7 +19,6 @@ const Gang = (props) => {
         })}
       </div>
       <AddButton onClick={() => console.log('TODO: create gang')} />
-
     </>
   )
 }

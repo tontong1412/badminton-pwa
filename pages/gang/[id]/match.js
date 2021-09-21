@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useSWRConfig } from 'swr'
-import { Modal, Form, AutoComplete, Button } from 'antd'
+import { Modal, AutoComplete } from 'antd'
 import axios from 'axios'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -12,7 +12,6 @@ import { API_ENDPOINT } from '../../../config'
 const MatchList = () => {
   const router = useRouter()
   const { id } = router.query
-  const [form] = Form.useForm();
   const { mutate } = useSWRConfig()
   const { gang, isLoading, isError } = useGang(id)
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -130,7 +129,7 @@ const MatchList = () => {
                     return (
                       <div key={player._id} className='player-container'>
                         <div className='avatar'>
-                          <Image src='/avatar.png' alt='' width={40} height={40} />
+                          <Image src={player.avatar || `/avatar${Math.floor(Math.random() * (6 - 1) + 1)}.png`} alt='' width={40} height={40} />
                         </div>
                         <div className='info'>{player.displayName}</div>
                       </div>
@@ -142,7 +141,7 @@ const MatchList = () => {
                     return (
                       <div key={player._id} className='player-container'>
                         <div className='avatar'>
-                          <Image src='/avatar.png' alt='' width={40} height={40} />
+                          <Image src={player.avatar || `/avatar${Math.floor(Math.random() * (6 - 1) + 1)}.png`} alt='' width={40} height={40} />
                         </div>
                         <div className='info'>{player.displayName}</div>
                       </div>
