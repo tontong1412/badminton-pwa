@@ -17,6 +17,19 @@ export const useGang = (id) => {
   }
 }
 
+export const useGangs = (id) => {
+  const { data, error } = useSWR(
+    `${API_ENDPOINT}/gang`,
+    fetcher
+  )
+
+  return {
+    gangs: data,
+    isLoading: !error && !data,
+    isError: error
+  }
+}
+
 export const usePlayers = () => {
   const { data, error } = useSWR(
     `${API_ENDPOINT}/player`,

@@ -168,8 +168,8 @@ const GangID = () => {
           <div style={{ textAlign: 'center' }}>
             <div dangerouslySetInnerHTML={{ __html: qrSVG }} />
             <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{paymentData?.reciever.officialName}</div>
-            <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{`${paymentData?.total} บาท`}</div>
-            <div>{`ค่าสนาม: ${paymentData?.courtFee}`}</div>
+            <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{`${Math.ceil(paymentData?.total)} บาท`}</div>
+            <div>{`ค่าสนาม: ${Math.ceil(paymentData?.courtFee)}`}</div>
             <div>{`จำนวนลูกที่ใช้: ${paymentData?.shuttlecockUsed}`}</div>
           </div>
           :
