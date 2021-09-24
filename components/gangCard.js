@@ -1,6 +1,9 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { useDispatch } from 'react-redux'
+
 const Card = ({ gang }) => {
+  const dispatch = useDispatch()
   const info = [
     {
       icon: '/icon/badminton-court.png',
@@ -17,7 +20,7 @@ const Card = ({ gang }) => {
       href={`/gang/${gang._id}`}
       passHref
     >
-      <div className='gang-card'>
+      <div className='gang-card' onClick={() => dispatch({ type: 'GANG', gang })}>
         <div className='gang-img'>
           <Image
             src='/splash/launch-640x1136.png'

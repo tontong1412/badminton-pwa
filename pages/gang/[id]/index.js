@@ -1,13 +1,11 @@
 import axios from 'axios'
 import generatePayload from 'promptpay-qr'
-import useSWR, { mutate } from 'swr'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { Modal, AutoComplete } from 'antd'
 import { LogoutOutlined } from '@ant-design/icons'
-import { wrapper } from '../../../redux/store'
 import { API_ENDPOINT } from '../../../config'
 import Layout from '../../../components/Layout/gang'
 import AddButton from '../../../components/addButton'
@@ -17,7 +15,6 @@ import qrcode from 'qrcode'
 const GangID = () => {
   const router = useRouter()
   const { id } = router.query
-  const { tick } = useSelector(state => state)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
@@ -27,7 +24,6 @@ const GangID = () => {
   const { players } = usePlayers()
   const [qrSVG, setQrSVG] = useState()
   const [paymentData, setPaymentData] = useState()
-
   const playerEndRef = useRef(null)
 
   const scrollToBottom = () => {
@@ -79,7 +75,6 @@ const GangID = () => {
   }
 
   const onSelect = (data) => {
-    console.log('onSelect', data)
     setValue(data)
   }
 
@@ -88,22 +83,19 @@ const GangID = () => {
   }
 
   const getBill = async (playerID) => {
+    setIsPaymentModalVisible(true)
     const res = await axios.get(`${API_ENDPOINT}/gang/bill`, {
       params: {
         playerID,
         gangID: id
       }
     })
-    const mobileNumber = '092-901-0011'
-    console.log(res.data)
+    const mobileNumber = res.data.paymentCode || '092-901-0011'
     const payload = generatePayload(mobileNumber, { amount: res.data.total })
-    console.log(payload)
     setPaymentData(res.data)
     qrcode.toString(payload, options, (err, svg) => {
       if (err) return console.log(err)
       setQrSVG(svg)
-      setIsPaymentModalVisible(true)
-      console.log(svg)
     })
 
   }
@@ -153,36 +145,27 @@ const GangID = () => {
     <Modal
       title=""
       visible={isPaymentModalVisible}
-      onOk={handleOk}
+      onOk={() => setIsPaymentModalVisible(false)}
       onCancel={() => setIsPaymentModalVisible(false)}
       confirmLoading={confirmLoading}
       destroyOnClose>
-      <div>
-        <div dangerouslySetInnerHTML={{ __html: qrSVG }} />
-        <div>{`ค่าสนาม: ${paymentData?.courtFee}`}</div>
-        <div>{`จำนวนลูกที่ใช้: ${paymentData?.shuttlecockUsed}`}</div>
-        <div>{`รวมทั้งหมด: ${paymentData?.total} บาท`}</div>
+      <div style={{ height: '450px' }}>
+        {qrSVG ?
+          <div style={{ textAlign: 'center' }}>
+            <div dangerouslySetInnerHTML={{ __html: qrSVG }} />
+            <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{paymentData?.reciever.officialName}</div>
+            <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{`${paymentData?.total} บาท`}</div>
+            <div>{`ค่าสนาม: ${paymentData?.courtFee}`}</div>
+            <div>{`จำนวนลูกที่ใช้: ${paymentData?.shuttlecockUsed}`}</div>
+          </div>
+          :
+          <div>Loading...</div>
+        }
       </div>
     </Modal>
     <div style={{ height: '80px' }} ref={playerEndRef} />
   </>
 }
-
-export async function getStaticPaths() {
-  const res = await axios.get(`${API_ENDPOINT}/gang`)
-  const gangs = await res.data
-  const paths = gangs.map((gang) => ({
-    params: { id: gang._id },
-  }))
-  return { paths, fallback: false }
-}
-
-export const getStaticProps = wrapper.getStaticProps((store) => async ({ params }) => {
-  const res = await axios.get(`${API_ENDPOINT}/gang/${params.id}`)
-  const gang = await res.data
-  store.dispatch({ type: 'GANG', payload: gang })
-  return { props: { gang } }
-})
 
 GangID.getLayout = (page) => {
   return (

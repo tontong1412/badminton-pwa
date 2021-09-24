@@ -8,7 +8,7 @@ import { LeftOutlined } from '@ant-design/icons'
 
 
 const Header = (props) => {
-  const state = useSelector(state => state);
+  const { user } = useSelector(state => state);
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -36,8 +36,8 @@ const Header = (props) => {
         dispatch({ type: 'LOGIN', payload: user })
       }
     }
-    login()
-  })
+    if (!user.id) login()
+  }, [user, dispatch])
 
   return (
     <>

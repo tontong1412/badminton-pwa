@@ -17,9 +17,9 @@ const reducer = (state = initialState, action) => {
     case 'TICK':
       return { ...state, tick: action.payload }
     case 'LOGIN':
-      return { ...state, user: action.payload }
+      return { ...state, user: { ...action.payload } }
     case 'GANG':
-      return { ...state, gang: action.payload }
+      return { ...state, gang: { ...action.payload } }
     default:
       return state;
   }

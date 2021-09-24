@@ -70,8 +70,17 @@ const MatchList = () => {
   }
 
   const addShuttlecock = (matchID) => {
+    const queueIndex = gang.queue.findIndex(match => match._id === matchID)
+    const tempQueue = [...gang.queue]
+    tempQueue[queueIndex].shuttlecockUsed = tempQueue[queueIndex].shuttlecockUsed + 1
+    const tempMutateGang = {
+      ...gang,
+      queue: tempQueue
+    }
+
     // update the local data immediately, but disable the revalidation
-    // mutate(`${API_ENDPOINT}/gang/${id}`, { ...gang, name: newName }, false)
+    mutate(`${API_ENDPOINT}/gang/${id}`, tempMutateGang, false)
+
     axios.post(`${API_ENDPOINT}/match/manage-shuttlecock`, {
       matchID,
       action: "increment"
@@ -198,7 +207,7 @@ const MatchList = () => {
             placeholder="ชื่อผู้เล่น"
           />
         </div>
-        <div style={{ width: '100%', textAlign: 'center', marginBottom: '10px' }}>เจอกับ</div>
+        <div style={{ width: '100%', textAlign: 'center', marginBottom: '10px' }}>vs</div>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
           <div>ผู้เล่น</div>
           <AutoComplete

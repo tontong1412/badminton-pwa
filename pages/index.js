@@ -1,11 +1,12 @@
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Greeting from '../components/greeting'
 import Layout from '../components/Layout'
+
 const Home = () => {
-  const state = useSelector(state => state);
+  const { user } = useSelector(state => state)
   return (
     <>
-      <Greeting user={state.user} />
+      <Greeting user={user} />
     </>
   )
 }
