@@ -46,7 +46,13 @@ const Header = (props) => {
         <meta name="description" content={props.description} />
       </Head>
       <div className='header'>
-        <div>{props.backHref ? <Link passHref href={props.backHref}><LeftOutlined /></Link> : null}</div>
+        <div>{props.back?.href ?
+          <Link passHref href={props.back.href}>
+            <LeftOutlined onClick={() => dispatch({ type: 'ACTIVE_MENU', payload: props.back.alias })} />
+          </Link>
+          :
+          null}
+        </div>
         <div>badbay</div>
         <div>{props.rightIcon ? props.rightIcon : null}</div>
       </div>

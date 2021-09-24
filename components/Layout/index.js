@@ -1,8 +1,10 @@
 import Footer from './footer'
 import Header from './header'
+import { useSelector } from 'react-redux'
 import { UserOutlined, BellOutlined, HomeOutlined, TeamOutlined } from '@ant-design/icons'
 
 const AppLayout = (props) => {
+  const { activeMenu } = useSelector(state => state)
   return (
     <>
       <Header description='This is Home Page' />
@@ -13,24 +15,28 @@ const AppLayout = (props) => {
       </main>
       <Footer tabOption={[
         {
-          name: 'Home',
-          icon: <HomeOutlined style={{ fontSize: '24px' }} />,
-          href: '/'
+          name: 'หน้าแรก',
+          icon: <HomeOutlined style={{ fontSize: '24px', color: activeMenu === 'home' ? '#DAA228' : null }} />,
+          href: '/',
+          alias: 'home'
         },
         {
-          name: 'Gang',
-          icon: <TeamOutlined style={{ fontSize: '24px' }} />,
-          href: '/gang'
+          name: 'ก๊วน',
+          icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === 'gang' ? '#DAA228' : null }} />,
+          href: '/gang',
+          alias: 'gang'
         },
         {
-          name: 'Notifications',
-          icon: <BellOutlined style={{ fontSize: '24px' }} />,
-          href: '/noti'
+          name: 'แจ้งเตือน',
+          icon: <BellOutlined style={{ fontSize: '24px', color: activeMenu === 'noti' ? '#DAA228' : null }} />,
+          href: '/noti',
+          alias: 'noti'
         },
         {
-          name: 'My Account',
-          icon: <UserOutlined style={{ fontSize: '24px' }} />,
-          href: '/account'
+          name: 'บัญชีของฉัน',
+          icon: <UserOutlined style={{ fontSize: '24px', color: activeMenu === 'account' ? '#DAA228' : null }} />,
+          href: '/account',
+          alias: 'account'
         }
       ]} />
     </>

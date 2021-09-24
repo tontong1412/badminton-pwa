@@ -20,7 +20,10 @@ const Card = ({ gang }) => {
       href={`/gang/${gang._id}`}
       passHref
     >
-      <div className='gang-card' onClick={() => dispatch({ type: 'GANG', gang })}>
+      <div className='gang-card' onClick={() => {
+        dispatch({ type: 'GANG', payload: gang })
+        dispatch({ type: 'ACTIVE_MENU', payload: 'players' })
+      }}>
         <div className='gang-img'>
           <Image
             src='/splash/launch-640x1136.png'

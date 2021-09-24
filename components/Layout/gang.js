@@ -7,29 +7,32 @@ import { useSelector } from 'react-redux'
 const GangLayout = (props) => {
   const router = useRouter()
   const { id } = router.query
-  const { user } = useSelector(state => state)
+  const { user, activeMenu } = useSelector(state => state)
   const tabOption = [
     {
       name: 'รายชื่อ',
-      icon: <TeamOutlined style={{ fontSize: '24px' }} />,
-      href: `/gang/${id}`
+      icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === 'players' ? '#DAA228' : null }} />,
+      href: `/gang/${id}`,
+      alias: 'players'
     },
     {
       name: 'คิว',
-      icon: <UnorderedListOutlined style={{ fontSize: '24px' }} />,
-      href: `/gang/${id}/match`
+      icon: <UnorderedListOutlined style={{ fontSize: '24px', color: activeMenu === 'queue' ? '#DAA228' : null }} />,
+      href: `/gang/${id}/match`,
+      alias: 'queue'
     }
   ]
   if (user.id) {
     tabOption.push({
       name: 'จัดการก๊วน',
-      icon: <SettingOutlined style={{ fontSize: '24px' }} />,
-      href: `/gang/${id}`
+      icon: <SettingOutlined style={{ fontSize: '24px', color: activeMenu === 'setting' ? '#DAA228' : null }} />,
+      href: `/gang/${id}`,
+      alias: 'setting'
     })
   }
   return (
     <>
-      <Header description='This is Home Page' backHref='/gang' />
+      <Header description='This is Home Page' back={{ href: '/gang', alias: 'gang' }} />
       <main>
         <div className='content'>
           {props.children}

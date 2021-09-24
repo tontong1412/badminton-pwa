@@ -6,7 +6,8 @@ import { createWrapper, HYDRATE } from 'next-redux-wrapper';
 const initialState = {
   user: {},
   tick: 'init',
-  gang: null
+  gang: null,
+  activeMenu: 'home'
 }
 
 // create your reducer
@@ -20,6 +21,9 @@ const reducer = (state = initialState, action) => {
       return { ...state, user: { ...action.payload } }
     case 'GANG':
       return { ...state, gang: { ...action.payload } }
+    case 'ACTIVE_MENU':
+      console.log(action.payload)
+      return { ...state, activeMenu: action.payload }
     default:
       return state;
   }
