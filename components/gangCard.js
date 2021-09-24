@@ -16,7 +16,6 @@ const Card = ({ gang }) => {
   ]
   return (
     <Link
-      key={gang._id}
       href={`/gang/${gang._id}`}
       passHref
     >

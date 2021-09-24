@@ -22,7 +22,6 @@ const reducer = (state = initialState, action) => {
     case 'GANG':
       return { ...state, gang: { ...action.payload } }
     case 'ACTIVE_MENU':
-      console.log(action.payload)
       return { ...state, activeMenu: action.payload }
     default:
       return state;

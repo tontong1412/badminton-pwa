@@ -3,7 +3,7 @@ import generatePayload from 'promptpay-qr'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState, useRef } from 'react'
-import { useSelector } from 'react-redux'
+import { mutate } from 'swr'
 import { Modal, AutoComplete } from 'antd'
 import { LogoutOutlined } from '@ant-design/icons'
 import { API_ENDPOINT } from '../../../config'
@@ -52,6 +52,18 @@ const GangID = () => {
       scrollToBottom()
       setIsModalVisible(false)
       setConfirmLoading(false)
+    }).catch(err => {
+      setIsModalVisible(false)
+      setConfirmLoading(false)
+      Modal.error({
+        title: 'ผิดพลาด',
+        content: (
+          <div>
+            <p>เกิดปัญหาขณะอัพเดทข้อมูล กรุณาลองใหม่ในภายหลัง</p>
+          </div>
+        ),
+        onOk() { },
+      })
     })
   }
 
@@ -66,7 +78,9 @@ const GangID = () => {
       || player.officialName?.toLowerCase().includes(searchTextLower)
     ).map(player => {
       return {
-        value: player.displayName || player.officialName
+        key: player._id,
+        value: player.displayName || player.officialName,
+        text: player.displayName || player.officialName
       }
     })
     setOptions(
@@ -111,7 +125,7 @@ const GangID = () => {
     {
       gang.players.map(player => {
         return (
-          <div key={player._id} className='gang-player'>
+          <div key={`player-${player._id}`} className='gang-player'>
             <div className='player-container'>
               <div className='avatar'>
                 <Image src={player.avatar || `/avatar${Math.floor(Math.random() * (6 - 1) + 1)}.png`} alt='' width={50} height={50} />

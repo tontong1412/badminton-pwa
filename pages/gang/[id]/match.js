@@ -131,12 +131,12 @@ const MatchList = () => {
       {
         gang.queue.map(match => {
           return (
-            <div key={match._id} className='match-card'>
+            <div key={`match-${match._id}`} className='match-card'>
               <div className='team-container'>
                 <div className='team'>
                   {match.teamA.team.players.map(player => {
                     return (
-                      <div key={player._id} className='player-container'>
+                      <div key={`teamA-${player._id}`} className='player-container'>
                         <div className='avatar'>
                           <Image src={player.avatar || `/avatar${Math.floor(Math.random() * (6 - 1) + 1)}.png`} alt='' width={40} height={40} />
                         </div>
@@ -148,7 +148,7 @@ const MatchList = () => {
                 <div className='team'>
                   {match.teamB.team.players.map(player => {
                     return (
-                      <div key={player._id} className='player-container'>
+                      <div key={`teamB-${player._id}`} className='player-container'>
                         <div className='avatar'>
                           <Image src={player.avatar || `/avatar${Math.floor(Math.random() * (6 - 1) + 1)}.png`} alt='' width={40} height={40} />
                         </div>

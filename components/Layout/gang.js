@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 const GangLayout = (props) => {
   const router = useRouter()
   const { id } = router.query
-  const { user, activeMenu } = useSelector(state => state)
+  const { user, activeMenu, gang } = useSelector(state => state)
   const tabOption = [
     {
       name: 'รายชื่อ',
@@ -22,7 +22,7 @@ const GangLayout = (props) => {
       alias: 'queue'
     }
   ]
-  if (user.id) {
+  if (user.playerID === gang.creator._id) {
     tabOption.push({
       name: 'จัดการก๊วน',
       icon: <SettingOutlined style={{ fontSize: '24px', color: activeMenu === 'setting' ? '#DAA228' : null }} />,
