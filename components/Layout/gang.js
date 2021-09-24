@@ -22,11 +22,11 @@ const GangLayout = (props) => {
       alias: 'queue'
     }
   ]
-  if (user.playerID === gang.creator._id) {
+  if (user.playerID === gang?.creator?._id) {
     tabOption.push({
       name: 'จัดการก๊วน',
       icon: <SettingOutlined style={{ fontSize: '24px', color: activeMenu === 'setting' ? '#DAA228' : null }} />,
-      href: `/gang/${id}`,
+      href: `/gang/${id}/manage`,
       alias: 'setting'
     })
   }
