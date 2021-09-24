@@ -11,6 +11,7 @@ import Layout from '../../../components/Layout/gang'
 import AddButton from '../../../components/addButton'
 import { useGang, usePlayers } from '../../../utils'
 import qrcode from 'qrcode'
+import Loading from '../../../components/loading'
 
 const GangID = () => {
   const router = useRouter()
@@ -107,7 +108,7 @@ const GangID = () => {
     const mobileNumber = res.data.paymentCode || '092-901-0011'
     const payload = generatePayload(mobileNumber, { amount: res.data.total })
     setPaymentData(res.data)
-    qrcode.toString(payload, options, (err, svg) => {
+    qrcode.toString(payload, (err, svg) => {
       if (err) return console.log(err)
       setQrSVG(svg)
     })
@@ -115,7 +116,7 @@ const GangID = () => {
   }
 
   if (isError) return "An error has occurred."
-  if (isLoading) return "Loading..."
+  if (isLoading) return <Loading />
   return <>
     <div style={{ fontSize: '20px' }}>{gang.name} </div>
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -160,7 +161,10 @@ const GangID = () => {
       title=""
       visible={isPaymentModalVisible}
       onOk={() => setIsPaymentModalVisible(false)}
-      onCancel={() => setIsPaymentModalVisible(false)}
+      onCancel={() => {
+        setIsPaymentModalVisible(false)
+        setQrSVG(null)
+      }}
       confirmLoading={confirmLoading}
       destroyOnClose>
       <div style={{ height: '450px' }}>
@@ -173,7 +177,7 @@ const GangID = () => {
             <div>{`จำนวนลูกที่ใช้: ${paymentData?.shuttlecockUsed}`}</div>
           </div>
           :
-          <div>Loading...</div>
+          <Loading />
         }
       </div>
     </Modal>

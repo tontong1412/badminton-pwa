@@ -9,6 +9,7 @@ import AddButton from '../../components/addButton'
 import Card from '../../components/gangCard'
 import { Modal, Form, Input, Radio, InputNumber, Button } from 'antd'
 import { useGangs } from '../../utils'
+import Loading from '../../components/loading'
 
 const Gang = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -62,7 +63,7 @@ const Gang = () => {
     })
   }
   if (isError) return "An error has occurred."
-  if (isLoading) return "Loading..."
+  if (isLoading) return <Loading />
   return (
     <div>
       <div>ก๊วนของฉัน</div>

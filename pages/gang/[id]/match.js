@@ -8,6 +8,7 @@ import Layout from '../../../components/Layout/gang'
 import AddButton from '../../../components/addButton'
 import { useGang } from '../../../utils'
 import { API_ENDPOINT } from '../../../config'
+import Loading from '../../../components/loading'
 
 const MatchList = () => {
   const router = useRouter()
@@ -118,7 +119,7 @@ const MatchList = () => {
     })
   }
   if (isError) return "An error has occurred."
-  if (isLoading) return "Loading..."
+  if (isLoading) return <Loading />
   gang.queue.sort((a, b) => {
     if (a.status === 'finished' && (b.status === 'playing' || b.status === 'waiting')) return 1
     else if (a.status === 'playing' && (b.status === 'finished' || b.status === 'waiting')) return -1
