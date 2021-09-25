@@ -21,15 +21,20 @@ const Header = (props) => {
             'Authorization': `Token ${token}`
           }
         })
-        const { data: player } = await axios.get(`${API_ENDPOINT}/player/${login.user.playerID}`)
+
+        let player
+        if (login.user.playerID) {
+          const res = await axios.get(`${API_ENDPOINT}/player/${login.user.playerID}`)
+          player = res.data
+        }
 
         const user = {
           id: login.user._id,
           token: login.user.token,
           email: login.user.email,
           playerID: login.user.playerID,
-          officialName: player.officialName,
-          club: player.club
+          officialName: player?.officialName,
+          club: player?.club
         }
         localStorage.setItem('rememberMe', true);
         localStorage.setItem('token', login.user.token);

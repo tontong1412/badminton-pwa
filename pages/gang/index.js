@@ -15,7 +15,7 @@ const Gang = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const { user } = useSelector(state => state)
-  const { gangs, isLoading, isError } = useGangs()
+  const { gangs, isLoading, isError } = useGangs(user.token, { creator: user.playerID })
   const formatPromptpay = (input) => {
     if (input.length === 10) {
       const formattedCode = input.slice(0, 3) + '-' + input.slice(3, 6) + '-' + input.slice(6)
@@ -29,7 +29,6 @@ const Gang = () => {
   }
   const onFinish = (values) => {
     setConfirmLoading(true)
-    formatPromptpay(values.paymentCode)
     axios.post(`${API_ENDPOINT}/gang`, {
       name: values.name,
       location: values.location,
@@ -39,13 +38,16 @@ const Gang = () => {
         amount: values.courtFee
       },
       shuttlecockFee: values.shuttlecockFee,
-      paymentCode: formatPromptpay(values.paymentCode)
+      payment: {
+        code: values.paymentCode ? formatPromptpay(values.paymentCode) : null,
+        name: values.paymentName
+      }
     }, {
       headers: {
         'Authorization': `Token ${user.token}`
       }
     }).then(res => {
-      mutate(`${API_ENDPOINT}/gangs`)
+      mutate(`${API_ENDPOINT}/gang`)
       setIsModalVisible(false)
       setConfirmLoading(false)
     }).catch(err => {
@@ -127,7 +129,13 @@ const Gang = () => {
             name='paymentCode'
             help="ใช้สำหรับสร้าง QR code รับเงิน"
           >
-            <Input />
+            <Input placeholder='เบอร์โทรศัพท์ หรือ หมายเลขบัตรประชาชน' />
+          </Form.Item>
+          <Form.Item
+            name='paymentName'
+            style={{ marginTop: '20px' }}
+          >
+            <Input placeholder='ชื่อบัญชีพร้อมเพย์' />
           </Form.Item>
           <Form.Item >
             <Button key='submit' type='primary' htmlType='submit' style={{ width: '100%', marginTop: '20px' }}>

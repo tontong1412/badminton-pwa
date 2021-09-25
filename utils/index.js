@@ -2,7 +2,13 @@ import useSWR from 'swr'
 import axios from 'axios'
 import { API_ENDPOINT } from '../config'
 
-const fetcher = (url) => axios.get(url).then((res) => res.data)
+
+const fetcher = (url, token, params) => axios.get(url, {
+  headers: {
+    'Authorization': token ? `Token ${token}` : null
+  },
+  params
+}).then((res) => res.data)
 
 export const useGang = (id) => {
   const { data, error } = useSWR(
@@ -17,10 +23,10 @@ export const useGang = (id) => {
   }
 }
 
-export const useGangs = (id) => {
+export const useGangs = (token, params) => {
   const { data, error } = useSWR(
     `${API_ENDPOINT}/gang`,
-    fetcher
+    (url) => fetcher(url, token, params)
   )
 
   return {

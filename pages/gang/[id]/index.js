@@ -39,7 +39,7 @@ const GangID = () => {
 
   const handleOk = () => {
     setConfirmLoading(true)
-    let player = players.find(player => player.displayName === value || player.displayName === value)
+    let player = players.find(player => player.displayName === value || player.officialName === value)
     if (!player) {
       player = {
         displayName: value
@@ -73,6 +73,7 @@ const GangID = () => {
   }
 
   const onSearch = (searchText) => {
+    console.log(players)
     const searchTextLower = searchText.toLowerCase()
     const searchOptions = players.filter(player =>
       player.displayName?.toLowerCase().includes(searchTextLower)
@@ -81,7 +82,6 @@ const GangID = () => {
       return {
         key: player._id,
         value: player.displayName || player.officialName,
-        text: player.displayName || player.officialName
       }
     })
     setOptions(
@@ -105,7 +105,7 @@ const GangID = () => {
         gangID: id
       }
     })
-    const mobileNumber = res.data.paymentCode || '092-901-0011'
+    const mobileNumber = res.data.payment?.code || '092-901-0011'
     const payload = generatePayload(mobileNumber, { amount: res.data.total })
     setPaymentData(res.data)
     qrcode.toString(payload, (err, svg) => {
@@ -131,7 +131,7 @@ const GangID = () => {
               <div className='avatar'>
                 <Image src={player.avatar || `/avatar${Math.floor(Math.random() * (6 - 1) + 1)}.png`} alt='' width={50} height={50} />
               </div>
-              <div className='player-name'>{player.displayName}</div>
+              <div className='player-name'>{player.displayName || player.officialName}</div>
             </div>
             <div onClick={() => getBill(player._id)}><LogoutOutlined style={{ fontSize: '30px' }} /></div>
           </div>
@@ -171,7 +171,7 @@ const GangID = () => {
         {qrSVG ?
           <div style={{ textAlign: 'center' }}>
             <div dangerouslySetInnerHTML={{ __html: qrSVG }} />
-            <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{paymentData?.reciever.officialName}</div>
+            <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{paymentData?.payment?.name}</div>
             <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{`${Math.ceil(paymentData?.total)} บาท`}</div>
             <div>{`ค่าสนาม: ${Math.ceil(paymentData?.courtFee)}`}</div>
             <div>{`จำนวนลูกที่ใช้: ${paymentData?.shuttlecockUsed}`}</div>
