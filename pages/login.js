@@ -5,6 +5,7 @@ import logo from '../public/icon/logo.png'
 import { Form, Input, Button, Checkbox } from 'antd'
 import { useDispatch, useSelector } from 'react-redux';
 import { API_ENDPOINT } from '../config'
+import Layout from '../components/Layout'
 
 const Login = () => {
   const state = useSelector(state => state);
@@ -38,6 +39,7 @@ const Login = () => {
     localStorage.setItem('rememberMe', values.remember);
     localStorage.setItem('token', values.remember ? login.user.token : '');
     dispatch({ type: 'LOGIN', payload: user })
+    dispatch({ type: 'ACTIVE_MENU', payload: 'home' })
     router.push('/')
   }
 
@@ -93,6 +95,14 @@ const Login = () => {
         </Button>
       </Form.Item>
     </Form>
+  )
+}
+
+Login.getLayout = (page) => {
+  return (
+    <Layout>
+      {page}
+    </Layout>
   )
 }
 export default Login
