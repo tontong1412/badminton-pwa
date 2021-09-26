@@ -25,7 +25,7 @@ const MatchList = () => {
   const [player4, setPlayer4] = useState()
 
   useEffect(() => {
-    setQueue(gang.queue)
+    setQueue(gang?.queue)
   }, [gang])
 
 
@@ -161,7 +161,7 @@ const MatchList = () => {
                     return (
                       <div key={`teamA-${player._id}`} className='player-container'>
                         <div className='avatar'>
-                          <Image src={player.avatar || `/avatar${Math.floor(Math.random() * (6 - 1) + 1)}.png`} alt='' width={40} height={40} />
+                          <Image src={player.avatar || `/avatar.png`} alt='' width={40} height={40} />
                         </div>
                         <div className='info'>{player.displayName || player.officialName}</div>
                       </div>
@@ -173,7 +173,7 @@ const MatchList = () => {
                     return (
                       <div key={`teamB-${player._id}`} className='player-container'>
                         <div className='avatar'>
-                          <Image src={player.avatar || `/avatar${Math.floor(Math.random() * (6 - 1) + 1)}.png`} alt='' width={40} height={40} />
+                          <Image src={player.avatar || `/avatar.png`} alt='' width={40} height={40} />
                         </div>
                         <div className='info'>{player.displayName || player.officialName}</div>
                       </div>
