@@ -120,6 +120,10 @@ const MatchList = () => {
 
   const updateStatus = (matchID, matchStatus) => {
     const status = matchStatus === 'waiting' ? 'playing' : 'finished'
+    const queueIndex = gang.queue.findIndex(match => match._id === matchID)
+    const tempQueue = [...gang.queue]
+    tempQueue[queueIndex].status = status
+    setQueue(tempQueue)
     axios.put(`${API_ENDPOINT}/match/${matchID}`, {
       status
     }).then(() => {
@@ -179,7 +183,7 @@ const MatchList = () => {
               </div>
               <div>
                 <div style={{ width: '50%' }}>จำนวนลูก: {queue[index].shuttlecockUsed}</div>
-                <div style={{ width: '50%' }}>สถานะ: {match.status}</div>
+                <div style={{ width: '50%' }}>สถานะ: {queue[index].status}</div>
               </div>
               <div className='controller-container'>
                 <div className='controller'>แก้ไข</div>
