@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 import { Button } from 'antd'
+import Loading from '../components/loading'
 const Account = (props) => {
   const { user } = useSelector(state => state)
   const dispatch = useDispatch()
@@ -21,6 +22,8 @@ const Account = (props) => {
       return <div />
     }
   }, [])
+
+  if (!user.id) return <Loading />
 
   return (
     <div>

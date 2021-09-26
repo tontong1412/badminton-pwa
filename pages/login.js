@@ -6,14 +6,17 @@ import { Form, Input, Button, Checkbox } from 'antd'
 import { useDispatch, useSelector } from 'react-redux';
 import { API_ENDPOINT } from '../config'
 import Layout from '../components/Layout'
+import { useState } from 'react'
 
 const Login = () => {
-  const state = useSelector(state => state);
+  const state = useSelector(state => state)
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
   if (state.user.id) router.push('/')
   const dispatch = useDispatch()
 
   const onFinish = async (values) => {
+    setLoading(true)
     const { data: login } = await axios.post(`${API_ENDPOINT}/login`,
       {
         user: {
@@ -40,6 +43,7 @@ const Login = () => {
     localStorage.setItem('token', values.remember ? login.user.token : '');
     dispatch({ type: 'LOGIN', payload: user })
     dispatch({ type: 'ACTIVE_MENU', payload: 'home' })
+    setLoading(false)
     router.push('/')
   }
 
@@ -90,7 +94,7 @@ const Login = () => {
       </Form.Item>
 
       <Form.Item >
-        <Button type='primary' htmlType='submit'>
+        <Button type='primary' htmlType='submit' loading={loading}>
           Submit
         </Button>
       </Form.Item>
