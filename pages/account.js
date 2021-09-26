@@ -1,4 +1,5 @@
 import Layout from '../components/Layout'
+import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 import { Button } from 'antd'
@@ -10,14 +11,15 @@ const Account = (props) => {
     dispatch({ type: 'LOGOUT' })
     localStorage.clear()
   }
-  if (!user.id) {
-    router.push('/login')
-    return <div>Redirecting</div>
-  }
-  if (!user.playerID) {
-    router.push('/claim-player')
-    return <div>Redirecting</div>
-  }
+  useEffect(() => {
+    if (!user.id) {
+      router.push('/login')
+    }
+    if (!user.playerID) {
+      router.push('/claim-player')
+    }
+  }, [])
+
   return (
     <div>
       <div>This is My Account page</div>
