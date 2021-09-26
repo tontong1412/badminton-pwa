@@ -18,6 +18,7 @@ const MatchList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [options, setOptions] = useState([])
   const [confirmLoading, setConfirmLoading] = useState(false)
+  const [queue, setQueue] = useState(gang.queue)
   const [player1, setPlayer1] = useState()
   const [player2, setPlayer2] = useState()
   const [player3, setPlayer3] = useState()
@@ -85,13 +86,14 @@ const MatchList = () => {
     const queueIndex = gang.queue.findIndex(match => match._id === matchID)
     const tempQueue = [...gang.queue]
     tempQueue[queueIndex].shuttlecockUsed = tempQueue[queueIndex].shuttlecockUsed + 1
-    const tempMutateGang = {
-      ...gang,
-      queue: tempQueue
-    }
+    // const tempMutateGang = {
+    //   ...gang,
+    //   queue: tempQueue
+    // }
 
     // update the local data immediately
-    mutate(`${API_ENDPOINT}/gang/${id}`, tempMutateGang)
+    // mutate(`${API_ENDPOINT}/gang/${id}`, tempMutateGang)
+    setQueue(tempQueue)
 
     axios.post(`${API_ENDPOINT}/match/manage-shuttlecock`, {
       matchID,
@@ -141,7 +143,7 @@ const MatchList = () => {
   return (
     <div>
       {
-        gang.queue.map(match => {
+        gang.queue.map((match, index) => {
           return (
             <div key={`match-${match._id}`} className='match-card'>
               <div className='team-container'>
@@ -171,7 +173,7 @@ const MatchList = () => {
                 </div>
               </div>
               <div>
-                <div style={{ width: '50%' }}>จำนวนลูก: {match.shuttlecockUsed}</div>
+                <div style={{ width: '50%' }}>จำนวนลูก: {queue[index].shuttlecockUsed}</div>
                 <div style={{ width: '50%' }}>สถานะ: {match.status}</div>
               </div>
               <div className='controller-container'>
