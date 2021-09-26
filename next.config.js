@@ -21,7 +21,10 @@ const plugins = [
   }),
   withAntdLess({
     // optional
-    modifyVars: { '@primary-color': '#4F708A' },
+    modifyVars: {
+      '@primary-color': '#4F708A',
+      '@font-family': "IBM Plex Sans Thai, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans- serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"
+    },
     // optional
     lessVarsFilePathAppendToEndOfContent: false,
     // optional https://github.com/webpack-contrib/css-loader#object

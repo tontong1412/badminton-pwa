@@ -73,7 +73,6 @@ const GangID = () => {
   }
 
   const onSearch = (searchText) => {
-    console.log(players)
     const searchTextLower = searchText.toLowerCase()
     const searchOptions = players.filter(player =>
       player.displayName?.toLowerCase().includes(searchTextLower)
@@ -173,8 +172,23 @@ const GangID = () => {
             <div dangerouslySetInnerHTML={{ __html: qrSVG }} />
             <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{paymentData?.payment?.name}</div>
             <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{`${Math.ceil(paymentData?.total)} บาท`}</div>
-            <div>{`ค่าสนาม: ${Math.ceil(paymentData?.courtFee)}`}</div>
-            <div>{`จำนวนลูกที่ใช้: ${paymentData?.shuttlecockUsed}`}</div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div style={{ fontWeight: 'bold' }}>{`${paymentData.payer.displayName || paymentData.payer.officialName}`}</div>
+              <div></div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div>ค่าสนาม</div>
+              <div>{`${Math.ceil(paymentData?.courtFee)} บาท`}</div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div>{`ค่าลูกแบด (${paymentData?.shuttlecockUsed} ลูก)`}</div>
+              <div>{`${paymentData?.total - paymentData?.courtFee} บาท`}</div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div>{`รวม`}</div>
+              <div>{`${paymentData?.total} บาท`}</div>
+            </div>
           </div>
           :
           <Loading />
