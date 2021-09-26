@@ -11,7 +11,7 @@ const fetcher = (url, token, params) => axios.get(url, {
 }).then((res) => res.data)
 
 export const useGang = (id) => {
-  const { data, error } = useSWR(
+  const { data, error, mutate } = useSWR(
     `${API_ENDPOINT}/gang/${id}`,
     fetcher
   )
@@ -19,7 +19,8 @@ export const useGang = (id) => {
   return {
     gang: data,
     isLoading: !error && !data,
-    isError: error
+    isError: error,
+    mutate
   }
 }
 

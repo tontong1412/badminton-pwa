@@ -90,14 +90,14 @@ const MatchList = () => {
       queue: tempQueue
     }
 
-    // update the local data immediately, but disable the revalidation
-    mutate(`${API_ENDPOINT}/gang/${id}`, tempMutateGang, false)
+    // update the local data immediately
+    mutate(`${API_ENDPOINT}/gang/${id}`, tempMutateGang)
 
     axios.post(`${API_ENDPOINT}/match/manage-shuttlecock`, {
       matchID,
       action: "increment"
     }).then(() => {
-      mutate(`${API_ENDPOINT}/gang/${id}`)
+      // mutate(`${API_ENDPOINT}/gang/${id}`)
     }).catch(() => {
       Modal.error({
         title: 'ผิดพลาด',
@@ -152,7 +152,7 @@ const MatchList = () => {
                         <div className='avatar'>
                           <Image src={player.avatar || `/avatar${Math.floor(Math.random() * (6 - 1) + 1)}.png`} alt='' width={40} height={40} />
                         </div>
-                        <div className='info'>{player.displayName}</div>
+                        <div className='info'>{player.displayName || player.officialName}</div>
                       </div>
                     )
                   })}
@@ -164,7 +164,7 @@ const MatchList = () => {
                         <div className='avatar'>
                           <Image src={player.avatar || `/avatar${Math.floor(Math.random() * (6 - 1) + 1)}.png`} alt='' width={40} height={40} />
                         </div>
-                        <div className='info'>{player.displayName}</div>
+                        <div className='info'>{player.displayName || player.officialName}</div>
                       </div>
                     )
                   })}
