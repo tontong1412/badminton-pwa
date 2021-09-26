@@ -14,9 +14,11 @@ const Account = (props) => {
   useEffect(() => {
     if (!user.id) {
       router.push('/login')
+      return <div />
     }
     if (!user.playerID) {
       router.push('/claim-player')
+      return <div />
     }
   }, [])
 
