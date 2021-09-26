@@ -33,14 +33,14 @@ const MatchList = () => {
       gangID: id,
       teamA: {
         players: [
-          gang.players.find(player => player.displayName === player1 || player.displayName === player1)._id,
-          gang.players.find(player => player.displayName === player2 || player.displayName === player2)._id
+          gang.players.find(player => player.displayName === player1 || player.officialName === player1)._id,
+          gang.players.find(player => player.displayName === player2 || player.officialName === player2)._id
         ]
       },
       teamB: {
         players: [
-          gang.players.find(player => player.displayName === player3 || player.displayName === player3)._id,
-          gang.players.find(player => player.displayName === player4 || player.displayName === player4)._id
+          gang.players.find(player => player.displayName === player3 || player.officialName === player3)._id,
+          gang.players.find(player => player.displayName === player4 || player.officialName === player4)._id
         ]
       }
     }).then(() => {
@@ -48,6 +48,17 @@ const MatchList = () => {
       setIsModalVisible(false)
       setConfirmLoading(false)
     })
+      .catch(() => {
+        Modal.error({
+          title: 'ผิดพลาด',
+          content: (
+            <div>
+              <p>เกิดปัญหาขณะอัพเดทข้อมูล กรุณาลองใหม่ในภายหลัง</p>
+            </div>
+          ),
+          onOk() { },
+        })
+      })
   }
 
   const handleCancel = () => {
