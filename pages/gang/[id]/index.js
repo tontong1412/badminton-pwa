@@ -129,7 +129,7 @@ const GangID = () => {
           <div key={`player-${player._id}`} className='gang-player'>
             <div className='player-container'>
               <div className='avatar'>
-                <Image src={player.avatar || `/avatar${Math.floor(Math.random() * (6 - 1) + 1)}.png`} alt='' width={50} height={50} />
+                <Image src={player.avatar || `/avatar.png`} alt='' width={50} height={50} />
               </div>
               <div className='player-name'>{player.displayName || player.officialName}</div>
             </div>

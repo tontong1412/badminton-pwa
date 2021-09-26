@@ -157,6 +157,9 @@ const MatchList = () => {
       status
     }).then(() => {
       mutate(`${API_ENDPOINT}/gang/${id}`)
+      if (status === 'playing') {
+        addShuttlecock(matchID)
+      }
     }).catch(() => {
       Modal.error({
         title: 'ผิดพลาด',
