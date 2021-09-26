@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSWRConfig } from 'swr'
 import { Modal, AutoComplete } from 'antd'
 import axios from 'axios'
@@ -18,11 +18,16 @@ const MatchList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [options, setOptions] = useState([])
   const [confirmLoading, setConfirmLoading] = useState(false)
-  const [queue, setQueue] = useState(gang.queue)
+  const [queue, setQueue] = useState(gang?.queue)
   const [player1, setPlayer1] = useState()
   const [player2, setPlayer2] = useState()
   const [player3, setPlayer3] = useState()
   const [player4, setPlayer4] = useState()
+
+  useEffect(() => {
+    setQueue(gang.queue)
+  }, [gang])
+
 
   const showModal = () => {
     setIsModalVisible(true)
