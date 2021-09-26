@@ -9,6 +9,12 @@ import AddButton from '../../../components/addButton'
 import { useGang } from '../../../utils'
 import { API_ENDPOINT } from '../../../config'
 import Loading from '../../../components/loading'
+import { Tabs } from 'antd'
+
+const { TabPane } = Tabs
+function callback(key) {
+  console.log(key);
+}
 
 const MatchList = () => {
   const router = useRouter()
@@ -23,10 +29,40 @@ const MatchList = () => {
   const [player2, setPlayer2] = useState()
   const [player3, setPlayer3] = useState()
   const [player4, setPlayer4] = useState()
+  const [waitingList, setWaitingList] = useState()
+  const [playingList, setPlayingList] = useState()
+  const [finishedList, setFinishedList] = useState()
+  const [tabData, setTabData] = useState()
 
   useEffect(() => {
     setQueue(gang?.queue)
   }, [gang])
+
+  useEffect(() => {
+    setWaitingList(queue?.filter(match => match.status === 'waiting'))
+    setPlayingList(queue?.filter(match => match.status === 'playing'))
+    setFinishedList(queue?.filter(match => match.status === 'finished'))
+  }, [queue])
+
+  useEffect(() => {
+    setTabData([
+      {
+        key: '1',
+        label: 'รอคิว',
+        matchList: waitingList
+      },
+      {
+        key: '2',
+        label: 'กำลังตี',
+        matchList: playingList
+      },
+      {
+        key: '3',
+        label: 'ตีเสร็จแล้ว',
+        matchList: finishedList
+      },
+    ])
+  }, [waitingList, playingList, finishedList])
 
 
   const showModal = () => {
@@ -91,20 +127,13 @@ const MatchList = () => {
     const queueIndex = gang.queue.findIndex(match => match._id === matchID)
     const tempQueue = [...gang.queue]
     tempQueue[queueIndex].shuttlecockUsed = tempQueue[queueIndex].shuttlecockUsed + 1
-    // const tempMutateGang = {
-    //   ...gang,
-    //   queue: tempQueue
-    // }
-
-    // update the local data immediately
-    // mutate(`${API_ENDPOINT}/gang/${id}`, tempMutateGang)
     setQueue(tempQueue)
 
     axios.post(`${API_ENDPOINT}/match/manage-shuttlecock`, {
       matchID,
       action: "increment"
     }).then(() => {
-      // mutate(`${API_ENDPOINT}/gang/${id}`)
+      mutate(`${API_ENDPOINT}/gang/${id}`)
     }).catch(() => {
       Modal.error({
         title: 'ผิดพลาด',
@@ -142,58 +171,58 @@ const MatchList = () => {
   }
   if (isError) return "An error has occurred."
   if (isLoading) return <Loading />
-  gang.queue.sort((a, b) => {
-    if (a.status === 'finished' && (b.status === 'playing' || b.status === 'waiting')) return 1
-    else if (a.status === 'playing' && (b.status === 'finished' || b.status === 'waiting')) return -1
-    else if (a.status === 'waiting' && b.status === 'playing') return 1
-    else if (a.status === 'waiting' && b.status === 'finished') return -1
-    else return 0
-  })
+
   return (
     <div>
-      {
-        gang.queue.map((match, index) => {
-          return (
-            <div key={`match-${match._id}`} className='match-card'>
-              <div className='team-container'>
-                <div className='team'>
-                  {match.teamA.team.players.map(player => {
-                    return (
-                      <div key={`teamA-${player._id}`} className='player-container'>
-                        <div className='avatar'>
-                          <Image src={player.avatar || `/avatar.png`} alt='' width={40} height={40} />
-                        </div>
-                        <div className='info'>{player.displayName || player.officialName}</div>
+      <Tabs defaultActiveKey="1" onChange={callback}>
+        {tabData?.map(tab => (
+          <TabPane tab={tab.label} key={tab.key}>
+            {
+              tab.matchList?.map((match, index) => {
+                return (
+                  <div key={`match-${match._id}`} className='match-card'>
+                    <div className='team-container'>
+                      <div className='team'>
+                        {match.teamA.team.players.map(player => {
+                          return (
+                            <div key={`teamA-${player._id}`} className='player-container'>
+                              <div className='avatar'>
+                                <Image src={player.avatar || `/avatar.png`} alt='' width={40} height={40} />
+                              </div>
+                              <div className='info'>{player.displayName || player.officialName}</div>
+                            </div>
+                          )
+                        })}
                       </div>
-                    )
-                  })}
-                </div>
-                <div className='team'>
-                  {match.teamB.team.players.map(player => {
-                    return (
-                      <div key={`teamB-${player._id}`} className='player-container'>
-                        <div className='avatar'>
-                          <Image src={player.avatar || `/avatar.png`} alt='' width={40} height={40} />
-                        </div>
-                        <div className='info'>{player.displayName || player.officialName}</div>
+                      <div className='team'>
+                        {match.teamB.team.players.map(player => {
+                          return (
+                            <div key={`teamB-${player._id}`} className='player-container'>
+                              <div className='avatar'>
+                                <Image src={player.avatar || `/avatar.png`} alt='' width={40} height={40} />
+                              </div>
+                              <div className='info'>{player.displayName || player.officialName}</div>
+                            </div>
+                          )
+                        })}
                       </div>
-                    )
-                  })}
-                </div>
-              </div>
-              <div>
-                <div style={{ width: '50%' }}>จำนวนลูก: {queue[index]?.shuttlecockUsed}</div>
-                <div style={{ width: '50%' }}>สถานะ: {queue[index]?.status}</div>
-              </div>
-              <div className='controller-container'>
-                <div className='controller'>แก้ไข</div>
-                <div className='controller' onClick={() => addShuttlecock(match._id)}>เพิ่มลูก</div>
-                <div className='controller' onClick={() => updateStatus(match._id, match.status)}>{match.status === 'waiting' ? 'เริ่มเกม' : 'จบเกม'}</div>
-              </div>
-            </div>
-          )
-        })
-      }
+                    </div>
+                    <div>
+                      <div style={{ width: '50%' }}>จำนวนลูก: {match.shuttlecockUsed}</div>
+                      <div style={{ width: '50%' }}>สถานะ: {match.status}</div>
+                    </div>
+                    <div className='controller-container'>
+                      <div className='controller'>แก้ไข</div>
+                      <div className='controller' onClick={() => addShuttlecock(match._id)}>เพิ่มลูก</div>
+                      <div className='controller' onClick={() => updateStatus(match._id, match.status)}>{match.status === 'waiting' ? 'เริ่มเกม' : 'จบเกม'}</div>
+                    </div>
+                  </div>
+                )
+              })
+            }
+          </TabPane>
+        ))}
+      </Tabs>
       <AddButton onClick={showModal} />
       <Modal
         title="เพิ่มคิว"
