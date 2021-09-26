@@ -10,8 +10,14 @@ const Account = (props) => {
     dispatch({ type: 'LOGOUT' })
     localStorage.clear()
   }
-  if (!user.id) router.push('/login')
-  if (!user.playerID) router.push('/claim-player')
+  if (!user.id) {
+    router.push('/login')
+    return <div>Redirecting</div>
+  }
+  if (!user.playerID) {
+    router.push('/claim-player')
+    return <div>Redirecting</div>
+  }
   return (
     <div>
       <div>This is My Account page</div>
