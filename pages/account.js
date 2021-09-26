@@ -21,9 +21,7 @@ const Account = (props) => {
       router.push('/claim-player')
       return <div />
     }
-  }, [])
-
-  if (!user.id) return <Loading />
+  }, [user])
 
   return (
     <div>

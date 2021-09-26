@@ -166,7 +166,7 @@ const GangID = () => {
       }}
       confirmLoading={confirmLoading}
       destroyOnClose>
-      <div style={{ height: '450px' }}>
+      <div style={{ minHeight: '450px' }}>
         {qrSVG ?
           <div style={{ textAlign: 'center' }}>
             <div dangerouslySetInnerHTML={{ __html: qrSVG }} />
