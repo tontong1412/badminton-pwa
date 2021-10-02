@@ -2,22 +2,23 @@ import axios from 'axios'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import logo from '../public/icon/logo.png'
-import { Form, Input, Button, Checkbox } from 'antd'
+import { Form, Input, Button, Checkbox, Steps } from 'antd'
 import { useDispatch, useSelector } from 'react-redux';
 import { API_ENDPOINT } from '../config'
-import Layout from '../components/Layout/noFooter'
+import Layout from '../components/Layout'
 import { useState } from 'react'
 
-const Login = () => {
+const Signup = () => {
   const state = useSelector(state => state)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  if (state.user.id) router.push('/')
+  const [form] = Form.useForm()
+  // if (state.user.id) router.push('/')
   const dispatch = useDispatch()
 
   const onFinish = async (values) => {
     setLoading(true)
-    const { data: login } = await axios.post(`${API_ENDPOINT}/login`,
+    const { data: login } = await axios.post(`${API_ENDPOINT}/signup`,
       {
         user: {
           email: values.email,
@@ -25,26 +26,15 @@ const Login = () => {
         }
       })
 
-    let player
-    if (login.user.playerID) {
-      const res = await axios.get(`${API_ENDPOINT}/player/${login.user.playerID}`)
-      player = res.data
-    }
-
     const user = {
       id: login.user._id,
       token: login.user.token,
       email: login.user.email,
-      playerID: login.user.playerID,
-      officialName: player?.officialName,
-      club: player?.club
     }
-    localStorage.setItem('rememberMe', values.remember);
-    localStorage.setItem('token', values.remember ? login.user.token : '');
+
     dispatch({ type: 'LOGIN', payload: user })
-    dispatch({ type: 'ACTIVE_MENU', payload: 'home' })
+    router.push('/claim-player')
     setLoading(false)
-    router.push('/')
   }
 
   const onFinishFailed = (errorInfo) => {
@@ -52,14 +42,15 @@ const Login = () => {
   }
   return (
     <Form
+      form={form}
       name='basic'
       initialValues={{ remember: true }}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       autoComplete='off'
-      style={{ maxWidth: '320px', margin: 'auto', textAlign: 'center' }}
+      style={{ maxWidth: '300px', margin: 'auto', textAlign: 'center' }}
     >
-      <Image src={logo} alt='logo' />
+      {/* <Image src={logo} alt='logo' /> */}
       <Form.Item
         label='Email'
         name='email'
@@ -68,6 +59,10 @@ const Login = () => {
             required: true,
             message: 'Please input your username!',
           },
+          {
+            type: 'email',
+            message: 'Please use a valid email'
+          }
         ]}
       >
         <Input />
@@ -87,10 +82,25 @@ const Login = () => {
       </Form.Item>
 
       <Form.Item
-        name='remember'
-        valuePropName='checked'
+        label='Confirm Password'
+        name='confirmPassword'
+        dependencies={['password']}
+        rules={[
+          {
+            required: true,
+            message: 'Please input your password!',
+          },
+          {
+            validator: async () => {
+              if (form.getFieldValue('password') !== form.getFieldValue('confirmPassword')) {
+                throw new Error('Something wrong!');
+              }
+            },
+            message: 'password mismatch'
+          }
+        ]}
       >
-        <Checkbox>Remember me</Checkbox>
+        <Input.Password />
       </Form.Item>
 
       <Form.Item >
@@ -99,14 +109,15 @@ const Login = () => {
         </Button>
       </Form.Item>
     </Form>
+
   )
 }
 
-Login.getLayout = (page) => {
+Signup.getLayout = (page) => {
   return (
     <Layout>
       {page}
     </Layout>
   )
 }
-export default Login
+export default Signup

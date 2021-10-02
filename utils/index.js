@@ -4,9 +4,9 @@ import { API_ENDPOINT } from '../config'
 
 
 const fetcher = (url, token, params) => axios.get(url, {
-  headers: {
-    'Authorization': token ? `Token ${token}` : null
-  },
+  headers: token ? {
+    'Authorization': `Token ${token}`
+  } : null,
   params
 }).then((res) => res.data)
 

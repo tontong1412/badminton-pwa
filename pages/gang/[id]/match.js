@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSWRConfig } from 'swr'
 import { Modal, AutoComplete } from 'antd'
+import { useSelector } from 'react-redux'
 import axios from 'axios'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -9,12 +10,14 @@ import AddButton from '../../../components/addButton'
 import { useGang } from '../../../utils'
 import { API_ENDPOINT } from '../../../config'
 import Loading from '../../../components/loading'
-import { Tabs } from 'antd'
+import { Tabs, Menu, Dropdown } from 'antd'
 
 const { TabPane } = Tabs
 function callback(key) {
   console.log(key);
 }
+
+
 
 const MatchList = () => {
   const router = useRouter()
@@ -33,10 +36,26 @@ const MatchList = () => {
   const [playingList, setPlayingList] = useState()
   const [finishedList, setFinishedList] = useState()
   const [tabData, setTabData] = useState()
+  const [canManage, setCanManage] = useState(false)
+  const { user } = useSelector(state => state)
+  const [canAddQueue, setcanAddQueue] = useState(false)
 
   useEffect(() => {
     setQueue(gang?.queue)
-  }, [gang])
+    if (user && gang && user.playerID === gang.creator._id || gang.managers.includes(user.playerID)) {
+      setCanManage(true)
+    } else {
+      setCanManage(false)
+    }
+
+    setOptions(gang.players.map(player => {
+      return {
+        value: player.displayName || player.officialName,
+        label: renderItem(player.displayName, player.officialName)
+      }
+    }))
+
+  }, [gang, user])
 
   useEffect(() => {
     setWaitingList(queue?.filter(match => match.status === 'waiting'))
@@ -64,6 +83,44 @@ const MatchList = () => {
     ])
   }, [waitingList, playingList, finishedList])
 
+  useEffect(() => {
+    if (player1 && player2 && player3 && player4) {
+      setcanAddQueue(true)
+    } else {
+      setcanAddQueue(false)
+    }
+  }, [player1, player2, player3, player4])
+
+  const removeQueue = async (matchID) => {
+    axios.post(`${API_ENDPOINT}/gang/remove-queue`, {
+      gangID: id,
+      matchID
+    }).then(res => {
+      console.log(res.data)
+      mutate(`${API_ENDPOINT}/gang/${id}`, res.data)
+    })
+  }
+
+  const menu = (matchID) => (
+    <Menu>
+      <Menu.Item key='stat'>
+        <div>
+          ดูสถิติ
+        </div>
+      </Menu.Item>
+      <Menu.Item key='edit'>
+        <div>
+          แก้ไข
+        </div>
+      </Menu.Item>
+      <Menu.Item key='delete'>
+        <div onClick={() => removeQueue(matchID)}>
+          ลบคิวนี้
+        </div>
+      </Menu.Item>
+    </Menu>
+  );
+
 
   const showModal = () => {
     setIsModalVisible(true)
@@ -75,14 +132,14 @@ const MatchList = () => {
       gangID: id,
       teamA: {
         players: [
-          gang.players.find(player => player.displayName === player1 || player.officialName === player1)._id,
-          gang.players.find(player => player.displayName === player2 || player.officialName === player2)._id
+          gang.players.find(player => player.officialName === player1 || player.displayName === player1)?._id,
+          gang.players.find(player => player.officialName === player2 || player.displayName === player2)?._id
         ]
       },
       teamB: {
         players: [
-          gang.players.find(player => player.displayName === player3 || player.officialName === player3)._id,
-          gang.players.find(player => player.displayName === player4 || player.officialName === player4)._id
+          gang.players.find(player => player.officialName === player3 || player.displayName === player3)?._id,
+          gang.players.find(player => player.officialName === player4 || player.displayName === player4)?._id
         ]
       }
     }).then(() => {
@@ -115,12 +172,40 @@ const MatchList = () => {
       || player.officialName?.toLowerCase().includes(searchTextLower)
     ).map(player => {
       return {
-        value: player.displayName || player.officialName
+        value: player.displayName || player.officialName,
+        label: renderItem(player.displayName, player.officialName)
       }
     })
     setOptions(
       !searchText ? [] : searchOptions,
     )
+  }
+
+  const renderItem = (displayName, officialName) => (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+      }}>
+      <div>
+        {displayName || officialName}
+      </div>
+      {displayName ? <div style={{ color: '#bbb' }}>{officialName}</div> : null}
+    </div>
+  );
+
+  const onBlur = (value) => {
+    if (value && !gang.players.find(player => player.officialName === value || player.displayName === value)) {
+      Modal.error({
+        title: 'ผู้เล่นไม่ได้ลงทะเบียน',
+        content: (
+          <div>
+            <p>กรุณาเลือกจากผู้เล่นที่ลงทะเบียนไว้แล้ว</p>
+          </div>
+        ),
+        onOk() { },
+      })
+    }
   }
 
   const addShuttlecock = (matchID) => {
@@ -210,14 +295,14 @@ const MatchList = () => {
                         })}
                       </div>
                     </div>
-                    <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <div style={{ width: '50%' }}>จำนวนลูก: {match.shuttlecockUsed}</div>
-                      <div style={{ width: '50%' }}>สถานะ: {match.status}</div>
                     </div>
                     <div className='controller-container'>
-                      <div className='controller'>แก้ไข</div>
-                      <div className='controller' onClick={() => addShuttlecock(match._id)}>เพิ่มลูก</div>
-                      <div className='controller' onClick={() => updateStatus(match._id, match.status)}>{match.status === 'waiting' ? 'เริ่มเกม' : 'จบเกม'}</div>
+                      {!canManage && <div className='controller'>ดูสถิติ</div>}
+                      {canManage && <Dropdown overlay={menu(match._id)} placement="topLeft" trigger={['click']}><div className='controller'>เพิ่มเติม</div></Dropdown>}
+                      {canManage && <div className='controller' onClick={() => addShuttlecock(match._id)}>เพิ่มลูก</div>}
+                      {canManage && <div className='controller' onClick={() => updateStatus(match._id, match.status)}>{match.status === 'waiting' ? 'เริ่มเกม' : 'จบเกม'}</div>}
                     </div>
                   </div>
                 )
@@ -233,6 +318,7 @@ const MatchList = () => {
         onOk={handleOk}
         onCancel={handleCancel}
         confirmLoading={confirmLoading}
+        okButtonProps={{ disabled: !canAddQueue }}
         destroyOnClose>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
           <div>ผู้เล่น</div>
@@ -246,6 +332,7 @@ const MatchList = () => {
             onSearch={onSearch}
             onChange={data => setPlayer1(data)}
             placeholder="ชื่อผู้เล่น"
+            onBlur={() => onBlur(player1)}
           />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>

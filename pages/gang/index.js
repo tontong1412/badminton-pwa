@@ -15,7 +15,7 @@ const Gang = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const { user } = useSelector(state => state)
-  const { gangs, isLoading, isError } = useGangs(user.token, { creator: user.playerID })
+  const { gangs, isLoading, isError } = useGangs(user.token)
   const formatPromptpay = (input) => {
     if (input.length === 10) {
       const formattedCode = input.slice(0, 3) + '-' + input.slice(3, 6) + '-' + input.slice(6)

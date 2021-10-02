@@ -15,8 +15,6 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case HYDRATE:
       return { ...state, ...action.payload }
-    case 'TICK':
-      return { ...state, tick: action.payload }
     case 'LOGIN':
       return { ...state, user: { ...action.payload } }
     case 'LOGOUT':

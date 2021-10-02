@@ -2,7 +2,8 @@ import axios from 'axios'
 import generatePayload from 'promptpay-qr'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { mutate } from 'swr'
 import { Modal, AutoComplete } from 'antd'
 import { LogoutOutlined } from '@ant-design/icons'
@@ -16,6 +17,7 @@ import Loading from '../../../components/loading'
 const GangID = () => {
   const router = useRouter()
   const { id } = router.query
+  const { user } = useSelector(state => state)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
@@ -26,6 +28,15 @@ const GangID = () => {
   const [qrSVG, setQrSVG] = useState()
   const [paymentData, setPaymentData] = useState()
   const playerEndRef = useRef(null)
+  const [isManager, setIsManager] = useState(false)
+
+  useEffect(() => {
+    if (user && gang && (user.playerID === gang.creator._id || gang.managers.includes(user.playerID))) {
+      setIsManager(true)
+    } else {
+      setIsManager(false)
+    }
+  }, [user, gang])
 
   const scrollToBottom = () => {
     playerEndRef.current?.scrollIntoView({
@@ -119,8 +130,8 @@ const GangID = () => {
   return <>
     <div style={{ fontSize: '20px' }}>{gang.name} </div>
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div></div>
       <div>ผู้เล่นทั้งหมด: {gang.players.length} คน</div>
-      <div>เพิ่มผู้เล่น</div>
     </div>
     {
       gang.players.map(player => {
@@ -132,12 +143,12 @@ const GangID = () => {
               </div>
               <div className='player-name'>{player.displayName || player.officialName}</div>
             </div>
-            <div onClick={() => getBill(player._id)}><LogoutOutlined style={{ fontSize: '30px' }} /></div>
+            {(isManager || user.playerID === player._id) && <div onClick={() => getBill(player._id)}>จ่ายเงิน</div>}
           </div>
         )
       })
     }
-    <AddButton onClick={showModal} />
+    {isManager && <AddButton onClick={showModal} />}
     <Modal
       title="เพิ่มผู้เล่น"
       visible={isModalVisible}

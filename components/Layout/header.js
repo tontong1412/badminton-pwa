@@ -47,7 +47,7 @@ const Header = (props) => {
   return (
     <>
       <Head>
-        <title>Bad Bay | Badminton Data Center</title>
+        <title>Bojo | Badminton Data Center</title>
         <meta name="description" content={props.description} />
       </Head>
       <div className='header'>
@@ -58,7 +58,7 @@ const Header = (props) => {
           :
           null}
         </div>
-        <div>badbay</div>
+        <div>bojo</div>
         <div>{props.rightIcon ? props.rightIcon : null}</div>
       </div>
     </>
