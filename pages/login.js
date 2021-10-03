@@ -87,7 +87,7 @@ const Login = () => {
         <Input.Password />
       </Form.Item>
 
-      <Link href="/signup" passHref><div>Don't have an account? <span style={{ color: '#4F708A' }}>Sign up now!</span></div></Link>
+      <Link href="/signup" passHref><div>{'Don\'t have an account?'}<span style={{ color: '#4F708A' }}>{'Sign up now!'}</span></div></Link>
 
       <Form.Item
         name='remember'
