@@ -358,12 +358,12 @@ const MatchList = () => {
                       <div style={{ width: '50%' }}>จำนวนลูก: {match.shuttlecockUsed}</div>
                     </div>
                     <div className='controller-container'>
-                      {!canManage && <div className='controller'>ดูสถิติ</div>}
+                      {!canManage && match.status !== 'finished' && <div style={{ color: '#ccc' }} className='controller'>สถิติ</div>}
                       {canManage && match.status !== 'finished' && <Dropdown overlay={menu(match)} placement="topLeft" trigger={['click']}><div className='controller'>เพิ่มเติม</div></Dropdown>}
                       {canManage && match.status === 'playing' && <div className='controller' onClick={() => addShuttlecock(match._id)}>เพิ่มลูก</div>}
                       {canManage && match.status !== 'finished' && <div className='controller' onClick={() => updateStatus(match._id, match.status)}>{match.status === 'waiting' ? 'เริ่มเกม' : 'จบเกม'}</div>}
                       {match.status === 'finished' && <div style={{ color: '#ccc' }} className='controller'>สถิติ</div>}
-                      {match.status === 'finished' && <div className='controller' onClick={() => {
+                      {user.id && match.status === 'finished' && <div className='controller' onClick={() => {
                         setSetScoreModal(true)
                         setMatch(match)
                       }}>บันทึกผล
