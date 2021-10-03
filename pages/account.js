@@ -16,19 +16,12 @@ const Account = () => {
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.ACCOUNT })
   }, [])
-  useEffect(() => {
-    if (!user.id) {
-      router.push('/login')
-      return <div />
-    }
-    if (!user.playerID) {
-      router.push('/claim-player')
-      return <div />
-    }
-  }, [user])
 
   if (!user.id) {
-    return <div>Please login</div>
+    return <div onClick={() => router.push('/login')}>Please login <span style={{ color: '#4F708A' }}>Click here</span></div>
+  }
+  if (!user.playerID) {
+    return <div onClick={() => router.push('/claim-player')}>Please create profile <span style={{ color: '#4F708A' }}>Click here</span></div>
   }
 
   return (

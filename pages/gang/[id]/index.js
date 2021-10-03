@@ -23,6 +23,7 @@ const GangID = () => {
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [value, setValue] = useState('')
+  const [playerID, setPlayerID] = useState()
   const [options, setOptions] = useState([])
   const { gang, isLoading, isError } = useGang(id)
   const { players } = usePlayers()
@@ -56,11 +57,11 @@ const GangID = () => {
 
   const handleOk = () => {
     setConfirmLoading(true)
-    let player = players.find(player => player.displayName === value || player.officialName === value)
-    if (!player) {
-      player = {
-        displayName: value
-      }
+    let player
+    if (playerID) {
+      player = { _id: playerID }
+    } else {
+      player = { displayName: value }
     }
     axios.post(`${API_ENDPOINT}/gang/register`, {
       gangID: id,
@@ -105,12 +106,14 @@ const GangID = () => {
     )
   }
 
-  const onSelect = (data) => {
+  const onSelect = (data, options) => {
     setValue(data)
+    setPlayerID(options.key)
   }
 
   const onChange = (data) => {
-    setValue(data);
+    setValue(data)
+    setPlayerID()
   }
 
   const getBill = async (playerID) => {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSWRConfig } from 'swr'
-import { Modal, AutoComplete } from 'antd'
+import { Modal, AutoComplete, Input } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
 import Image from 'next/image'
@@ -40,6 +40,13 @@ const MatchList = () => {
   const [canManage, setCanManage] = useState(false)
   const { user } = useSelector(state => state)
   const [canAddQueue, setcanAddQueue] = useState(false)
+  const [actionMode, setActionMode] = useState()
+  const [selectedMatch, setMatch] = useState()
+  const [setScoreModal, setSetScoreModal] = useState(false)
+  const [scoreSet1, setScoreSet1] = useState()
+  const [scoreSet2, setScoreSet2] = useState()
+  const [scoreSet3, setScoreSet3] = useState()
+
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -48,13 +55,13 @@ const MatchList = () => {
 
   useEffect(() => {
     setQueue(gang?.queue)
-    if (user && gang && user.playerID === gang.creator._id || gang.managers.includes(user.playerID)) {
+    if (user && gang && (user.playerID === gang.creator._id || gang.managers.includes(user.playerID))) {
       setCanManage(true)
     } else {
       setCanManage(false)
     }
 
-    setOptions(gang.players.map(player => {
+    setOptions(gang?.players.map(player => {
       return {
         value: player.displayName || player.officialName,
         label: renderItem(player.displayName, player.officialName)
@@ -107,20 +114,28 @@ const MatchList = () => {
     })
   }
 
-  const menu = (matchID) => (
+  const menu = (match) => (
     <Menu>
-      <Menu.Item key='stat'>
+      <Menu.Item key='stat' disabled>
         <div>
           ดูสถิติ
         </div>
       </Menu.Item>
       <Menu.Item key='edit'>
-        <div>
+        <div onClick={() => {
+          setActionMode('update')
+          showModal()
+          setMatch(match)
+          setPlayer1(match.teamA.team.players[0])
+          setPlayer2(match.teamA.team.players[1])
+          setPlayer3(match.teamB.team.players[0])
+          setPlayer4(match.teamB.team.players[1])
+        }}>
           แก้ไข
         </div>
       </Menu.Item>
       <Menu.Item key='delete'>
-        <div onClick={() => removeQueue(matchID)}>
+        <div onClick={() => removeQueue(match._id)}>
           ลบคิวนี้
         </div>
       </Menu.Item>
@@ -134,8 +149,10 @@ const MatchList = () => {
 
   const handleOk = () => {
     setConfirmLoading(true)
-    axios.post(`${API_ENDPOINT}/gang/add-queue`, {
+    const endpoint = actionMode === 'create' ? `${API_ENDPOINT}/gang/add-queue` : `${API_ENDPOINT}/gang/update-queue`
+    axios.post(endpoint, {
       gangID: id,
+      matchID: selectedMatch?._id,
       teamA: {
         players: [
           gang.players.find(player => player.officialName === player1 || player.displayName === player1)?._id,
@@ -154,6 +171,7 @@ const MatchList = () => {
       setConfirmLoading(false)
     })
       .catch(() => {
+        setConfirmLoading(false)
         Modal.error({
           title: 'ผิดพลาด',
           content: (
@@ -169,6 +187,10 @@ const MatchList = () => {
   const handleCancel = () => {
     setIsModalVisible(false)
     setConfirmLoading(false)
+    setPlayer1()
+    setPlayer2()
+    setPlayer3()
+    setPlayer4()
   }
 
   const onSearch = (searchText) => {
@@ -185,6 +207,31 @@ const MatchList = () => {
     setOptions(
       !searchText ? [] : searchOptions,
     )
+  }
+
+  const onSetScore = () => {
+    setConfirmLoading(true)
+    const score = [scoreSet1, scoreSet2]
+    if (scoreSet3) score.push(scoreSet3)
+    axios.post(`${API_ENDPOINT}/match/set-score`, {
+      matchID: selectedMatch._id,
+      score
+    }).then(() => {
+      setSetScoreModal(false)
+      setConfirmLoading(false)
+      mutate(`${API_ENDPOINT}/gang/${id}`)
+    }).catch(() => {
+      setConfirmLoading(false)
+      Modal.error({
+        title: 'ผิดพลาด',
+        content: (
+          <div>
+            <p>เกิดปัญหาขณะอัพเดทข้อมูล กรุณาลองใหม่ในภายหลัง</p>
+          </div>
+        ),
+        onOk() { },
+      })
+    })
   }
 
   const renderItem = (displayName, officialName) => (
@@ -272,7 +319,7 @@ const MatchList = () => {
         {tabData?.map(tab => (
           <TabPane tab={tab.label} key={tab.key}>
             {
-              tab.matchList?.map((match, index) => {
+              tab.matchList?.map((match) => {
                 return (
                   <div key={`match-${match._id}`} className='match-card'>
                     <div className='team-container'>
@@ -281,21 +328,27 @@ const MatchList = () => {
                           return (
                             <div key={`teamA-${player._id}`} className='player-container'>
                               <div className='avatar'>
-                                <Image src={player.avatar || `/avatar.png`} alt='' width={40} height={40} />
+                                <Image src={player.avatar || `/avatar.png`} alt='' width={35} height={35} />
                               </div>
                               <div className='info'>{player.displayName || player.officialName}</div>
                             </div>
                           )
                         })}
                       </div>
+                      <div style={{ width: '15%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+                        {match.scoreLabel?.map((set, index) => <div key={`score-${index}`}>{set}</div>)}
+                      </div>
                       <div className='team'>
                         {match.teamB.team.players.map(player => {
                           return (
-                            <div key={`teamB-${player._id}`} className='player-container'>
+                            <div key={`teamB-${player._id}`}
+                              className='player-container'
+                              style={{ flexDirection: 'row-reverse' }}
+                            >
                               <div className='avatar'>
-                                <Image src={player.avatar || `/avatar.png`} alt='' width={40} height={40} />
+                                <Image src={player.avatar || `/avatar.png`} alt='' width={35} height={35} />
                               </div>
-                              <div className='info'>{player.displayName || player.officialName}</div>
+                              <div className='info' style={{ marginRight: '5px', marginLeft: 0, textAlign: 'right' }}>{player.displayName || player.officialName}</div>
                             </div>
                           )
                         })}
@@ -306,9 +359,15 @@ const MatchList = () => {
                     </div>
                     <div className='controller-container'>
                       {!canManage && <div className='controller'>ดูสถิติ</div>}
-                      {canManage && <Dropdown overlay={menu(match._id)} placement="topLeft" trigger={['click']}><div className='controller'>เพิ่มเติม</div></Dropdown>}
-                      {canManage && <div className='controller' onClick={() => addShuttlecock(match._id)}>เพิ่มลูก</div>}
-                      {canManage && <div className='controller' onClick={() => updateStatus(match._id, match.status)}>{match.status === 'waiting' ? 'เริ่มเกม' : 'จบเกม'}</div>}
+                      {canManage && match.status !== 'finished' && <Dropdown overlay={menu(match)} placement="topLeft" trigger={['click']}><div className='controller'>เพิ่มเติม</div></Dropdown>}
+                      {canManage && match.status === 'playing' && <div className='controller' onClick={() => addShuttlecock(match._id)}>เพิ่มลูก</div>}
+                      {canManage && match.status !== 'finished' && <div className='controller' onClick={() => updateStatus(match._id, match.status)}>{match.status === 'waiting' ? 'เริ่มเกม' : 'จบเกม'}</div>}
+                      {match.status === 'finished' && <div style={{ color: '#ccc' }} className='controller'>สถิติ</div>}
+                      {match.status === 'finished' && <div className='controller' onClick={() => {
+                        setSetScoreModal(true)
+                        setMatch(match)
+                      }}>บันทึกผล
+                      </div>}
                     </div>
                   </div>
                 )
@@ -317,7 +376,10 @@ const MatchList = () => {
           </TabPane>
         ))}
       </Tabs>
-      <AddButton onClick={showModal} />
+      <AddButton onClick={() => {
+        setActionMode('create')
+        showModal()
+      }} />
       <Modal
         title="เพิ่มคิว"
         visible={isModalVisible}
@@ -339,6 +401,7 @@ const MatchList = () => {
             onChange={data => setPlayer1(data)}
             placeholder="ชื่อผู้เล่น"
             onBlur={() => onBlur(player1)}
+            defaultValue={player1?.displayName || player1?.officialName}
           />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
@@ -353,6 +416,7 @@ const MatchList = () => {
             onSearch={onSearch}
             onChange={data => setPlayer2(data)}
             placeholder="ชื่อผู้เล่น"
+            defaultValue={player2?.displayName || player2?.officialName}
           />
         </div>
         <div style={{ width: '100%', textAlign: 'center', marginBottom: '10px' }}>vs</div>
@@ -368,6 +432,7 @@ const MatchList = () => {
             onSearch={onSearch}
             onChange={data => setPlayer3(data)}
             placeholder="ชื่อผู้เล่น"
+            defaultValue={player3?.displayName || player3?.officialName}
           />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
@@ -382,7 +447,29 @@ const MatchList = () => {
             onSearch={onSearch}
             onChange={data => setPlayer4(data)}
             placeholder="ชื่อผู้เล่น"
+            defaultValue={player4?.displayName || player4?.officialName}
           />
+        </div>
+      </Modal>
+      <Modal
+        title="บันทึกผล"
+        visible={setScoreModal}
+        onOk={onSetScore}
+        onCancel={() => setSetScoreModal(false)}
+        confirmLoading={confirmLoading}
+        destroyOnClose>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ textAlign: 'right' }}>
+            {selectedMatch?.teamA.team.players.map(player => <div key={player._id}>{player.displayName || player.officialName}</div>)}
+          </div>
+          <div style={{ width: '30%' }}>
+            <Input onChange={(e) => setScoreSet1(e.target.value)} style={{ marginBottom: '5px' }} />
+            <Input onChange={(e) => setScoreSet2(e.target.value)} style={{ marginBottom: '5px' }} />
+            <Input onChange={(e) => setScoreSet3(e.target.value)} style={{ marginBottom: '5px' }} />
+          </div>
+          <div >
+            {selectedMatch?.teamB.team.players.map(player => <div key={player._id}>{player.displayName || player.officialName}</div>)}
+          </div>
         </div>
       </Modal>
     </div >
