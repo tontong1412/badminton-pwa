@@ -1,11 +1,8 @@
 import Link from 'next/link'
 import { useSelector } from 'react-redux'
-import { useDispatch } from 'react-redux'
-
 
 const Footer = ({ tabOption }) => {
   const { activeMenu } = useSelector(state => state)
-  const dispatch = useDispatch()
   return (
     <div className='footer'>
       {tabOption.map(tab => {
@@ -13,7 +10,6 @@ const Footer = ({ tabOption }) => {
           <Link passHref href={tab.href} key={`tab-${tab.name}`}>
             <div
               className='footer-tab'
-              onClick={() => dispatch({ type: 'ACTIVE_MENU', payload: tab.alias })}
             >
               {tab.icon}
               <div

@@ -1,10 +1,11 @@
-import Layout from '../components/Layout'
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 import { Button } from 'antd'
-import Loading from '../components/loading'
-const Account = (props) => {
+import Layout from '../components/Layout'
+import { TAB_OPTIONS } from '../constant'
+
+const Account = () => {
   const { user } = useSelector(state => state)
   const dispatch = useDispatch()
   const router = useRouter()
@@ -12,6 +13,9 @@ const Account = (props) => {
     dispatch({ type: 'LOGOUT' })
     localStorage.clear()
   }
+  useEffect(() => {
+    dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.ACCOUNT })
+  }, [])
   useEffect(() => {
     if (!user.id) {
       router.push('/login')
@@ -22,6 +26,10 @@ const Account = (props) => {
       return <div />
     }
   }, [user])
+
+  if (!user.id) {
+    return <div>Please login</div>
+  }
 
   return (
     <div>

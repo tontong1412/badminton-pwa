@@ -3,7 +3,7 @@ import generatePayload from 'promptpay-qr'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState, useRef, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { mutate } from 'swr'
 import { Modal, AutoComplete } from 'antd'
 import { LogoutOutlined } from '@ant-design/icons'
@@ -13,6 +13,7 @@ import AddButton from '../../../components/addButton'
 import { useGang, usePlayers } from '../../../utils'
 import qrcode from 'qrcode'
 import Loading from '../../../components/loading'
+import { TAB_OPTIONS } from '../../../constant'
 
 const GangID = () => {
   const router = useRouter()
@@ -29,6 +30,11 @@ const GangID = () => {
   const [paymentData, setPaymentData] = useState()
   const playerEndRef = useRef(null)
   const [isManager, setIsManager] = useState(false)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.GANG.PLAYERS })
+  }, [])
 
   useEffect(() => {
     if (user && gang && (user.playerID === gang.creator._id || gang.managers.includes(user.playerID))) {

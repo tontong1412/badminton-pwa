@@ -5,7 +5,7 @@ import logo from '../public/icon/logo.png'
 import { Form, Input, Button, Checkbox, Steps } from 'antd'
 import { useDispatch, useSelector } from 'react-redux';
 import { API_ENDPOINT } from '../config'
-import Layout from '../components/Layout'
+import Layout from '../components/Layout/noFooter'
 import { useState } from 'react'
 
 const Signup = () => {
@@ -13,7 +13,6 @@ const Signup = () => {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const [form] = Form.useForm()
-  // if (state.user.id) router.push('/')
   const dispatch = useDispatch()
 
   const onFinish = async (values) => {

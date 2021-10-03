@@ -47,18 +47,18 @@ const Header = (props) => {
   return (
     <>
       <Head>
-        <title>Bojo | Badminton Data Center</title>
+        <title>Shuttle Dojo | Badminton Data Center</title>
         <meta name="description" content={props.description} />
       </Head>
       <div className='header'>
         <div>{props.back?.href ?
           <Link passHref href={props.back.href}>
-            <LeftOutlined onClick={() => dispatch({ type: 'ACTIVE_MENU', payload: props.back.alias })} />
+            <LeftOutlined />
           </Link>
           :
           null}
         </div>
-        <div>bojo</div>
+        <Link passHref href='/'><div>shuttle dojo</div></Link>
         <div>{props.rightIcon ? props.rightIcon : null}</div>
       </div>
     </>

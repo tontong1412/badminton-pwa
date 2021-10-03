@@ -1,7 +1,7 @@
 import axios from 'axios'
 import Layout from '../../components/Layout'
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { mutate } from 'swr'
 
 import { API_ENDPOINT } from '../../config'
@@ -16,6 +16,11 @@ const Gang = () => {
   const [confirmLoading, setConfirmLoading] = useState(false)
   const { user } = useSelector(state => state)
   const { gangs, isLoading, isError } = useGangs(user.token)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch({ type: 'ACTIVE_MENU', payload: 'gang' })
+  }, [])
   const formatPromptpay = (input) => {
     if (input.length === 10) {
       const formattedCode = input.slice(0, 3) + '-' + input.slice(3, 6) + '-' + input.slice(6)

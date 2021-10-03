@@ -26,12 +26,12 @@ const AppLayout = (props) => {
           href: '/gang',
           alias: 'gang'
         },
-        {
-          name: 'แจ้งเตือน',
-          icon: <BellOutlined style={{ fontSize: '24px', color: activeMenu === 'noti' ? '#DAA228' : null }} />,
-          href: '/noti',
-          alias: 'noti'
-        },
+        // {
+        //   name: 'แจ้งเตือน',
+        //   icon: <BellOutlined style={{ fontSize: '24px', color: activeMenu === 'noti' ? '#DAA228' : null }} />,
+        //   href: '/noti',
+        //   alias: 'noti'
+        // },
         {
           name: 'บัญชีของฉัน',
           icon: <UserOutlined style={{ fontSize: '24px', color: activeMenu === 'account' ? '#DAA228' : null }} />,

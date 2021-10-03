@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSWRConfig } from 'swr'
 import { Modal, AutoComplete } from 'antd'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -11,6 +11,7 @@ import { useGang } from '../../../utils'
 import { API_ENDPOINT } from '../../../config'
 import Loading from '../../../components/loading'
 import { Tabs, Menu, Dropdown } from 'antd'
+import { TAB_OPTIONS } from '../../../constant'
 
 const { TabPane } = Tabs
 function callback(key) {
@@ -39,6 +40,11 @@ const MatchList = () => {
   const [canManage, setCanManage] = useState(false)
   const { user } = useSelector(state => state)
   const [canAddQueue, setcanAddQueue] = useState(false)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.GANG.QUEUE })
+  }, [])
 
   useEffect(() => {
     setQueue(gang?.queue)

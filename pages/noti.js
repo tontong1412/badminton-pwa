@@ -1,5 +1,12 @@
 import Layout from '../components/Layout'
-const Noti = (props) => {
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { TAB_OPTIONS } from '../constant'
+const Noti = () => {
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.NOTI })
+  }, [])
   return (
     <div>
       This is Noti page
