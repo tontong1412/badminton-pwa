@@ -2,6 +2,7 @@ import Footer from './footer'
 import Header from './header'
 import { useSelector } from 'react-redux'
 import { UserOutlined, BellOutlined, HomeOutlined, TeamOutlined } from '@ant-design/icons'
+import { COLOR } from '../../constant'
 
 const AppLayout = (props) => {
   const { activeMenu } = useSelector(state => state)
@@ -16,13 +17,13 @@ const AppLayout = (props) => {
       <Footer tabOption={[
         {
           name: 'หน้าแรก',
-          icon: <HomeOutlined style={{ fontSize: '24px', color: activeMenu === 'home' ? '#DAA228' : null }} />,
+          icon: <HomeOutlined style={{ fontSize: '24px', color: activeMenu === 'home' ? COLOR.MINOR_THEME : null }} />,
           href: '/',
           alias: 'home'
         },
         {
           name: 'ก๊วน',
-          icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === 'gang' ? '#DAA228' : null }} />,
+          icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === 'gang' ? COLOR.MINOR_THEME : null }} />,
           href: '/gang',
           alias: 'gang'
         },
@@ -34,7 +35,7 @@ const AppLayout = (props) => {
         // },
         {
           name: 'บัญชีของฉัน',
-          icon: <UserOutlined style={{ fontSize: '24px', color: activeMenu === 'account' ? '#DAA228' : null }} />,
+          icon: <UserOutlined style={{ fontSize: '24px', color: activeMenu === 'account' ? COLOR.MINOR_THEME : null }} />,
           href: '/account',
           alias: 'account'
         }

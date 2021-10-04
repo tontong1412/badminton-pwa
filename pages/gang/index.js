@@ -29,7 +29,7 @@ const Gang = () => {
       const formattedCode = input.slice(0, 1) + '-' + input.slice(1, 5) + '-' + input.slice(5, 10) + '-' + input.slice(10, 12) + '-' + input.slice(12)
       return formattedCode
     } else {
-      return null
+      return input
     }
   }
   const onFinish = (values) => {
@@ -73,7 +73,7 @@ const Gang = () => {
   if (isLoading) return <Loading />
   return (
     <div>
-      <div>ก๊วนของฉัน</div>
+      {/* <div>ก๊วนของฉัน</div> */}
       <div style={{
         width: '100%',
         overflow: 'scroll',

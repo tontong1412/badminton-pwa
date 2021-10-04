@@ -22,7 +22,7 @@ const GangID = () => {
 
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.GANG.SETTING })
-    const payload = `${WEB_URL}/gang/${id}`
+    const payload = `${WEB_URL}/gang/${id}/register`
     qrcode.toString(payload, (err, svg) => {
       if (err) return console.log(err)
       setQrSVG(svg)
@@ -40,7 +40,7 @@ const GangID = () => {
           <div dangerouslySetInnerHTML={{ __html: qrSVG }} />
           <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{gang.name}</div>
           <div><Button style={{ width: '200px', marginBottom: '10px' }}>สถิติ</Button></div>
-          <div><Button type='primary' style={{ width: '200px', marginBottom: '50px' }}>สรุปยอด</Button></div>
+          <div><Button type='primary' style={{ width: '200px', marginBottom: '50px' }}>Reset</Button></div>
           <div><Button type='danger' style={{ width: '200px', marginBottom: '10px' }}>ลบก๊วน</Button></div>
         </div>
         :

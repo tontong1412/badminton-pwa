@@ -1,4 +1,5 @@
 import GANG from './gang'
+import COLOR from './color'
 
 const TAB_OPTIONS = {
   HOME: 'home',
@@ -13,5 +14,6 @@ const TAB_OPTIONS = {
 }
 export {
   GANG,
-  TAB_OPTIONS
+  TAB_OPTIONS,
+  COLOR
 }

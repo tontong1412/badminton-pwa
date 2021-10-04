@@ -25,7 +25,7 @@ const Card = ({ gang }) => {
       }}>
         <div className='gang-img'>
           <Image
-            src='/splash/launch-640x1136.png'
+            src='/icon/logo.png'
             alt=''
             width={150}
             height={120}

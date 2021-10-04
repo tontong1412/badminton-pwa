@@ -124,8 +124,9 @@ const GangID = () => {
         gangID: id
       }
     })
-    const mobileNumber = res.data.payment?.code || '092-901-0011'
-    const payload = generatePayload(mobileNumber, { amount: res.data.total })
+    const paymentCode = res.data.payment?.code
+    const payload = paymentCode.length > 20 ? paymentCode : generatePayload(paymentCode, { amount: res.data.total })
+
     setPaymentData(res.data)
     qrcode.toString(payload, (err, svg) => {
       if (err) return console.log(err)
@@ -150,7 +151,7 @@ const GangID = () => {
               <div className='avatar'>
                 <Image src={player.avatar || `/avatar.png`} alt='' width={50} height={50} />
               </div>
-              <div className='player-name'>{player.displayName || player.officialName}</div>
+              <div className='player-name'>{player.displayName || player.officialName}<span style={{ color: '#ccc', marginLeft: '10px' }}>{`${player.displayName ? player.officialName : ''}`}</span></div>
             </div>
             {(isManager || user.playerID === player._id) && <div onClick={() => getBill(player._id)}>จ่ายเงิน</div>}
           </div>

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { useSelector } from 'react-redux'
+import { COLOR } from '../../constant'
 
 const Footer = ({ tabOption }) => {
   const { activeMenu } = useSelector(state => state)
@@ -16,7 +17,7 @@ const Footer = ({ tabOption }) => {
                 style={{
                   fontSize: '12px',
                   paddingTop: '5px',
-                  color: activeMenu === tab.alias ? '#DAA228' : null
+                  color: activeMenu === tab.alias ? COLOR.MINOR_THEME : null
                 }}>
                 {tab.name}
               </div>

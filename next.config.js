@@ -22,7 +22,7 @@ const plugins = [
   withAntdLess({
     // optional
     modifyVars: {
-      '@primary-color': '#4F708A',
+      '@primary-color': '#80644f',
       '@font-family': "IBM Plex Sans Thai, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans- serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"
     },
     // optional

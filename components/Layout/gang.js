@@ -3,6 +3,7 @@ import Footer from './footer'
 import Header from './header'
 import { UnorderedListOutlined, TeamOutlined, SettingOutlined } from '@ant-design/icons'
 import { useSelector } from 'react-redux'
+import { COLOR } from '../../constant'
 
 const GangLayout = (props) => {
   const router = useRouter()
@@ -11,13 +12,13 @@ const GangLayout = (props) => {
   const tabOption = [
     {
       name: 'รายชื่อ',
-      icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === 'players' ? '#DAA228' : null }} />,
+      icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === 'players' ? COLOR.MINOR_THEME : null }} />,
       href: `/gang/${id}`,
       alias: 'players'
     },
     {
       name: 'คิว',
-      icon: <UnorderedListOutlined style={{ fontSize: '24px', color: activeMenu === 'queue' ? '#DAA228' : null }} />,
+      icon: <UnorderedListOutlined style={{ fontSize: '24px', color: activeMenu === 'queue' ? COLOR.MINOR_THEME : null }} />,
       href: `/gang/${id}/match`,
       alias: 'queue'
     }
@@ -25,7 +26,7 @@ const GangLayout = (props) => {
   if (user.playerID === gang?.creator?._id) {
     tabOption.push({
       name: 'จัดการก๊วน',
-      icon: <SettingOutlined style={{ fontSize: '24px', color: activeMenu === 'setting' ? '#DAA228' : null }} />,
+      icon: <SettingOutlined style={{ fontSize: '24px', color: activeMenu === 'setting' ? COLOR.MINOR_THEME : null }} />,
       href: `/gang/${id}/manage`,
       alias: 'setting'
     })
