@@ -16,33 +16,39 @@ const Header = (props) => {
       const rememberMe = localStorage.getItem('rememberMe') === 'true'
       const token = rememberMe ? localStorage.getItem('token') : ''
       if (rememberMe && token) {
-        const { data: login } = await axios.get(`${API_ENDPOINT}/user/current`, {
-          headers: {
-            'Authorization': `Token ${token}`
+        try {
+          const { data: login } = await axios.get(`${API_ENDPOINT}/user/current`, {
+            headers: {
+              'Authorization': `Token ${token}`
+            }
+          })
+
+          let player
+          if (login.user.playerID) {
+            const res = await axios.get(`${API_ENDPOINT}/player/${login.user.playerID}`)
+            player = res.data
           }
-        })
 
-        let player
-        if (login.user.playerID) {
-          const res = await axios.get(`${API_ENDPOINT}/player/${login.user.playerID}`)
-          player = res.data
+          const userObj = {
+            id: login.user._id,
+            token: login.user.token,
+            email: login.user.email,
+            playerID: login.user.playerID,
+            officialName: player?.officialName,
+            club: player?.club
+          }
+          localStorage.setItem('rememberMe', true);
+          localStorage.setItem('token', login.user.token);
+          dispatch({ type: 'LOGIN', payload: userObj })
+        } catch (error) {
+          dispatch({ type: 'LOGOUT' })
+          localStorage.clear()
         }
 
-        const user = {
-          id: login.user._id,
-          token: login.user.token,
-          email: login.user.email,
-          playerID: login.user.playerID,
-          officialName: player?.officialName,
-          club: player?.club
-        }
-        localStorage.setItem('rememberMe', true);
-        localStorage.setItem('token', login.user.token);
-        dispatch({ type: 'LOGIN', payload: user })
       }
     }
     if (!user.id) login()
-  }, [user, dispatch])
+  }, [user])
 
   return (
     <>

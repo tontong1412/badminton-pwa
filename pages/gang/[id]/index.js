@@ -6,7 +6,6 @@ import { useState, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { mutate } from 'swr'
 import { Modal, AutoComplete } from 'antd'
-import { LogoutOutlined } from '@ant-design/icons'
 import { API_ENDPOINT } from '../../../config'
 import Layout from '../../../components/Layout/gang'
 import AddButton from '../../../components/addButton'
@@ -38,7 +37,7 @@ const GangID = () => {
   }, [])
 
   useEffect(() => {
-    if (user && gang && (user.playerID === gang.creator._id || gang.managers.includes(user.playerID))) {
+    if (user && gang && (user.playerID === gang.creator?._id || gang.managers?.includes(user.playerID))) {
       setIsManager(true)
     } else {
       setIsManager(false)
@@ -151,7 +150,7 @@ const GangID = () => {
               <div className='avatar'>
                 <Image src={player.avatar || `/avatar.png`} alt='' width={50} height={50} />
               </div>
-              <div className='player-name'>{player.displayName || player.officialName}<span style={{ color: '#ccc', marginLeft: '10px' }}>{`${player.displayName ? player.officialName : ''}`}</span></div>
+              <div className='player-name'>{player.displayName || player.officialName}<span style={{ color: '#ccc', marginLeft: '10px' }}>{`${player.displayName ? (player.officialName || '') : ''}`}</span></div>
             </div>
             {(isManager || user.playerID === player._id) && <div onClick={() => getBill(player._id)}>จ่ายเงิน</div>}
           </div>

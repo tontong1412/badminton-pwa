@@ -3,34 +3,51 @@ import Footer from './footer'
 import Header from './header'
 import { UnorderedListOutlined, TeamOutlined, SettingOutlined } from '@ant-design/icons'
 import { useSelector } from 'react-redux'
-import { COLOR } from '../../constant'
+import { COLOR, TAB_OPTIONS } from '../../constant'
+import { useGang } from '../../utils'
 
 const GangLayout = (props) => {
   const router = useRouter()
   const { id } = router.query
-  const { user, activeMenu, gang } = useSelector(state => state)
-  const tabOption = [
+  const { user, activeMenu } = useSelector(state => state)
+  const { gang } = useGang(id)
+  let tabOptions = [
     {
       name: 'รายชื่อ',
-      icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === 'players' ? COLOR.MINOR_THEME : null }} />,
+      icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.PLAYERS ? COLOR.MINOR_THEME : null }} />,
       href: `/gang/${id}`,
-      alias: 'players'
+      alias: TAB_OPTIONS.GANG.PLAYERS
     },
     {
       name: 'คิว',
-      icon: <UnorderedListOutlined style={{ fontSize: '24px', color: activeMenu === 'queue' ? COLOR.MINOR_THEME : null }} />,
+      icon: <UnorderedListOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.QUEUE ? COLOR.MINOR_THEME : null }} />,
       href: `/gang/${id}/match`,
-      alias: 'queue'
+      alias: TAB_OPTIONS.GANG.QUEUE
     }
   ]
   if (user.playerID === gang?.creator?._id) {
-    tabOption.push({
-      name: 'จัดการก๊วน',
-      icon: <SettingOutlined style={{ fontSize: '24px', color: activeMenu === 'setting' ? COLOR.MINOR_THEME : null }} />,
-      href: `/gang/${id}/manage`,
-      alias: 'setting'
-    })
+    tabOptions = [
+      {
+        name: 'รายชื่อ',
+        icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.PLAYERS ? COLOR.MINOR_THEME : null }} />,
+        href: `/gang/${id}`,
+        alias: TAB_OPTIONS.GANG.PLAYERS
+      },
+      {
+        name: 'คิว',
+        icon: <UnorderedListOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.QUEUE ? COLOR.MINOR_THEME : null }} />,
+        href: `/gang/${id}/match`,
+        alias: TAB_OPTIONS.GANG.QUEUE
+      },
+      {
+        name: 'จัดการก๊วน',
+        icon: <SettingOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.SETTING ? COLOR.MINOR_THEME : null }} />,
+        href: `/gang/${id}/manage`,
+        alias: TAB_OPTIONS.GANG.SETTING
+      }
+    ]
   }
+
   return (
     <>
       <Header description='This is Home Page' back={{ href: '/gang', alias: 'gang' }} />
@@ -39,7 +56,7 @@ const GangLayout = (props) => {
           {props.children}
         </div>
       </main>
-      <Footer tabOption={tabOption} />
+      <Footer tabOption={tabOptions} />
     </>
   )
 }

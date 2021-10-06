@@ -34,7 +34,7 @@ const Card = ({ gang }) => {
         </div>
         <div className='info-container'>
           <div>{gang.name}</div>
-          <div className='sub-title'>{`${gang.location}`}</div>
+          <div className='sub-title'>{`${gang.location || ''}`}</div>
           <div className='info-item-container'>
             {
               info.map((elm, index) => {

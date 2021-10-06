@@ -14,9 +14,9 @@ import { Tabs, Menu, Dropdown } from 'antd'
 import { TAB_OPTIONS } from '../../../constant'
 
 const { TabPane } = Tabs
-function callback(key) {
-  console.log(key);
-}
+// function callback(key) {
+//   console.log(key);
+// }
 
 
 
@@ -126,10 +126,10 @@ const MatchList = () => {
           setActionMode('update')
           showModal()
           setMatch(match)
-          setPlayer1(match.teamA.team.players[0])
-          setPlayer2(match.teamA.team.players[1])
-          setPlayer3(match.teamB.team.players[0])
-          setPlayer4(match.teamB.team.players[1])
+          setPlayer1(match.teamA.team.players[0].displayName || match.teamA.team.players[0].officialName)
+          setPlayer2(match.teamA.team.players[1].displayName || match.teamA.team.players[1].officialName)
+          setPlayer3(match.teamB.team.players[0].displayName || match.teamB.team.players[0].officialName)
+          setPlayer4(match.teamB.team.players[1].displayName || match.teamB.team.players[1].officialName)
         }}>
           แก้ไข
         </div>
@@ -269,7 +269,7 @@ const MatchList = () => {
 
     axios.post(`${API_ENDPOINT}/match/manage-shuttlecock`, {
       matchID,
-      action: "increment"
+      action: 'increment'
     }).then(() => {
       mutate(`${API_ENDPOINT}/gang/${id}`)
     }).catch(() => {
@@ -310,12 +310,12 @@ const MatchList = () => {
       })
     })
   }
-  if (isError) return "An error has occurred."
+  if (isError) return 'An error has occurred.'
   if (isLoading) return <Loading />
 
   return (
     <div>
-      <Tabs defaultActiveKey="1" onChange={callback}>
+      <Tabs defaultActiveKey='1' >
         {tabData?.map(tab => (
           <TabPane tab={tab.label} key={tab.key}>
             {
@@ -359,7 +359,7 @@ const MatchList = () => {
                     </div>
                     <div className='controller-container'>
                       {!canManage && match.status !== 'finished' && <div style={{ color: '#ccc' }} className='controller'>สถิติ</div>}
-                      {canManage && match.status !== 'finished' && <Dropdown overlay={menu(match)} placement="topLeft" trigger={['click']}><div className='controller'>เพิ่มเติม</div></Dropdown>}
+                      {canManage && match.status !== 'finished' && <Dropdown overlay={menu(match)} placement='topLeft' trigger={['click']}><div className='controller'>เพิ่มเติม</div></Dropdown>}
                       {canManage && match.status === 'playing' && <div className='controller' onClick={() => addShuttlecock(match._id)}>เพิ่มลูก</div>}
                       {canManage && match.status !== 'finished' && <div className='controller' onClick={() => updateStatus(match._id, match.status)}>{match.status === 'waiting' ? 'เริ่มเกม' : 'จบเกม'}</div>}
                       {match.status === 'finished' && <div style={{ color: '#ccc' }} className='controller'>สถิติ</div>}
@@ -381,7 +381,7 @@ const MatchList = () => {
         showModal()
       }} />
       <Modal
-        title="เพิ่มคิว"
+        title='เพิ่มคิว'
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -399,9 +399,9 @@ const MatchList = () => {
             onSelect={(data => setPlayer1(data))}
             onSearch={onSearch}
             onChange={data => setPlayer1(data)}
-            placeholder="ชื่อผู้เล่น"
+            placeholder='ชื่อผู้เล่น'
             onBlur={() => onBlur(player1)}
-            defaultValue={player1?.displayName || player1?.officialName}
+            defaultValue={player1}
           />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
@@ -415,8 +415,8 @@ const MatchList = () => {
             onSelect={(data => setPlayer2(data))}
             onSearch={onSearch}
             onChange={data => setPlayer2(data)}
-            placeholder="ชื่อผู้เล่น"
-            defaultValue={player2?.displayName || player2?.officialName}
+            placeholder='ชื่อผู้เล่น'
+            defaultValue={player2}
           />
         </div>
         <div style={{ width: '100%', textAlign: 'center', marginBottom: '10px' }}>vs</div>
@@ -431,8 +431,8 @@ const MatchList = () => {
             onSelect={(data => setPlayer3(data))}
             onSearch={onSearch}
             onChange={data => setPlayer3(data)}
-            placeholder="ชื่อผู้เล่น"
-            defaultValue={player3?.displayName || player3?.officialName}
+            placeholder='ชื่อผู้เล่น'
+            defaultValue={player3}
           />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
@@ -446,13 +446,13 @@ const MatchList = () => {
             onSelect={(data => setPlayer4(data))}
             onSearch={onSearch}
             onChange={data => setPlayer4(data)}
-            placeholder="ชื่อผู้เล่น"
-            defaultValue={player4?.displayName || player4?.officialName}
+            placeholder='ชื่อผู้เล่น'
+            defaultValue={player4}
           />
         </div>
       </Modal>
       <Modal
-        title="บันทึกผล"
+        title='บันทึกผล'
         visible={setScoreModal}
         onOk={onSetScore}
         onCancel={() => setSetScoreModal(false)}

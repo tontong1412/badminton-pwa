@@ -14,6 +14,7 @@ import Loading from '../../components/loading'
 const Gang = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
+  const [courtFeeType, setCourtFeeType] = useState('buffet')
   const { user } = useSelector(state => state)
   const { gangs, isLoading, isError } = useGangs(user.token)
   const dispatch = useDispatch()
@@ -83,7 +84,14 @@ const Gang = () => {
           return <Card key={`gang-card-${gang._id}`} gang={gang} style={{ float: 'right' }} />
         })}
       </div>
-      <AddButton onClick={() => setIsModalVisible(true)} />
+      <AddButton onClick={() => {
+        if (user.id) setIsModalVisible(true)
+        else {
+          Modal.info({
+            title: 'กรุณา Log in ก่อนสร้างก๊วน'
+          })
+        }
+      }} />
       <Modal
         title="สร้างก๊วน"
         visible={isModalVisible}
@@ -92,6 +100,7 @@ const Gang = () => {
         footer={null}
         confirmLoading={confirmLoading}
         destroyOnClose
+        initialValues={{ courtFeeType: courtFeeType }}
       >
         <Form
           style={{ height: '500px', overflow: 'scroll' }}
@@ -100,34 +109,51 @@ const Gang = () => {
           <Form.Item
             label='ชื่อก๊วน'
             name='name'
+            rules={[
+              { required: true },
+            ]}
           >
             <Input />
           </Form.Item>
-          <Form.Item
+          {/* <Form.Item
             label='สนาม'
             name='location'
           >
             <Input />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item
             label='ค่าสนาม'
             name='courtFeeType'
+            rules={[
+              { required: true },
+            ]}
           >
-            <Radio.Group>
+            <Radio.Group onChange={(e) => setCourtFeeType(e.target.value)}>
               <Radio value="buffet">บุฟเฟต์</Radio>
               <Radio value="share">หารเท่า</Radio>
             </Radio.Group>
           </Form.Item>
+
           <Form.Item
             name='courtFee'
+            help={courtFeeType === 'buffet' ? 'ค่าสนาม/คน' : 'ค่าสนามทั้งหมด'}
+            rules={[
+              {
+                required: true,
+              },
+            ]}
           >
-            <Input />
+            <div><InputNumber min={0} /> บาท</div>
           </Form.Item>
+
           <Form.Item
             label='ค่าลูกขนไก่'
             name='shuttlecockFee'
+            rules={[
+              { required: true },
+            ]}
           >
-            <div><InputNumber min={1} /> บาท/ลูก/คน</div>
+            <div><InputNumber min={0} /> บาท/ลูก/คน</div>
           </Form.Item>
           <Form.Item
             label='พร้อมเพย์'

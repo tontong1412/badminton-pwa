@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import logo from '../public/icon/logo.png'
-import { Form, Input, Button, Checkbox } from 'antd'
+import { Form, Input, Button, Checkbox, Modal } from 'antd'
 import { useDispatch, useSelector } from 'react-redux';
 import { API_ENDPOINT } from '../config'
 import Layout from '../components/Layout/noFooter'
@@ -18,34 +18,48 @@ const Login = () => {
 
   const onFinish = async (values) => {
     setLoading(true)
-    const { data: login } = await axios.post(`${API_ENDPOINT}/login`,
-      {
-        user: {
-          email: values.email,
-          password: values.password
-        }
+    try {
+      const { data: login } = await axios.post(`${API_ENDPOINT}/login`,
+        {
+          user: {
+            email: values.email,
+            password: values.password
+          }
+        })
+
+      let player
+      if (login.user.playerID) {
+        const res = await axios.get(`${API_ENDPOINT}/player/${login.user.playerID}`)
+        player = res.data
+      }
+
+      const user = {
+        id: login.user._id,
+        token: login.user.token,
+        email: login.user.email,
+        playerID: login.user.playerID,
+        officialName: player?.officialName,
+        club: player?.club
+      }
+      localStorage.setItem('rememberMe', values.remember);
+      localStorage.setItem('token', values.remember ? login.user.token : '');
+      dispatch({ type: 'LOGIN', payload: user })
+      dispatch({ type: 'ACTIVE_MENU', payload: 'home' })
+      setLoading(false)
+      router.push('/')
+    } catch (error) {
+      Modal.error({
+        title: 'Log in ไม่สำเร็จ',
+        content: (
+          <div>
+            <p>โปรดตรวจสอบ Email หรือ Password ของคุณ</p>
+          </div>
+        ),
+        onOk() { },
       })
-
-    let player
-    if (login.user.playerID) {
-      const res = await axios.get(`${API_ENDPOINT}/player/${login.user.playerID}`)
-      player = res.data
+      setLoading(false)
     }
 
-    const user = {
-      id: login.user._id,
-      token: login.user.token,
-      email: login.user.email,
-      playerID: login.user.playerID,
-      officialName: player?.officialName,
-      club: player?.club
-    }
-    localStorage.setItem('rememberMe', values.remember);
-    localStorage.setItem('token', values.remember ? login.user.token : '');
-    dispatch({ type: 'LOGIN', payload: user })
-    dispatch({ type: 'ACTIVE_MENU', payload: 'home' })
-    setLoading(false)
-    router.push('/')
   }
 
   const onFinishFailed = (errorInfo) => {
