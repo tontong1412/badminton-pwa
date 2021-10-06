@@ -14,11 +14,6 @@ import { Tabs, Menu, Dropdown } from 'antd'
 import { TAB_OPTIONS } from '../../../constant'
 
 const { TabPane } = Tabs
-// function callback(key) {
-//   console.log(key);
-// }
-
-
 
 const MatchList = () => {
   const router = useRouter()
@@ -247,7 +242,7 @@ const MatchList = () => {
     </div>
   );
 
-  const onBlur = (value) => {
+  const onBlur = (value, clearFunction) => {
     if (value && !gang.players.find(player => player.officialName === value || player.displayName === value)) {
       Modal.error({
         title: 'ผู้เล่นไม่ได้ลงทะเบียน',
@@ -256,7 +251,7 @@ const MatchList = () => {
             <p>กรุณาเลือกจากผู้เล่นที่ลงทะเบียนไว้แล้ว</p>
           </div>
         ),
-        onOk() { },
+        onOk() { clearFunction() },
       })
     }
   }
@@ -400,7 +395,7 @@ const MatchList = () => {
             onSearch={onSearch}
             onChange={data => setPlayer1(data)}
             placeholder='ชื่อผู้เล่น'
-            onBlur={() => onBlur(player1)}
+            onBlur={() => onBlur(player1, setPlayer1)}
             defaultValue={player1}
           />
         </div>
@@ -416,6 +411,7 @@ const MatchList = () => {
             onSearch={onSearch}
             onChange={data => setPlayer2(data)}
             placeholder='ชื่อผู้เล่น'
+            onBlur={() => onBlur(player2, setPlayer2)}
             defaultValue={player2}
           />
         </div>
@@ -432,6 +428,7 @@ const MatchList = () => {
             onSearch={onSearch}
             onChange={data => setPlayer3(data)}
             placeholder='ชื่อผู้เล่น'
+            onBlur={() => onBlur(player3, setPlayer3)}
             defaultValue={player3}
           />
         </div>
@@ -447,6 +444,7 @@ const MatchList = () => {
             onSearch={onSearch}
             onChange={data => setPlayer4(data)}
             placeholder='ชื่อผู้เล่น'
+            onBlur={() => onBlur(player4, setPlayer4)}
             defaultValue={player4}
           />
         </div>
