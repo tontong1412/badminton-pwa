@@ -7,7 +7,7 @@ import { mutate } from 'swr'
 import { API_ENDPOINT } from '../../config'
 import AddButton from '../../components/addButton'
 import Card from '../../components/gangCard'
-import { Modal, Form, Input, Radio, InputNumber, Button } from 'antd'
+import { Modal, Form, Input, Radio, InputNumber, Button, Checkbox } from 'antd'
 import { useGangs } from '../../utils'
 import Loading from '../../components/loading'
 
@@ -18,6 +18,20 @@ const Gang = () => {
   const { user } = useSelector(state => state)
   const { gangs, isLoading, isError } = useGangs(user.token)
   const dispatch = useDispatch()
+  const formItemLayout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 24 },
+      lg: { span: 24 },
+      xl: { span: 24 }
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 24 },
+      lg: { span: 24 },
+      xl: { span: 24 }
+    },
+  };
 
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: 'gang' })
@@ -34,6 +48,7 @@ const Gang = () => {
     }
   }
   const onFinish = (values) => {
+    console.log(values)
     setConfirmLoading(true)
     axios.post(`${API_ENDPOINT}/gang`, {
       name: values.name,
@@ -47,7 +62,8 @@ const Gang = () => {
       payment: {
         code: values.paymentCode ? formatPromptpay(values.paymentCode) : null,
         name: values.paymentName
-      }
+      },
+      isPrivate: values.isPrivate
     }, {
       headers: {
         'Authorization': `Token ${user.token}`
@@ -105,6 +121,7 @@ const Gang = () => {
         <Form
           style={{ height: '500px', overflow: 'scroll' }}
           onFinish={onFinish}
+          {...formItemLayout}
         >
           <Form.Item
             label='ชื่อก๊วน'
@@ -115,12 +132,12 @@ const Gang = () => {
           >
             <Input />
           </Form.Item>
-          {/* <Form.Item
+          <Form.Item
             label='สนาม'
             name='location'
           >
             <Input />
-          </Form.Item> */}
+          </Form.Item>
           <Form.Item
             label='ค่าสนาม'
             name='courtFeeType'
@@ -167,6 +184,14 @@ const Gang = () => {
             style={{ marginTop: '20px' }}
           >
             <Input placeholder='ชื่อบัญชีพร้อมเพย์' />
+          </Form.Item>
+
+          <Form.Item
+            name='isPrivate'
+            valuePropName='checked'
+            help='ก๊วนของคุณจะไม่แสดงบนหน้าค้นหา'
+          >
+            <Checkbox>ก๊วนส่วนตัว</Checkbox>
           </Form.Item>
           <Form.Item >
             <Button key='submit' type='primary' htmlType='submit' style={{ width: '100%', marginTop: '20px' }}>

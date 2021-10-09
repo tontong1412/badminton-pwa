@@ -159,11 +159,16 @@ const MatchList = () => {
           gang.players.find(player => player.officialName === player3 || player.displayName === player3)?._id,
           gang.players.find(player => player.officialName === player4 || player.displayName === player4)?._id
         ]
-      }
+      },
+      reference: gang.reference
     }).then(() => {
       mutate(`${API_ENDPOINT}/gang/${id}`)
       setIsModalVisible(false)
       setConfirmLoading(false)
+      setPlayer1()
+      setPlayer2()
+      setPlayer3()
+      setPlayer4()
     })
       .catch(() => {
         setConfirmLoading(false)
@@ -174,7 +179,12 @@ const MatchList = () => {
               <p>เกิดปัญหาขณะอัพเดทข้อมูล กรุณาลองใหม่ในภายหลัง</p>
             </div>
           ),
-          onOk() { },
+          onOk() {
+            setPlayer1()
+            setPlayer2()
+            setPlayer3()
+            setPlayer4()
+          },
         })
       })
   }

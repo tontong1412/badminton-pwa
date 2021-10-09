@@ -1,9 +1,7 @@
 import axios from 'axios'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { mutate } from 'swr'
 import { Modal, Button } from 'antd'
 import { API_ENDPOINT } from '../../../config'
 import Layout from '../../../components/Layout/gang'
@@ -67,7 +65,7 @@ const GangID = () => {
           <div dangerouslySetInnerHTML={{ __html: qrSVG }} />
           <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{gang.name}</div>
           <div><Button onClick={getStat} style={{ width: '200px', marginBottom: '10px' }}>สถิติ</Button></div>
-          {/* <div><Button onClick={clear} type='primary' style={{ width: '200px', marginBottom: '50px' }}>Reset</Button></div> */}
+          <div><Button onClick={clear} type='primary' style={{ width: '200px', marginBottom: '50px' }}>Reset</Button></div>
           <div><Button type='danger' style={{ width: '200px', marginBottom: '10px' }}>ลบก๊วน</Button></div>
         </div>
         :

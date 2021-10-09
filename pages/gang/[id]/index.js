@@ -124,14 +124,14 @@ const GangID = () => {
       }
     })
     const paymentCode = res.data.payment?.code
-    const payload = paymentCode.length > 20 ? paymentCode : generatePayload(paymentCode, { amount: res.data.total })
-
     setPaymentData(res.data)
-    qrcode.toString(payload, (err, svg) => {
-      if (err) return console.log(err)
-      setQrSVG(svg)
-    })
-
+    if (paymentCode) {
+      const payload = paymentCode.length > 20 ? paymentCode : generatePayload(paymentCode, { amount: res.data.total })
+      qrcode.toString(payload, (err, svg) => {
+        if (err) return console.log(err)
+        setQrSVG(svg)
+      })
+    }
   }
 
   if (isError) return "An error has occurred."
@@ -177,7 +177,7 @@ const GangID = () => {
       />
     </Modal>
     <Modal
-      title=""
+      title="รายการ"
       visible={isPaymentModalVisible}
       onOk={() => setIsPaymentModalVisible(false)}
       onCancel={() => {
@@ -187,12 +187,14 @@ const GangID = () => {
       confirmLoading={confirmLoading}
       destroyOnClose>
       <div style={{ minHeight: '450px' }}>
-        {qrSVG ?
+        {paymentData ?
           <div style={{ textAlign: 'center' }}>
-            <div dangerouslySetInnerHTML={{ __html: qrSVG }} />
-            <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{paymentData?.payment?.name}</div>
-            <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{`${Math.ceil(paymentData?.total)} บาท`}</div>
-
+            {qrSVG &&
+              <>
+                <div dangerouslySetInnerHTML={{ __html: qrSVG }} />
+                <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{paymentData?.payment?.name}</div>
+                <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{`${Math.ceil(paymentData?.total)} บาท`}</div>
+              </>}
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div style={{ fontWeight: 'bold' }}>{`${paymentData.payer.displayName || paymentData.payer.officialName}`}</div>
               <div></div>
