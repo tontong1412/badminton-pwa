@@ -8,7 +8,7 @@ import { useRouter } from 'next/router'
 import Layout from '../../../components/Layout/gang'
 import AddButton from '../../../components/addButton'
 import { useGang } from '../../../utils'
-import { API_ENDPOINT } from '../../../config'
+import { API_ENDPOINT, MEDIA_URL } from '../../../config'
 import Loading from '../../../components/loading'
 import { Tabs, Menu, Dropdown } from 'antd'
 import { TAB_OPTIONS } from '../../../constant'
@@ -333,7 +333,7 @@ const MatchList = () => {
                           return (
                             <div key={`teamA-${player._id}`} className='player-container'>
                               <div className='avatar'>
-                                <Image src={player.avatar || `/avatar.png`} alt='' width={35} height={35} />
+                                <Image className='avatar' src={player.photo || `/avatar.png`} alt='' width={35} height={35} layout='responsive' />
                               </div>
                               <div className='info'>{player.displayName || player.officialName}</div>
                             </div>
@@ -351,7 +351,7 @@ const MatchList = () => {
                               style={{ flexDirection: 'row-reverse' }}
                             >
                               <div className='avatar'>
-                                <Image src={player.avatar || `/avatar.png`} alt='' width={35} height={35} />
+                                <Image className='avatar' src={player.photo || `/avatar.png`} alt='' width={35} height={35} />
                               </div>
                               <div className='info' style={{ marginRight: '5px', marginLeft: 0, textAlign: 'right' }}>{player.displayName || player.officialName}</div>
                             </div>

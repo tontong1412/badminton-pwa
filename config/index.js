@@ -1,7 +1,9 @@
 const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT
 const WEB_URL = process.env.NEXT_PUBLIC_WEB_URL
+const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_ENDPOINT
 
 export {
   API_ENDPOINT,
-  WEB_URL
+  WEB_URL,
+  MEDIA_URL
 }

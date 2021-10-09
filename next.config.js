@@ -9,6 +9,9 @@ const nextConfig = {
     accessTokenDelivery: process.env.accessTokenDelivery,
   },
   distDir: '.next',
+  images: {
+    domains: ['res.cloudinary.com'],
+  },
 };
 
 const plugins = [
@@ -34,7 +37,7 @@ const plugins = [
     webpack(config) {
       return config;
     },
-  })
+  }),
 ]
 
 module.exports = withPlugins(plugins, nextConfig);
