@@ -110,11 +110,11 @@ const Account = () => {
             </div>)
         }
 
-        <div style={{ fontWeight: 'bold', marginTop: '10px' }}>
+        <div style={{ fontWeight: 'bold', marginTop: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           {user.displayName || user.officialName}
-          <span onClick={() => console.log('edit profile')} style={{ margin: '5px' }}>
+          <div onClick={() => router.push('/edit-profile')} style={{ margin: '5px' }}>
             <EditOutlined />
-          </span>
+          </div>
         </div>
         {user.displayName && <div>{user.officialName}</div>}
         <div style={{ marginTop: '10px' }}><Button type='danger' onClick={logout}>Log Out</Button></div>

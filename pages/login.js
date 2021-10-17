@@ -39,6 +39,7 @@ const Login = () => {
         email: login.user.email,
         playerID: login.user.playerID,
         officialName: player?.officialName,
+        displayName: player?.displayName,
         club: player?.club,
         photo: player?.photo
       }
