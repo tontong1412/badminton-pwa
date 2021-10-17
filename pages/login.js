@@ -39,7 +39,8 @@ const Login = () => {
         email: login.user.email,
         playerID: login.user.playerID,
         officialName: player?.officialName,
-        club: player?.club
+        club: player?.club,
+        photo: player?.photo
       }
       localStorage.setItem('rememberMe', values.remember);
       localStorage.setItem('token', values.remember ? login.user.token : '');
