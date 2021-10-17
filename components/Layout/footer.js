@@ -17,7 +17,7 @@ const Footer = ({ tabOption }) => {
                 style={{
                   fontSize: '12px',
                   paddingTop: '5px',
-                  color: activeMenu === tab.alias ? COLOR.MINOR_THEME : null
+                  color: activeMenu === tab.alias ? COLOR.MINOR_THEME : '#aaa'
                 }}>
                 {tab.name}
               </div>

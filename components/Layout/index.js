@@ -17,25 +17,25 @@ const AppLayout = (props) => {
       <Footer tabOption={[
         {
           name: 'หน้าแรก',
-          icon: <HomeOutlined style={{ fontSize: '24px', color: activeMenu === 'home' ? COLOR.MINOR_THEME : null }} />,
+          icon: <HomeOutlined style={{ fontSize: '24px', color: activeMenu === 'home' ? COLOR.MINOR_THEME : '#aaa' }} />,
           href: '/',
           alias: 'home'
         },
         {
           name: 'ก๊วน',
-          icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === 'gang' ? COLOR.MINOR_THEME : null }} />,
+          icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === 'gang' ? COLOR.MINOR_THEME : '#aaa' }} />,
           href: '/gang',
           alias: 'gang'
         },
         // {
         //   name: 'แจ้งเตือน',
-        //   icon: <BellOutlined style={{ fontSize: '24px', color: activeMenu === 'noti' ? '#DAA228' : null }} />,
+        //   icon: <BellOutlined style={{ fontSize: '24px', color: activeMenu === 'noti' ? '#DAA228' : '#aaa' }} />,
         //   href: '/noti',
         //   alias: 'noti'
         // },
         {
           name: 'บัญชีของฉัน',
-          icon: <UserOutlined style={{ fontSize: '24px', color: activeMenu === 'account' ? COLOR.MINOR_THEME : null }} />,
+          icon: <UserOutlined style={{ fontSize: '24px', color: activeMenu === 'account' ? COLOR.MINOR_THEME : '#aaa' }} />,
           href: '/account',
           alias: 'account'
         }

@@ -14,13 +14,13 @@ const GangLayout = (props) => {
   let tabOptions = [
     {
       name: 'รายชื่อ',
-      icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.PLAYERS ? COLOR.MINOR_THEME : null }} />,
+      icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.PLAYERS ? COLOR.MINOR_THEME : '#aaa' }} />,
       href: `/gang/${id}`,
       alias: TAB_OPTIONS.GANG.PLAYERS
     },
     {
       name: 'คิว',
-      icon: <UnorderedListOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.QUEUE ? COLOR.MINOR_THEME : null }} />,
+      icon: <UnorderedListOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.QUEUE ? COLOR.MINOR_THEME : '#aaa' }} />,
       href: `/gang/${id}/match`,
       alias: TAB_OPTIONS.GANG.QUEUE
     }
@@ -29,19 +29,19 @@ const GangLayout = (props) => {
     tabOptions = [
       {
         name: 'รายชื่อ',
-        icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.PLAYERS ? COLOR.MINOR_THEME : null }} />,
+        icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.PLAYERS ? COLOR.MINOR_THEME : '#aaa' }} />,
         href: `/gang/${id}`,
         alias: TAB_OPTIONS.GANG.PLAYERS
       },
       {
         name: 'คิว',
-        icon: <UnorderedListOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.QUEUE ? COLOR.MINOR_THEME : null }} />,
+        icon: <UnorderedListOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.QUEUE ? COLOR.MINOR_THEME : '#aaa' }} />,
         href: `/gang/${id}/match`,
         alias: TAB_OPTIONS.GANG.QUEUE
       },
       {
         name: 'จัดการก๊วน',
-        icon: <SettingOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.SETTING ? COLOR.MINOR_THEME : null }} />,
+        icon: <SettingOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.SETTING ? COLOR.MINOR_THEME : '#aaa' }} />,
         href: `/gang/${id}/manage`,
         alias: TAB_OPTIONS.GANG.SETTING
       }
