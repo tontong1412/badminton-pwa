@@ -16,7 +16,7 @@ const reducer = (state = initialState, action) => {
     case HYDRATE:
       return { ...state, ...action.payload }
     case 'LOGIN':
-      return { ...state, user: action.payload }
+      return { ...state, user: { ...state.user, ...action.payload } }
     case 'LOGOUT':
       return { ...state, user: {} }
     case 'GANG':
