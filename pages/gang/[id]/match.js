@@ -41,6 +41,8 @@ const MatchList = () => {
   const [scoreSet1, setScoreSet1] = useState()
   const [scoreSet2, setScoreSet2] = useState()
   const [scoreSet3, setScoreSet3] = useState()
+  const [statModal, setStatModal] = useState(false)
+  const [stat, setStat] = useState()
 
   const dispatch = useDispatch()
 
@@ -315,6 +317,15 @@ const MatchList = () => {
       })
     })
   }
+
+  const getStat = (matchID) => {
+    setStatModal(true)
+    axios.get(`${API_ENDPOINT}/match/${matchID}/stat`)
+      .then(res => {
+        setStat(res.data)
+      })
+      .catch(() => { })
+  }
   if (isError) return 'An error has occurred.'
   if (isLoading) return <Loading />
 
@@ -363,11 +374,11 @@ const MatchList = () => {
                       <div style={{ width: '50%' }}>จำนวนลูก: {match.shuttlecockUsed}</div>
                     </div>
                     <div className='controller-container'>
-                      {!canManage && match.status !== 'finished' && <div style={{ color: '#ccc' }} className='controller'>สถิติ</div>}
+                      {!canManage && match.status !== 'finished' && <div onClick={() => getStat(match._id)} className='controller'>สถิติ</div>}
                       {canManage && match.status !== 'finished' && <Dropdown overlay={menu(match)} placement='topLeft' trigger={['click']}><div className='controller'>เพิ่มเติม</div></Dropdown>}
                       {canManage && match.status === 'playing' && <div className='controller' onClick={() => addShuttlecock(match._id)}>เพิ่มลูก</div>}
                       {canManage && match.status !== 'finished' && <div className='controller' onClick={() => updateStatus(match._id, match.status)}>{match.status === 'waiting' ? 'เริ่มเกม' : 'จบเกม'}</div>}
-                      {match.status === 'finished' && <div style={{ color: '#ccc' }} className='controller'>สถิติ</div>}
+                      {match.status === 'finished' && <div onClick={() => getStat(match._id)} className='controller'>สถิติ</div>}
                       {user.id && match.status === 'finished' && <div className='controller' onClick={() => {
                         setSetScoreModal(true)
                         setMatch(match)
@@ -477,6 +488,61 @@ const MatchList = () => {
           </div>
           <div >
             {selectedMatch?.teamB.team.players.map(player => <div key={player._id}>{player.displayName || player.officialName}</div>)}
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        title='สถิติ'
+        visible={statModal}
+        onOk={() => setStatModal(false)}
+        onCancel={() => setStatModal(false)}
+        destroyOnClose>
+        <div className='match-stat'>
+          <div className='team-container'>
+            <div className='team'>
+              {stat?.teamA.players.map(player => {
+                return (
+                  <div key={`teamA-${player._id}`} className='player-container'>
+                    <div className='avatar'>
+                      <Image className='avatar' src={player.photo || `/avatar.png`} alt='' width={35} height={35} objectFit='cover' />
+                    </div>
+                    <div className='info'>{player.displayName || player.officialName}</div>
+                  </div>
+                )
+              })}
+            </div>
+            <div className='team'>
+              {stat?.teamB.players.map(player => {
+                return (
+                  <div key={`teamB-${player._id}`}
+                    className='player-container'
+                    style={{ flexDirection: 'row-reverse' }}
+                  >
+                    <div className='avatar'>
+                      <Image className='avatar' src={player.photo || `/avatar.png`} alt='' width={35} height={35} objectFit='cover' />
+                    </div>
+                    <div className='info' style={{ marginRight: '5px', marginLeft: 0, textAlign: 'right' }}>{player.displayName || player.officialName}</div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+          <div style={{
+            textAlign: 'center',
+            marginTop: '20px',
+            borderBottom: '1px solid #eee',
+            fontWeight: 'bold',
+            padding: '5px',
+          }}>Total Meeting: {stat?.totalMeet}</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px 0', borderBottom: '1px solid #eee' }}>
+            <div style={{ width: '20%', textAlign: 'center' }}>{stat?.teamA.win}</div>
+            <div style={{ fontWeight: 'bold' }}>Head to Head</div>
+            <div style={{ width: '20%', textAlign: 'center' }}>{stat?.teamB.win}</div>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px 0', }}>
+            <div style={{ width: '20%', textAlign: 'center' }}>{stat?.tie}</div>
+            <div style={{ fontWeight: 'bold' }}>Draw</div>
+            <div style={{ width: '20%', textAlign: 'center' }}>{stat?.tie}</div>
           </div>
         </div>
       </Modal>

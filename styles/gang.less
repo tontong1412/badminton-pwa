@@ -113,3 +113,34 @@
     }
   }
 }
+
+.match-stat { 
+  display: flex;
+  flex-direction: column;
+
+  .team-container {
+    display: flex;
+    
+    .team {
+      width: 50%;
+
+      .player-container { 
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+
+        .avatar { 
+          width: 40px;
+          height: 40px;
+          border-radius: 20px;
+          overflow: hidden;
+          object-fit: contain;
+        }
+
+        .info {
+          margin-left: 5px;
+        }
+      }
+    }
+  }
+}
