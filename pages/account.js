@@ -54,6 +54,7 @@ const Account = () => {
       })
     } else if (info.file.status === 'error') {
       message.error(`${info.file.name} file upload failed.`);
+      message.error(JSON.stringify(info, null, 1));
     }
   }
 
