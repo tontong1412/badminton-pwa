@@ -22,7 +22,7 @@ const Login = () => {
       const { data: login } = await axios.post(`${API_ENDPOINT}/login`,
         {
           user: {
-            email: values.email,
+            email: values.email.toLowerCase(),
             password: values.password
           }
         })

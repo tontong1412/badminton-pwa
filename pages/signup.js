@@ -20,7 +20,7 @@ const Signup = () => {
     const { data: login } = await axios.post(`${API_ENDPOINT}/signup`,
       {
         user: {
-          email: values.email,
+          email: values.email.toLowerCase(),
           password: values.password
         }
       })
@@ -49,7 +49,7 @@ const Signup = () => {
       autoComplete='off'
       style={{ maxWidth: '300px', margin: 'auto', textAlign: 'center' }}
     >
-      {/* <Image src={logo} alt='logo' /> */}
+      <Image src={logo} alt='logo' />
       <Form.Item
         label='Email'
         name='email'
