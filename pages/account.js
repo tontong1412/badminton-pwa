@@ -67,7 +67,7 @@ const Account = () => {
       setImageUrl()
       setImageLoading(false)
     }).catch(() => {
-      setImageLoading(fasle)
+      setImageLoading(false)
       setImageUrl()
     })
   }
@@ -80,7 +80,7 @@ const Account = () => {
             <Image objectFit='cover' src={imageUrl || user?.photo || `/avatar.png`} alt='' width={100} height={100} />
           </div>
           <Upload
-            action={'/api/noop'}
+            action={`${API_ENDPOINT}/mock`}
             name='file'
             onChange={onChange}
             maxCount={1}
