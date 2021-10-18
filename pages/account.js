@@ -80,6 +80,7 @@ const Account = () => {
             <Image objectFit='cover' src={imageUrl || user?.photo || `/avatar.png`} alt='' width={100} height={100} />
           </div>
           <Upload
+            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
             name='file'
             onChange={onChange}
             maxCount={1}
