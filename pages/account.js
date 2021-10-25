@@ -42,9 +42,13 @@ const Account = () => {
   }, [])
 
   if (!user.id) {
-    return <div onClick={() => router.push('/login')}>Please login <span style={{ color: '#4F708A' }}>Click here</span></div>
+    router.push('/login')
+    return <div />
+    // return <div onClick={() => router.push('/login')}>Please login <span style={{ color: '#4F708A' }}>Click here</span></div>
   }
   if (!user.playerID) {
+    // router.push('/claim-player')
+    // return <div />
     return <div onClick={() => router.push('/claim-player')}>Please create profile <span style={{ color: '#4F708A' }}>Click here</span></div>
   }
   const onChange = (info) => {

@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { useState, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { mutate } from 'swr'
-import { Modal, AutoComplete } from 'antd'
+import { Modal, AutoComplete, Popconfirm, Empty } from 'antd'
 import { API_ENDPOINT } from '../../../config'
 import Layout from '../../../components/Layout/gang'
 import AddButton from '../../../components/addButton'
@@ -13,6 +13,7 @@ import { useGang, usePlayers } from '../../../utils'
 import qrcode from 'qrcode'
 import Loading from '../../../components/loading'
 import { TAB_OPTIONS } from '../../../constant'
+import { DeleteOutlined } from '@ant-design/icons'
 
 const GangID = () => {
   const router = useRouter()
@@ -117,21 +118,35 @@ const GangID = () => {
 
   const getBill = async (playerID) => {
     setIsPaymentModalVisible(true)
-    const res = await axios.get(`${API_ENDPOINT}/gang/bill`, {
+    axios.get(`${API_ENDPOINT}/gang/bill`, {
       params: {
         playerID,
         gangID: id
       }
+    }).then(res => {
+      const paymentCode = res.data.payment?.code
+      setPaymentData(res.data)
+      if (paymentCode) {
+        const payload = paymentCode.length > 20 ? paymentCode : generatePayload(paymentCode, { amount: res.data.total })
+        qrcode.toString(payload, (err, svg) => {
+          if (err) return console.log(err)
+          setQrSVG(svg)
+        })
+      }
     })
-    const paymentCode = res.data.payment?.code
-    setPaymentData(res.data)
-    if (paymentCode) {
-      const payload = paymentCode.length > 20 ? paymentCode : generatePayload(paymentCode, { amount: res.data.total })
-      qrcode.toString(payload, (err, svg) => {
-        if (err) return console.log(err)
-        setQrSVG(svg)
-      })
-    }
+      .catch(() => { })
+
+
+  }
+
+  const onRemovePlayer = (playerID) => {
+    console.log('remove', playerID, id)
+    axios.post(`${API_ENDPOINT}/gang/remove-player`, {
+      playerID,
+      gangID: id
+    }).then(() => {
+      mutate(`${API_ENDPOINT}/gang/${id}`)
+    }).catch(() => { })
   }
 
   if (isError) return "An error has occurred."
@@ -143,7 +158,7 @@ const GangID = () => {
       <div>ผู้เล่นทั้งหมด: {gang.players.length} คน</div>
     </div>
     {
-      gang.players.map(player => {
+      gang.players.length > 0 ? gang.players.map(player => {
         return (
           <div key={`player-${player._id}`} className='gang-player'>
             <div className='player-container'>
@@ -152,10 +167,25 @@ const GangID = () => {
               </div>
               <div className='player-name'>{player.displayName || player.officialName}<span style={{ color: '#ccc', marginLeft: '10px' }}>{`${player.displayName ? (player.officialName || '') : ''}`}</span></div>
             </div>
-            {(isManager || user.playerID === player._id) && <div onClick={() => getBill(player._id)}>จ่ายเงิน</div>}
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              {(isManager || user.playerID === player._id) && <div onClick={() => getBill(player._id)} >จ่ายเงิน</div>}
+              {isManager && <Popconfirm
+                title="คุณแน่ใจที่จะลบผู้เล่นนี้หรือไม่"
+                onConfirm={() => onRemovePlayer(player._id)}
+                onCancel={() => { }}
+                okText="Yes"
+                cancelText="No"
+              ><div
+                style={{ marginLeft: '20px', color: 'red' }}>
+                  <DeleteOutlined />
+                </div>
+              </Popconfirm>}
+            </div>
+
           </div>
         )
       })
+        : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
     }
     {isManager && <AddButton onClick={showModal} />}
     <Modal

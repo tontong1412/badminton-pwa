@@ -54,6 +54,22 @@ const GangID = () => {
     });
   }
 
+  const removeGang = () => {
+    Modal.confirm({
+      title: 'คุณแน่ใจที่จะลบก๊วนนี้หรือไม่',
+      icon: <ExclamationCircleOutlined />,
+      content: 'หากลบแล้วจะไม่สามารถกู้คืนข้อมูลได้',
+      onOk() {
+        axios.delete(`${API_ENDPOINT}/gang/${id}`,)
+          .then(() => { router.push('/gang') })
+          .catch(() => { })
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  }
+
 
   if (isError) return "An error has occurred."
   if (isLoading) return <Loading />
@@ -66,7 +82,7 @@ const GangID = () => {
           <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{gang.name}</div>
           <div><Button onClick={getStat} style={{ width: '200px', marginBottom: '10px' }}>สถิติ</Button></div>
           <div><Button onClick={clear} type='primary' style={{ width: '200px', marginBottom: '50px' }}>Reset</Button></div>
-          <div><Button type='danger' style={{ width: '200px', marginBottom: '10px' }}>ลบก๊วน</Button></div>
+          <div><Button onClick={removeGang} type='danger' style={{ width: '200px', marginBottom: '10px' }}>ลบก๊วน</Button></div>
         </div>
         :
         <Loading />

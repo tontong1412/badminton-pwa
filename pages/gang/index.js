@@ -90,7 +90,7 @@ const Gang = () => {
   if (isLoading) return <Loading />
   return (
     <div>
-      {/* <div>ก๊วนของฉัน</div> */}
+      <div style={{ margin: '15px 0 0 5px' }}>ก๊วนของฉัน</div>
       <div style={{
         width: '100%',
         overflow: 'scroll',

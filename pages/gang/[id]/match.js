@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSWRConfig } from 'swr'
-import { Modal, AutoComplete, Input } from 'antd'
+import { Modal, AutoComplete, Input, Empty } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
 import Image from 'next/image'
@@ -12,6 +12,7 @@ import { API_ENDPOINT, MEDIA_URL } from '../../../config'
 import Loading from '../../../components/loading'
 import { Tabs, Menu, Dropdown } from 'antd'
 import { TAB_OPTIONS } from '../../../constant'
+import Stat from '../../../components/Stat'
 
 const { TabPane } = Tabs
 
@@ -216,8 +217,28 @@ const MatchList = () => {
     )
   }
 
+  const validateScoreLabel = (score) => {
+    if (!score) return
+    const regex = /\d+-\d+/g
+    const matchRegex = score?.match(regex)
+    if (matchRegex?.length === 1) return matchRegex[0]
+    return 'inValidPattern'
+  }
+
   const onSetScore = () => {
     setConfirmLoading(true)
+    const validatedSet1 = validateScoreLabel(scoreSet1)
+    const validatedSet2 = validateScoreLabel(scoreSet2)
+    const validatedSet3 = validateScoreLabel(scoreSet3)
+
+    if (!validatedSet1
+      || validatedSet1 === 'inValidPattern'
+      || validatedSet2 === 'inValidPattern'
+      || validatedSet3 === 'inValidPattern') return Modal.error({
+        title: 'ผิดพลาด',
+        content: 'กรุณากรอกคะแนนในรูปแบบที่ถูกต้อง ตัวอย่าง 21-15'
+      })
+
     const score = [scoreSet1, scoreSet2]
     if (scoreSet3) score.push(scoreSet3)
     axios.post(`${API_ENDPOINT}/match/set-score`, {
@@ -302,9 +323,9 @@ const MatchList = () => {
       status
     }).then(() => {
       mutate(`${API_ENDPOINT}/gang/${id}`)
-      if (status === 'playing') {
-        addShuttlecock(matchID)
-      }
+      // if (status === 'playing') {
+      //   addShuttlecock(matchID)
+      // }
     }).catch(() => {
       Modal.error({
         title: 'ผิดพลาด',
@@ -335,7 +356,7 @@ const MatchList = () => {
         {tabData?.map(tab => (
           <TabPane tab={tab.label} key={tab.key}>
             {
-              tab.matchList?.map((match) => {
+              tab.matchList?.length > 0 ? tab.matchList?.map((match) => {
                 return (
                   <div key={`match-${match._id}`} className='match-card'>
                     <div className='team-container'>
@@ -388,6 +409,7 @@ const MatchList = () => {
                   </div>
                 )
               })
+                : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
             }
           </TabPane>
         ))}
@@ -474,7 +496,12 @@ const MatchList = () => {
         title='บันทึกผล'
         visible={setScoreModal}
         onOk={onSetScore}
-        onCancel={() => setSetScoreModal(false)}
+        onCancel={() => {
+          setScoreSet1()
+          setScoreSet2()
+          setScoreSet3()
+          setSetScoreModal(false)
+        }}
         confirmLoading={confirmLoading}
         destroyOnClose>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -482,9 +509,9 @@ const MatchList = () => {
             {selectedMatch?.teamA.team.players.map(player => <div key={player._id}>{player.displayName || player.officialName}</div>)}
           </div>
           <div style={{ width: '30%' }}>
-            <Input onChange={(e) => setScoreSet1(e.target.value)} style={{ marginBottom: '5px' }} />
-            <Input onChange={(e) => setScoreSet2(e.target.value)} style={{ marginBottom: '5px' }} />
-            <Input onChange={(e) => setScoreSet3(e.target.value)} style={{ marginBottom: '5px' }} />
+            <Input placeholder='e.g. 21-15' onChange={(e) => setScoreSet1(e.target.value)} style={{ marginBottom: '5px' }} />
+            <Input placeholder='e.g. 21-15' onChange={(e) => setScoreSet2(e.target.value)} style={{ marginBottom: '5px' }} />
+            <Input placeholder='e.g. 21-15' onChange={(e) => setScoreSet3(e.target.value)} style={{ marginBottom: '5px' }} />
           </div>
           <div >
             {selectedMatch?.teamB.team.players.map(player => <div key={player._id}>{player.displayName || player.officialName}</div>)}
@@ -497,54 +524,7 @@ const MatchList = () => {
         onOk={() => setStatModal(false)}
         onCancel={() => setStatModal(false)}
         destroyOnClose>
-        <div className='match-stat'>
-          <div className='team-container'>
-            <div className='team'>
-              {stat?.teamA.players.map(player => {
-                return (
-                  <div key={`teamA-${player._id}`} className='player-container'>
-                    <div className='avatar'>
-                      <Image className='avatar' src={player.photo || `/avatar.png`} alt='' width={35} height={35} objectFit='cover' />
-                    </div>
-                    <div className='info'>{player.displayName || player.officialName}</div>
-                  </div>
-                )
-              })}
-            </div>
-            <div className='team'>
-              {stat?.teamB.players.map(player => {
-                return (
-                  <div key={`teamB-${player._id}`}
-                    className='player-container'
-                    style={{ flexDirection: 'row-reverse' }}
-                  >
-                    <div className='avatar'>
-                      <Image className='avatar' src={player.photo || `/avatar.png`} alt='' width={35} height={35} objectFit='cover' />
-                    </div>
-                    <div className='info' style={{ marginRight: '5px', marginLeft: 0, textAlign: 'right' }}>{player.displayName || player.officialName}</div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-          <div style={{
-            textAlign: 'center',
-            marginTop: '20px',
-            borderBottom: '1px solid #eee',
-            fontWeight: 'bold',
-            padding: '5px',
-          }}>Total Meeting: {stat?.totalMeet}</div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px 0', borderBottom: '1px solid #eee' }}>
-            <div style={{ width: '20%', textAlign: 'center' }}>{stat?.teamA.win}</div>
-            <div style={{ fontWeight: 'bold' }}>Head to Head</div>
-            <div style={{ width: '20%', textAlign: 'center' }}>{stat?.teamB.win}</div>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px 0', }}>
-            <div style={{ width: '20%', textAlign: 'center' }}>{stat?.tie}</div>
-            <div style={{ fontWeight: 'bold' }}>Draw</div>
-            <div style={{ width: '20%', textAlign: 'center' }}>{stat?.tie}</div>
-          </div>
-        </div>
+        <Stat stat={stat} />
       </Modal>
     </div >
   )

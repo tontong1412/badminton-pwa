@@ -15,12 +15,12 @@ const AppLayout = (props) => {
         </div>
       </main>
       <Footer tabOption={[
-        {
-          name: 'หน้าแรก',
-          icon: <HomeOutlined style={{ fontSize: '24px', color: activeMenu === 'home' ? COLOR.MINOR_THEME : '#aaa' }} />,
-          href: '/',
-          alias: 'home'
-        },
+        // {
+        //   name: 'หน้าแรก',
+        //   icon: <HomeOutlined style={{ fontSize: '24px', color: activeMenu === 'home' ? COLOR.MINOR_THEME : '#aaa' }} />,
+        //   href: '/',
+        //   alias: 'home'
+        // },
         {
           name: 'ก๊วน',
           icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === 'gang' ? COLOR.MINOR_THEME : '#aaa' }} />,
