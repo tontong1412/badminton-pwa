@@ -7,7 +7,7 @@ import { mutate } from 'swr'
 import { API_ENDPOINT } from '../../config'
 import AddButton from '../../components/addButton'
 import Card from '../../components/gangCard'
-import { Modal, Form, Input, Radio, InputNumber, Button, Checkbox } from 'antd'
+import { Modal, Form, Input, Radio, InputNumber, Button, Checkbox, Empty } from 'antd'
 import { useGangs } from '../../utils'
 import Loading from '../../components/loading'
 
@@ -90,15 +90,17 @@ const Gang = () => {
   if (isLoading) return <Loading />
   return (
     <div>
-      <div style={{ margin: '15px 0 0 5px' }}>ก๊วนของฉัน</div>
+      {/* <div style={{ margin: '15px 0 0 5px' }}>ก๊วนของฉัน</div> */}
       <div style={{
         width: '100%',
         overflow: 'scroll',
         display: 'flex',
       }}>
-        {gangs?.map(gang => {
+        {gangs?.length > 0 ? gangs?.map(gang => {
           return <Card key={`gang-card-${gang._id}`} gang={gang} style={{ float: 'right' }} />
-        })}
+        })
+          : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        }
       </div>
       <AddButton onClick={() => {
         if (user.id) setIsModalVisible(true)
