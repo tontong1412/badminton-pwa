@@ -41,16 +41,20 @@ const Account = () => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.ACCOUNT })
   }, [])
 
-  if (!user.id) {
-    router.push('/login')
-    return <div />
-    // return <div onClick={() => router.push('/login')}>Please login <span style={{ color: '#4F708A' }}>Click here</span></div>
-  }
-  if (!user.playerID) {
-    // router.push('/claim-player')
-    // return <div />
-    return <div onClick={() => router.push('/claim-player')}>Please create profile <span style={{ color: '#4F708A' }}>Click here</span></div>
-  }
+  useEffect(() => {
+    if (!user.id) {
+      router.push('/login')
+      return <div />
+      // return <div onClick={() => router.push('/login')}>Please login <span style={{ color: '#4F708A' }}>Click here</span></div>
+    }
+    if (!user.playerID) {
+      // router.push('/claim-player')
+      // return <div />
+      return <div onClick={() => router.push('/claim-player')}>Please create profile <span style={{ color: '#4F708A' }}>Click here</span></div>
+    }
+  }, [user])
+
+
   const onChange = (info) => {
     if (info.file.status === 'done') {
       getBase64(info.file.originFileObj, image => {
