@@ -99,7 +99,7 @@ const Gang = () => {
         {gangs?.length > 0 ? gangs?.map(gang => {
           return <Card key={`gang-card-${gang._id}`} gang={gang} style={{ float: 'right' }} />
         })
-          : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+          : <div style={{ margin: 'auto' }}><Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /></div>
         }
       </div>
       <AddButton onClick={() => {
