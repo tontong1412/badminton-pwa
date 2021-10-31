@@ -25,7 +25,7 @@ export const useGang = (id) => {
 }
 
 export const useGangs = (token, params) => {
-  const { data, error } = useSWR(
+  const { data, error, mutate } = useSWR(
     `${API_ENDPOINT}/gang`,
     (url) => fetcher(url, token, params)
   )
@@ -33,7 +33,8 @@ export const useGangs = (token, params) => {
   return {
     gangs: data,
     isLoading: !error && !data,
-    isError: error
+    isError: error,
+    mutate
   }
 }
 

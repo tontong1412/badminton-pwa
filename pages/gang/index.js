@@ -21,6 +21,7 @@ const Gang = () => {
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [courtFeeType, setCourtFeeType] = useState('buffet')
   const { user } = useSelector(state => state)
+  console.log('>>', user)
   const { gangs, isLoading, isError } = useGangs(user.token)
   const dispatch = useDispatch()
   const formItemLayout = {
