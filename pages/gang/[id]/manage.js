@@ -48,9 +48,7 @@ const GangID = () => {
           .then(() => { })
           .catch(() => { })
       },
-      onCancel() {
-        console.log('Cancel');
-      },
+      onCancel() { },
     });
   }
 

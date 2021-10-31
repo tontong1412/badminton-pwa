@@ -8,7 +8,9 @@ const fetcher = (url, token, params) => axios.get(url, {
     'Authorization': `Token ${token}`
   } : null,
   params
-}).then((res) => res.data)
+}).then((res) => {
+  return res.data
+})
 
 export const useGang = (id) => {
   const { data, error, mutate } = useSWR(

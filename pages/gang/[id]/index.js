@@ -51,7 +51,6 @@ const GangDetail = () => {
 
   useEffect(() => {
     setCourtFeeType(gang?.courtFee.type)
-    console.log(gang)
     setInitialValue({
       name: gang?.name,
       location: gang?.location,
@@ -88,7 +87,6 @@ const GangDetail = () => {
   }
 
   const onFinish = (values) => {
-    console.log(values)
     setConfirmLoading(true)
     axios.put(`${API_ENDPOINT}/gang/${id}`, {
       name: values.name,
@@ -118,7 +116,6 @@ const GangDetail = () => {
       setEditModal(false)
       setConfirmLoading(false)
     }).catch(err => {
-      console.log(err)
       setEditModal(false)
       setConfirmLoading(false)
       Modal.error({

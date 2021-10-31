@@ -21,8 +21,7 @@ const Gang = () => {
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [courtFeeType, setCourtFeeType] = useState('buffet')
   const { user } = useSelector(state => state)
-  console.log('>>', user)
-  const { gangs, isLoading, isError } = useGangs(user.token)
+  const [gangs, setGangs] = useState()
   const dispatch = useDispatch()
   const formItemLayout = {
     labelCol: {
@@ -39,10 +38,25 @@ const Gang = () => {
     },
   };
 
+  const fetchData = () => {
+    axios.get(`${API_ENDPOINT}/gang`, {
+      headers: {
+        'Authorization': `Token ${user.token}`
+      }
+    }).then(res => setGangs(res.data))
+      .catch(() => { })
+  }
+
   useEffect(() => {
     logEvent(analytics, 'gang')
     dispatch({ type: 'ACTIVE_MENU', payload: 'gang' })
   }, [])
+
+  useEffect(() => {
+    if (user.token) {
+      fetchData()
+    }
+  }, [user])
   const formatPromptpay = (input) => {
     if (input.length === 10) {
       const formattedCode = input.slice(0, 3) + '-' + input.slice(3, 6) + '-' + input.slice(6)
@@ -81,7 +95,7 @@ const Gang = () => {
         'Authorization': `Token ${user.token}`
       }
     }).then(res => {
-      mutate(`${API_ENDPOINT}/gang`)
+      fetchData()
       setIsModalVisible(false)
       setConfirmLoading(false)
     }).catch(err => {
@@ -98,8 +112,9 @@ const Gang = () => {
       })
     })
   }
-  if (isError) return "An error has occurred."
-  if (isLoading) return <Loading />
+  if (!gangs) return <Loading />
+  // if (isError) return "An error has occurred."
+  // if (isLoading) return <Loading />
   return (
     <div>
       {/* <div style={{ margin: '15px 0 0 5px' }}>ก๊วนของฉัน</div> */}
@@ -125,7 +140,6 @@ const Gang = () => {
       <Modal
         title="สร้างก๊วน"
         visible={isModalVisible}
-        onOk={() => console.log('on ok')}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
         confirmLoading={confirmLoading}

@@ -147,7 +147,6 @@ const GangID = () => {
   }
 
   const onRemovePlayer = (playerID) => {
-    console.log('remove', playerID, id)
     axios.post(`${API_ENDPOINT}/gang/remove-player`, {
       playerID,
       gangID: id

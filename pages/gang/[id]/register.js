@@ -33,7 +33,6 @@ const Register = () => {
         ),
         onOk() { router.push('/login') },
         onCancel() {
-          console.log('cancel')
           logEvent(analytics, 'not register')
         }
       })

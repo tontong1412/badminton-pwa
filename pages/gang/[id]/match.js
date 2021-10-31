@@ -109,7 +109,6 @@ const MatchList = () => {
       gangID: id,
       matchID
     }).then(res => {
-      console.log(res.data)
       mutate(`${API_ENDPOINT}/gang/${id}`, res.data)
     })
   }
