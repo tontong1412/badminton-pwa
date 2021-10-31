@@ -120,9 +120,9 @@ const GangID = () => {
 
   const getBill = async (playerID) => {
     if (isManager) {
-      logEvent('manager get bill')
+      logEvent(analytics, 'manager get bill')
     } else {
-      logEvent('customer get bill')
+      logEvent(analytics, 'customer get bill')
     }
     setIsPaymentModalVisible(true)
     axios.get(`${API_ENDPOINT}/gang/bill`, {
