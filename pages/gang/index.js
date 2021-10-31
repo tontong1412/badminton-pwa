@@ -20,7 +20,7 @@ const Gang = () => {
   const [courtFeeType, setCourtFeeType] = useState('buffet')
   const { user } = useSelector(state => state)
   const [gangs, setGangs] = useState()
-  const [myGang, setMyGang] = useState()
+  const [myGang, setMyGang] = useState([])
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(true)
   const formItemLayout = {
@@ -41,23 +41,31 @@ const Gang = () => {
   const fetchData = async () => {
     setLoading(true)
     await axios.get(`${API_ENDPOINT}/gang`)
-      .then(res => setGangs(res.data))
+      .then(res => {
+        console.log(res.data)
+        setGangs(res.data)
+      })
       .catch(() => { })
 
-    await axios.get(`${API_ENDPOINT}/gang/my-gang`, {
-      headers: {
-        'Authorization': `Token ${user.token}`
-      }
-    }).then(res => {
-      setMyGang(res.data)
-    })
-      .catch(() => { })
+
+    if (user.token) {
+      await axios.get(`${API_ENDPOINT}/gang/my-gang`, {
+        headers: {
+          'Authorization': `Token ${user.token}`
+        }
+      }).then(res => {
+        setMyGang(res.data)
+      })
+        .catch(() => { })
+    }
+
     setLoading(false)
   }
 
   useEffect(() => {
     logEvent(analytics, 'gang')
     dispatch({ type: 'ACTIVE_MENU', payload: 'gang' })
+    fetchData()
   }, [])
 
   useEffect(() => {
