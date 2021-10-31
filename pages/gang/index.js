@@ -22,6 +22,7 @@ const Gang = () => {
   const [gangs, setGangs] = useState()
   const [myGang, setMyGang] = useState()
   const dispatch = useDispatch()
+  const [loading, setLoading] = useState(true)
   const formItemLayout = {
     labelCol: {
       xs: { span: 24 },
@@ -37,12 +38,13 @@ const Gang = () => {
     },
   };
 
-  const fetchData = () => {
-    axios.get(`${API_ENDPOINT}/gang`)
+  const fetchData = async () => {
+    setLoading(true)
+    await axios.get(`${API_ENDPOINT}/gang`)
       .then(res => setGangs(res.data))
       .catch(() => { })
 
-    axios.get(`${API_ENDPOINT}/gang/my-gang`, {
+    await axios.get(`${API_ENDPOINT}/gang/my-gang`, {
       headers: {
         'Authorization': `Token ${user.token}`
       }
@@ -50,6 +52,7 @@ const Gang = () => {
       setMyGang(res.data)
     })
       .catch(() => { })
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -118,7 +121,7 @@ const Gang = () => {
       })
     })
   }
-  if (!gangs) return <Loading />
+  if (loading) return <Loading />
   // if (isError) return "An error has occurred."
   // if (isLoading) return <Loading />
   return (
