@@ -7,7 +7,8 @@ import { Form, Input, Button, Checkbox, Modal } from 'antd'
 import { useDispatch, useSelector } from 'react-redux';
 import { API_ENDPOINT } from '../config'
 import Layout from '../components/Layout/noFooter'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { analytics, logEvent } from '../utils/firebase'
 
 const Login = () => {
   const state = useSelector(state => state)
@@ -15,6 +16,10 @@ const Login = () => {
   const router = useRouter()
   if (state.user.id) router.push('/')
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    logEvent(analytics, 'log in')
+  }, [])
 
   const onFinish = async (values) => {
     setLoading(true)

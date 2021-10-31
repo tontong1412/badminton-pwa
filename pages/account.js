@@ -8,6 +8,8 @@ import { TAB_OPTIONS } from '../constant'
 import { EditOutlined, CameraOutlined } from '@ant-design/icons'
 import axios from 'axios'
 import { API_ENDPOINT } from '../config'
+import Loading from '../components/loading'
+import { analytics, logEvent } from '../utils/firebase'
 
 const getBase64 = (img, callback) => {
   const reader = new FileReader();
@@ -34,10 +36,12 @@ const Account = () => {
   const [imageUrl, setImageUrl] = useState()
   const [imageLoading, setImageLoading] = useState(false)
   const logout = () => {
+    logEvent(analytics, 'log out')
     dispatch({ type: 'LOGOUT' })
     localStorage.clear()
   }
   useEffect(() => {
+    logEvent(analytics, 'account')
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.ACCOUNT })
   }, [])
 
@@ -67,6 +71,7 @@ const Account = () => {
   }
 
   const uploadPhoto = () => {
+    logEvent(analytics, 'upload profile photo')
     setImageLoading(true)
     axios.put(`${API_ENDPOINT}/player/${user.playerID}`, {
       photo: imageUrl
@@ -79,6 +84,7 @@ const Account = () => {
       setImageUrl()
     })
   }
+  if (!user.id) return <Loading />
 
   return (
     <>

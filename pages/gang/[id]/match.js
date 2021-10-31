@@ -8,11 +8,12 @@ import { useRouter } from 'next/router'
 import Layout from '../../../components/Layout/gang'
 import AddButton from '../../../components/addButton'
 import { useGang } from '../../../utils'
-import { API_ENDPOINT, MEDIA_URL } from '../../../config'
+import { API_ENDPOINT } from '../../../config'
 import Loading from '../../../components/loading'
 import { Tabs, Menu, Dropdown } from 'antd'
 import { TAB_OPTIONS } from '../../../constant'
 import Stat from '../../../components/Stat'
+import { analytics, logEvent } from '../../../utils/firebase'
 
 const { TabPane } = Tabs
 
@@ -103,6 +104,7 @@ const MatchList = () => {
   }, [player1, player2, player3, player4])
 
   const removeQueue = async (matchID) => {
+    logEvent(analytics, 'remove queue')
     axios.post(`${API_ENDPOINT}/gang/remove-queue`, {
       gangID: id,
       matchID
@@ -146,6 +148,11 @@ const MatchList = () => {
   }
 
   const handleOk = () => {
+    if (canManage) {
+      logEvent(analytics, 'manager add queue')
+    } else {
+      logEvent(analytics, 'customer add queue')
+    }
     setConfirmLoading(true)
     const endpoint = actionMode === 'create' ? `${API_ENDPOINT}/gang/add-queue` : `${API_ENDPOINT}/gang/update-queue`
     axios.post(endpoint, {
@@ -340,6 +347,7 @@ const MatchList = () => {
   }
 
   const getStat = (matchID) => {
+    logEvent(analytics, 'get stat')
     setStatModal(true)
     axios.get(`${API_ENDPOINT}/match/${matchID}/stat`)
       .then(res => {

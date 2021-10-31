@@ -1,40 +1,44 @@
-import axios from 'axios'
-import generatePayload from 'promptpay-qr'
-import Image from 'next/image'
-import { useRouter } from 'next/router'
-import { useState, useRef, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { mutate } from 'swr'
-import { Modal, AutoComplete, Popconfirm, Empty } from 'antd'
-import { API_ENDPOINT } from '../../../config'
 import Layout from '../../../components/Layout/gang'
-import AddButton from '../../../components/addButton'
-import { useGang, usePlayers } from '../../../utils'
-import qrcode from 'qrcode'
-import Loading from '../../../components/loading'
+import { analytics, logEvent } from '../../../utils/firebase'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import { useDispatch, useSelector } from 'react-redux'
 import { TAB_OPTIONS } from '../../../constant'
-import { DeleteOutlined } from '@ant-design/icons'
-
-const GangID = () => {
+import Image from 'next/image'
+import { useGang } from '../../../utils'
+import Loading from '../../../components/loading'
+import { Button, Modal, Form, Checkbox, Input, InputNumber, Radio } from 'antd'
+import { EnvironmentOutlined } from '@ant-design/icons';
+import axios from 'axios'
+import { API_ENDPOINT } from '../../../config'
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 24 },
+    lg: { span: 24 },
+    xl: { span: 24 }
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 24 },
+    lg: { span: 24 },
+    xl: { span: 24 }
+  },
+};
+const GangDetail = () => {
   const router = useRouter()
   const { id } = router.query
-  const { user } = useSelector(state => state)
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false)
-  const [confirmLoading, setConfirmLoading] = useState(false)
-  const [value, setValue] = useState('')
-  const [playerID, setPlayerID] = useState()
-  const [options, setOptions] = useState([])
-  const { gang, isLoading, isError } = useGang(id)
-  const { players } = usePlayers()
-  const [qrSVG, setQrSVG] = useState()
-  const [paymentData, setPaymentData] = useState()
-  const playerEndRef = useRef(null)
-  const [isManager, setIsManager] = useState(false)
   const dispatch = useDispatch()
-
+  const { gang, isLoading, isError, mutate } = useGang(id)
+  const { user } = useSelector(state => state)
+  const [isManager, setIsManager] = useState(false)
+  const [editModal, setEditModal] = useState(false)
+  const [confirmLoading, setConfirmLoading] = useState(false)
+  const [courtFeeType, setCourtFeeType] = useState('buffet')
+  const [initialValue, setInitialValue] = useState()
   useEffect(() => {
-    dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.GANG.PLAYERS })
+    logEvent(analytics, `gang-${id}`)
+    dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.GANG.DETAIL })
   }, [])
 
   useEffect(() => {
@@ -45,34 +49,77 @@ const GangID = () => {
     }
   }, [user, gang])
 
-  const scrollToBottom = () => {
-    playerEndRef.current?.scrollIntoView({
-      behavior: 'smooth',
+  useEffect(() => {
+    setCourtFeeType(gang?.courtFee.type)
+    console.log(gang)
+    setInitialValue({
+      name: gang?.name,
+      location: gang?.location,
+      courtFeeType: gang?.courtFee.type,
+      courtFee: gang?.courtFee.amount,
+      shuttlecockFee: gang?.shuttlecockFee,
+      paymentCode: gang?.payment?.code,
+      paymentName: gang?.payment?.name,
+      contactName: gang?.contact?.name,
+      tel: gang?.contact?.tel,
+      lineID: gang?.contact?.lineID,
+      isPrivate: gang?.isPrivate
     })
-  }
+  }, [gang])
 
-  const showModal = () => {
-    setIsModalVisible(true)
-  }
-
-  const handleOk = () => {
-    setConfirmLoading(true)
-    let player
-    if (playerID) {
-      player = { _id: playerID }
-    } else {
-      player = { displayName: value }
+  const formatTel = (input) => {
+    if (input?.length === 10) {
+      const formattedCode = input.slice(0, 3) + '-' + input.slice(3, 6) + '-' + input.slice(6)
+      return formattedCode
     }
-    axios.post(`${API_ENDPOINT}/gang/register`, {
-      gangID: id,
-      player
-    }).then(() => {
-      mutate(`${API_ENDPOINT}/gang/${id}`)
-      scrollToBottom()
-      setIsModalVisible(false)
+    return input
+  }
+
+  const formatPromptpay = (input) => {
+    if (input.length === 10) {
+      const formattedCode = input.slice(0, 3) + '-' + input.slice(3, 6) + '-' + input.slice(6)
+      return formattedCode
+    } else if (input.length === 13) {
+      const formattedCode = input.slice(0, 1) + '-' + input.slice(1, 5) + '-' + input.slice(5, 10) + '-' + input.slice(10, 12) + '-' + input.slice(12)
+      return formattedCode
+    } else {
+      return input
+    }
+  }
+
+  const onFinish = (values) => {
+    console.log(values)
+    setConfirmLoading(true)
+    axios.put(`${API_ENDPOINT}/gang/${id}`, {
+      name: values.name,
+      location: values.location,
+      // type: 'nonRoutine',
+      courtFee: {
+        type: values.courtFeeType,
+        amount: values.courtFee
+      },
+      shuttlecockFee: values.shuttlecockFee,
+      payment: {
+        code: values.paymentCode ? formatPromptpay(values.paymentCode) : null,
+        name: values.paymentName
+      },
+      isPrivate: values.isPrivate,
+      contact: {
+        name: values.contactName,
+        tel: values.tel,
+        lineID: values.lineID
+      }
+    }, {
+      headers: {
+        'Authorization': `Token ${user.token}`
+      }
+    }).then(res => {
+      mutate(res.data)
+      setEditModal(false)
       setConfirmLoading(false)
     }).catch(err => {
-      setIsModalVisible(false)
+      console.log(err)
+      setEditModal(false)
       setConfirmLoading(false)
       Modal.error({
         title: 'ผิดพลาด',
@@ -86,177 +133,175 @@ const GangID = () => {
     })
   }
 
-  const handleCancel = () => {
-    setIsModalVisible(false)
-  }
-
-  const onSearch = (searchText) => {
-    const searchTextLower = searchText.toLowerCase()
-    const searchOptions = players.filter(player =>
-      player.displayName?.toLowerCase().includes(searchTextLower)
-      || player.officialName?.toLowerCase().includes(searchTextLower)
-    ).map(player => {
-      return {
-        key: player._id,
-        value: player.displayName || player.officialName,
-      }
-    })
-    setOptions(
-      !searchText ? [] : searchOptions,
-    )
-  }
-
-  const onSelect = (data, options) => {
-    setValue(data)
-    setPlayerID(options.key)
-  }
-
-  const onChange = (data) => {
-    setValue(data)
-    setPlayerID()
-  }
-
-  const getBill = async (playerID) => {
-    setIsPaymentModalVisible(true)
-    axios.get(`${API_ENDPOINT}/gang/bill`, {
-      params: {
-        playerID,
-        gangID: id
-      }
-    }).then(res => {
-      const paymentCode = res.data.payment?.code
-      setPaymentData(res.data)
-      if (paymentCode) {
-        const payload = paymentCode.length > 20 ? paymentCode : generatePayload(paymentCode, { amount: res.data.total })
-        qrcode.toString(payload, (err, svg) => {
-          if (err) return console.log(err)
-          setQrSVG(svg)
-        })
-      }
-    })
-      .catch(() => { })
-
-
-  }
-
-  const onRemovePlayer = (playerID) => {
-    console.log('remove', playerID, id)
-    axios.post(`${API_ENDPOINT}/gang/remove-player`, {
-      playerID,
-      gangID: id
-    }).then(() => {
-      mutate(`${API_ENDPOINT}/gang/${id}`)
-    }).catch(() => { })
-  }
-
   if (isError) return "An error has occurred."
   if (isLoading) return <Loading />
-  return <>
-    <div style={{ fontSize: '20px' }}>{gang.name} </div>
-    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-      <div></div>
-      <div>ผู้เล่นทั้งหมด: {gang.players.length} คน</div>
-    </div>
-    {
-      gang.players.length > 0 ? gang.players.map(player => {
-        return (
-          <div key={`player-${player._id}`} className='gang-player'>
-            <div className='player-container'>
-              <div className='avatar'>
-                <Image objectFit='cover' src={player.photo || `/avatar.png`} alt='' width={50} height={50} layout='responsive' />
-              </div>
-              <div className='player-name'>{player.displayName || player.officialName}<span style={{ color: '#ccc', marginLeft: '10px' }}>{`${player.displayName ? (player.officialName || '') : ''}`}</span></div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              {(isManager || user.playerID === player._id) && <div onClick={() => getBill(player._id)} >จ่ายเงิน</div>}
-              {isManager && <Popconfirm
-                title="คุณแน่ใจที่จะลบผู้เล่นนี้หรือไม่"
-                onConfirm={() => onRemovePlayer(player._id)}
-                onCancel={() => { }}
-                okText="Yes"
-                cancelText="No"
-              ><div
-                style={{ marginLeft: '20px', color: 'red' }}>
-                  <DeleteOutlined />
-                </div>
-              </Popconfirm>}
-            </div>
+  return (
+    <>
+      <div style={{ width: '100%', height: '300px', overflow: 'hidden', borderBottom: '1px solid #eee' }}>
+        <Image
+          src='/icon/logo.png'
+          alt=''
+          width={100}
+          height={120}
+          objectFit='cover'
+          layout='responsive'
+        />
+      </div>
+      <div style={{ padding: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{gang.name}</div>
+          <div style={{ marginLeft: '5px', padding: '0px 10px', border: '1px solid #87e8de', backgroundColor: '#e6fffb', color: "#08979c", borderRadius: '20px' }}>{gang.courtFee.type}</div>
+        </div>
+        {gang.location && <div><EnvironmentOutlined style={{ marginRight: '5px' }} />{gang.location}</div>}
 
+        <div style={{ marginTop: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ fontWeight: 'bold', marginRight: '5px', width: '80px' }}>ค่าสนาม</div>
+            <div>{`${gang.courtFee.amount} บาท`}</div>
           </div>
-        )
-      })
-        : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-    }
-    {isManager && <AddButton onClick={showModal} />}
-    <Modal
-      title="เพิ่มผู้เล่น"
-      visible={isModalVisible}
-      onOk={handleOk}
-      onCancel={handleCancel}
-      confirmLoading={confirmLoading}
-      destroyOnClose>
-      <AutoComplete
-        options={options}
-        style={{
-          width: 200,
-        }}
-        onSelect={onSelect}
-        onSearch={onSearch}
-        onChange={onChange}
-        placeholder="ชื่อผู้เล่น"
-      />
-    </Modal>
-    <Modal
-      title="รายการ"
-      visible={isPaymentModalVisible}
-      onOk={() => setIsPaymentModalVisible(false)}
-      onCancel={() => {
-        setIsPaymentModalVisible(false)
-        setQrSVG(null)
-      }}
-      confirmLoading={confirmLoading}
-      destroyOnClose>
-      <div style={{ minHeight: '450px' }}>
-        {paymentData ?
-          <div style={{ textAlign: 'center' }}>
-            {qrSVG &&
-              <>
-                <div dangerouslySetInnerHTML={{ __html: qrSVG }} />
-                <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{paymentData?.payment?.name}</div>
-                <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{`${Math.ceil(paymentData?.total)} บาท`}</div>
-              </>}
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <div style={{ fontWeight: 'bold' }}>{`${paymentData.payer.displayName || paymentData.payer.officialName}`}</div>
-              <div></div>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <div>ค่าสนาม</div>
-              <div>{`${Math.ceil(paymentData?.courtFee)} บาท`}</div>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <div>{`ค่าลูกแบด (${paymentData?.shuttlecockUsed} ลูก)`}</div>
-              <div>{`${paymentData?.total - paymentData?.courtFee} บาท`}</div>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <div>{`รวม`}</div>
-              <div>{`${paymentData?.total} บาท`}</div>
-            </div>
+          <div style={{ display: 'flex', }}>
+            <div style={{ fontWeight: 'bold', marginRight: '5px', width: '80px' }}>ค่าลูกแบด</div>
+            <div>{`${gang.shuttlecockFee} บาท/ลูก/คน`}</div>
           </div>
-          :
-          <Loading />
+          <div style={{ display: 'flex', }}>
+            <div style={{ fontWeight: 'bold', marginRight: '5px', width: '80px' }}>เบอร์โทร</div>
+            <div>{`${formatTel(gang.contact?.tel) || '-'} ${gang.contact?.name ? `(${gang.contact?.name})` : ''}`}</div>
+          </div>
+          <div style={{ display: 'flex', }}>
+            <div style={{ fontWeight: 'bold', marginRight: '5px', width: '80px' }}>Line ID</div>
+            <div>{gang.contact?.lineID || '-'}</div>
+          </div>
+        </div>
+
+        {isManager &&
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+            <Button type='primary' style={{ width: '100%' }} onClick={() => setEditModal(true)}>แก้ไขข้อมูล</Button>
+          </div>
         }
       </div>
-    </Modal>
-    <div style={{ height: '80px' }} ref={playerEndRef} />
-  </>
+
+      <Modal
+        title="แก้ไขข้อมูล"
+        visible={editModal}
+        onCancel={() => setEditModal(false)}
+        footer={null}
+        confirmLoading={confirmLoading}
+        destroyOnClose
+
+      >
+        <Form
+          style={{ height: '500px', overflow: 'scroll' }}
+          onFinish={onFinish}
+          {...formItemLayout}
+          initialValues={initialValue}
+        >
+          <Form.Item
+            label='ชื่อก๊วน'
+            name='name'
+            rules={[
+              { required: true },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label='สนาม'
+            name='location'
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label='ค่าสนาม'
+            name='courtFeeType'
+            rules={[
+              { required: true },
+            ]}
+          >
+            <Radio.Group onChange={(e) => setCourtFeeType(e.target.value)}>
+              <Radio value="buffet">บุฟเฟต์</Radio>
+              <Radio value="share">หารเท่า</Radio>
+            </Radio.Group>
+          </Form.Item>
+
+          <Form.Item
+            name='courtFee'
+            help={courtFeeType === 'buffet' ? 'ค่าสนาม/คน' : 'ค่าสนามทั้งหมด'}
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <div><InputNumber min={0} defaultValue={initialValue?.courtFee} /> บาท</div>
+          </Form.Item>
+
+          <Form.Item
+            label='ค่าลูกขนไก่'
+            name='shuttlecockFee'
+            rules={[
+              { required: true },
+            ]}
+          >
+            <div><InputNumber min={0} defaultValue={initialValue?.shuttlecockFee} /> บาท/ลูก/คน</div>
+          </Form.Item>
+          <Form.Item
+            label='พร้อมเพย์'
+            name='paymentCode'
+            help="ใช้สำหรับสร้าง QR code รับเงิน"
+          >
+            <Input placeholder='เบอร์โทรศัพท์ หรือ หมายเลขบัตรประชาชน' />
+          </Form.Item>
+          <Form.Item
+            name='paymentName'
+            style={{ marginTop: '20px' }}
+          >
+            <Input placeholder='ชื่อบัญชีพร้อมเพย์' />
+          </Form.Item>
+
+          <Form.Item
+            label='ชื่อผู้ดูแลก๊วน'
+            name='contactName'
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label='เบอร์โทรศัพท์'
+            name='tel'
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label='Line id'
+            name='lineID'
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name='isPrivate'
+            valuePropName='checked'
+            help='ก๊วนของคุณจะไม่แสดงบนหน้าค้นหา'
+          >
+            <Checkbox>ก๊วนส่วนตัว</Checkbox>
+          </Form.Item>
+          <Form.Item >
+            <Button key='submit' type='primary' htmlType='submit' style={{ width: '100%', marginTop: '20px' }}>
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+    </>
+  )
 }
 
-GangID.getLayout = (page) => {
+GangDetail.getLayout = (page) => {
   return (
     <Layout>
       {page}
     </Layout>
   )
 }
-
-export default GangID
+export default GangDetail

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { analytics, logEvent } from '../../utils/firebase'
 import Layout from '../../components/Layout'
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
@@ -10,6 +11,10 @@ import Card from '../../components/gangCard'
 import { Modal, Form, Input, Radio, InputNumber, Button, Checkbox, Empty } from 'antd'
 import { useGangs } from '../../utils'
 import Loading from '../../components/loading'
+
+// TODO: search gang
+// TODO: my gang
+
 
 const Gang = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -34,6 +39,7 @@ const Gang = () => {
   };
 
   useEffect(() => {
+    logEvent(analytics, 'gang')
     dispatch({ type: 'ACTIVE_MENU', payload: 'gang' })
   }, [])
   const formatPromptpay = (input) => {
@@ -63,7 +69,12 @@ const Gang = () => {
         code: values.paymentCode ? formatPromptpay(values.paymentCode) : null,
         name: values.paymentName
       },
-      isPrivate: values.isPrivate
+      isPrivate: values.isPrivate,
+      contact: {
+        name: values.contactName,
+        tel: values.tel,
+        lineID: values.lineID
+      }
     }, {
       headers: {
         'Authorization': `Token ${user.token}`
@@ -186,6 +197,26 @@ const Gang = () => {
             style={{ marginTop: '20px' }}
           >
             <Input placeholder='ชื่อบัญชีพร้อมเพย์' />
+          </Form.Item>
+
+          <Form.Item
+            label='ชื่อผู้ดูแลก๊วน'
+            name='contactName'
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label='เบอร์โทรศัพท์'
+            name='tel'
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label='Line id'
+            name='lineID'
+          >
+            <Input />
           </Form.Item>
 
           <Form.Item

@@ -6,14 +6,18 @@ import { Form, Input, Button, Checkbox, Steps } from 'antd'
 import { useDispatch, useSelector } from 'react-redux';
 import { API_ENDPOINT } from '../config'
 import Layout from '../components/Layout/noFooter'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { analytics, logEvent } from '../utils/firebase'
 
 const Signup = () => {
-  const state = useSelector(state => state)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const [form] = Form.useForm()
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    logEvent(analytics, 'sign up')
+  }, [])
 
   const onFinish = async (values) => {
     setLoading(true)

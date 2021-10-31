@@ -1,4 +1,6 @@
 import { Button, Modal } from 'antd'
+import { useEffect } from 'react'
+import { analytics, logEvent } from '../../../utils/firebase'
 import axios from 'axios'
 import { API_ENDPOINT } from '../../../config'
 import { useRouter } from 'next/router'
@@ -8,8 +10,13 @@ const Register = () => {
   const router = useRouter()
   const { id } = router.query
   const { user } = useSelector(state => state)
+
+  useEffect(() => {
+    logEvent(analytics, 'scan register')
+  }, [])
   const joinGang = () => {
     if (user.playerID) {
+      logEvent(analytics, 'player register')
       axios.post(`${API_ENDPOINT}/gang/register`, {
         gangID: id,
         player: {
@@ -17,7 +24,7 @@ const Register = () => {
         }
       }).then(() => router.push(`/gang/${id}`))
     } else {
-      Modal.info({
+      Modal.confirm({
         title: 'กรุณาเข้าสู่ระบบ',
         content: (
           <div>
@@ -25,11 +32,22 @@ const Register = () => {
           </div>
         ),
         onOk() { router.push('/login') },
+        onCancel() {
+          console.log('cancel')
+          logEvent(analytics, 'not register')
+        }
       })
     }
 
   }
-  return <div style={{ width: '100%', marginTop: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Button type='primary' onClick={joinGang}>เข้าร่วมก๊วนนี้</Button></div >
+  return <div
+    style={{
+      width: '100%',
+      marginTop: '100px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    }}><Button type='primary' onClick={joinGang}>เข้าร่วมก๊วนนี้</Button></div >
 }
 
 Register.getLayout = (page) => {

@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import Footer from './footer'
 import Header from './header'
-import { UnorderedListOutlined, TeamOutlined, SettingOutlined } from '@ant-design/icons'
+import { UnorderedListOutlined, TeamOutlined, SettingOutlined, SearchOutlined } from '@ant-design/icons'
 import { useSelector } from 'react-redux'
 import { COLOR, TAB_OPTIONS } from '../../constant'
 import { useGang } from '../../utils'
@@ -13,9 +13,15 @@ const GangLayout = (props) => {
   const { gang } = useGang(id)
   let tabOptions = [
     {
+      name: 'ข้อมูล',
+      icon: <SearchOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.DETAIL ? COLOR.MINOR_THEME : '#aaa' }} />,
+      href: `/gang/${id}`,
+      alias: TAB_OPTIONS.GANG.DETAIL
+    },
+    {
       name: 'รายชื่อ',
       icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.PLAYERS ? COLOR.MINOR_THEME : '#aaa' }} />,
-      href: `/gang/${id}`,
+      href: `/gang/${id}/player`,
       alias: TAB_OPTIONS.GANG.PLAYERS
     },
     {
@@ -28,9 +34,15 @@ const GangLayout = (props) => {
   if (user.playerID === gang?.creator?._id) {
     tabOptions = [
       {
+        name: 'ข้อมูล',
+        icon: <SearchOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.DETAIL ? COLOR.MINOR_THEME : '#aaa' }} />,
+        href: `/gang/${id}`,
+        alias: TAB_OPTIONS.GANG.DETAIL
+      },
+      {
         name: 'รายชื่อ',
         icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.PLAYERS ? COLOR.MINOR_THEME : '#aaa' }} />,
-        href: `/gang/${id}`,
+        href: `/gang/${id}/player`,
         alias: TAB_OPTIONS.GANG.PLAYERS
       },
       {

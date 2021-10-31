@@ -5,6 +5,7 @@ const TAB_OPTIONS = {
   HOME: 'home',
   GANG: {
     INDEX: 'gang',
+    DETAIL: 'detail',
     PLAYERS: 'players',
     QUEUE: 'queue',
     SETTING: 'setting'
