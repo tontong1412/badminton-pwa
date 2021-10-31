@@ -42,8 +42,7 @@ const Gang = () => {
     setLoading(true)
     await axios.get(`${API_ENDPOINT}/gang`)
       .then(res => {
-        console.log(res.data)
-        setGangs(res.data)
+        setGangs([])
       })
       .catch(() => { })
 
@@ -154,7 +153,7 @@ const Gang = () => {
         {gangs?.length > 0 ? gangs?.map(gang => {
           return <Card key={`gang-card-${gang._id}`} gang={gang} />
         })
-          : <div style={{ margin: 'auto' }}><Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /></div>
+          : <div style={{ margin: '20px auto' }}><div style={{ color: '#ccc' }}>ไม่พบก๊วน</div></div>
         }
       </div>
 

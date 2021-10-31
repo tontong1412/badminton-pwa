@@ -191,7 +191,7 @@ const GangID = () => {
           </div>
         )
       })
-        : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        : <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}><div style={{ color: '#ccc' }}>เพิ่มผู้เล่นได้ที่ปุ่ม + ด้านล่าง</div></div>
     }
     {isManager && <AddButton onClick={showModal} />}
     <Modal
