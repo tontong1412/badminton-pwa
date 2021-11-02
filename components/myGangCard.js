@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useDispatch } from 'react-redux'
 
-const MyCard = ({ gang }) => {
+const MyGangCard = ({ gang }) => {
   const dispatch = useDispatch()
   const info = [
     {
@@ -45,4 +45,4 @@ const MyCard = ({ gang }) => {
     </Link >
   )
 }
-export default MyCard
+export default MyGangCard

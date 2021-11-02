@@ -3,16 +3,15 @@ import { analytics, logEvent } from '../../utils/firebase'
 import Layout from '../../components/Layout'
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import MyCard from '../../components/myCard'
 
 import { API_ENDPOINT } from '../../config'
 import AddButton from '../../components/addButton'
 import Card from '../../components/gangCard'
 import { Modal, Form, Input, Radio, InputNumber, Button, Checkbox, Empty } from 'antd'
 import Loading from '../../components/loading'
+import MyGang from '../../components/gang/myGang'
 
 // TODO: search gang
-// TODO: my gang
 
 const Gang = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -20,7 +19,6 @@ const Gang = () => {
   const [courtFeeType, setCourtFeeType] = useState('buffet')
   const { user } = useSelector(state => state)
   const [gangs, setGangs] = useState()
-  const [myGang, setMyGang] = useState([])
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(true)
   const formItemLayout = {
@@ -43,22 +41,9 @@ const Gang = () => {
     await axios.get(`${API_ENDPOINT}/gang`)
       .then(res => {
         setGangs([])
+        setLoading(false)
       })
       .catch(() => { })
-
-
-    if (user.token) {
-      await axios.get(`${API_ENDPOINT}/gang/my-gang`, {
-        headers: {
-          'Authorization': `Token ${user.token}`
-        }
-      }).then(res => {
-        setMyGang(res.data)
-      })
-        .catch(() => { })
-    }
-
-    setLoading(false)
   }
 
   useEffect(() => {
@@ -68,9 +53,7 @@ const Gang = () => {
   }, [])
 
   useEffect(() => {
-    if (user.token) {
-      fetchData()
-    }
+    fetchData()
   }, [user])
 
   const formatPromptpay = (input) => {
@@ -129,26 +112,9 @@ const Gang = () => {
     })
   }
   if (loading) return <Loading />
-  // if (isError) return "An error has occurred."
-  // if (isLoading) return <Loading />
   return (
     <div>
-      {myGang?.length > 0 &&
-        <><div style={{ margin: '15px 0 0 5px' }}>ก๊วนของฉัน</div>
-          <div style={{
-            width: '100%',
-            overflowX: 'scroll',
-            overflowY: 'hidden',
-            display: 'flex',
-          }}>
-            {myGang?.length > 0 ? myGang?.map(gang => {
-              return <MyCard key={`mygang-card-${gang._id}`} gang={gang} style={{ float: 'right' }} />
-            })
-              : <div style={{ margin: 'auto' }}><Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /></div>
-            }
-          </div>
-          <div style={{ borderBottom: '1px solid #eee', marginTop: '10px' }}></div>
-        </>}
+      <MyGang />
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
         {gangs?.length > 0 ? gangs?.map(gang => {
           return <Card key={`gang-card-${gang._id}`} gang={gang} />
