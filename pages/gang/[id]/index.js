@@ -62,7 +62,8 @@ const GangDetail = () => {
       contactName: gang?.contact?.name,
       tel: gang?.contact?.tel,
       lineID: gang?.contact?.lineID,
-      isPrivate: gang?.isPrivate
+      isPrivate: gang?.isPrivate,
+      area: gang?.area
     })
   }, [gang])
 
@@ -106,7 +107,8 @@ const GangDetail = () => {
         name: values.contactName,
         tel: values.tel,
         lineID: values.lineID
-      }
+      },
+      area: values.area
     }, {
       headers: {
         'Authorization': `Token ${user.token}`
@@ -199,11 +201,18 @@ const GangDetail = () => {
               { required: true },
             ]}
           >
-            <Input />
+            <Input maxLength={15} />
           </Form.Item>
           <Form.Item
             label='สนาม'
             name='location'
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label='สถานที่'
+            name='area'
+            help='เช่น วงเวียนใหญ่, เชียงใหม่ ใช้สำหรับการค้นหา'
           >
             <Input />
           </Form.Item>

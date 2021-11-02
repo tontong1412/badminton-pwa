@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useDispatch } from 'react-redux'
+import { EnvironmentOutlined } from '@ant-design/icons';
 
 const Card = ({ gang }) => {
   const dispatch = useDispatch()
@@ -34,7 +35,7 @@ const Card = ({ gang }) => {
         </div>
         <div className='info-container'>
           <div>{gang.name}</div>
-          <div className='sub-title'>{`${gang.location || ''}`}</div>
+          {(gang.area || gang.location) && <div className='sub-title'><EnvironmentOutlined style={{ marginRight: '5px' }} />{`${gang.area || gang.location || ''}`}</div>}
           <div className='info-item-container'>
             {
               info.map((elm, index) => {

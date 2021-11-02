@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { API_ENDPOINT } from '../../config'
 import AddButton from '../../components/addButton'
 import Card from '../../components/gangCard'
-import { Modal, Form, Input, Radio, InputNumber, Button, Checkbox, Empty } from 'antd'
+import { Modal, Form, Input, Radio, InputNumber, Button, Checkbox } from 'antd'
 import Loading from '../../components/loading'
 import MyGang from '../../components/gang/myGang'
 
@@ -21,6 +21,7 @@ const Gang = () => {
   const [gangs, setGangs] = useState()
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(true)
+  const [displayGangs, setDisplayGangs] = useState()
   const formItemLayout = {
     labelCol: {
       xs: { span: 24 },
@@ -40,7 +41,8 @@ const Gang = () => {
     setLoading(true)
     await axios.get(`${API_ENDPOINT}/gang`)
       .then(res => {
-        setGangs([])
+        setGangs(res.data)
+        setDisplayGangs(res.data)
         setLoading(false)
       })
       .catch(() => { })
@@ -67,6 +69,14 @@ const Gang = () => {
       return input
     }
   }
+  const onSearch = (value) => {
+    const searchTextLower = value.toLowerCase().trim()
+    const searchGang = gangs.filter(gang => gang.name?.toLowerCase().includes(searchTextLower)
+      || gang.location?.toLowerCase().includes(searchTextLower)
+      || gang.area?.toLowerCase().includes(searchTextLower)
+    )
+    setDisplayGangs(searchGang)
+  }
 
   const onFinish = (values) => {
     setConfirmLoading(true)
@@ -88,7 +98,8 @@ const Gang = () => {
         name: values.contactName,
         tel: values.tel,
         lineID: values.lineID
-      }
+      },
+      area: values.area
     }, {
       headers: {
         'Authorization': `Token ${user.token}`
@@ -114,9 +125,10 @@ const Gang = () => {
   if (loading) return <Loading />
   return (
     <div>
-      <MyGang />
-      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {gangs?.length > 0 ? gangs?.map(gang => {
+      <MyGang bottomLine />
+      <div style={{ margin: '10px' }}><Input.Search enterButton="Search" placeholder='ค้นหาโดยชื่อก๊วน ชื่อสนาม จังหวัด หรือย่าน' onSearch={onSearch} /></div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', margin: '5px' }}>
+        {displayGangs?.length > 0 ? displayGangs?.map(gang => {
           return <Card key={`gang-card-${gang._id}`} gang={gang} />
         })
           : <div style={{ margin: '20px auto' }}><div style={{ color: '#ccc' }}>ไม่พบก๊วน</div></div>
@@ -152,11 +164,18 @@ const Gang = () => {
               { required: true },
             ]}
           >
-            <Input />
+            <Input maxLength={15} />
           </Form.Item>
           <Form.Item
             label='สนาม'
             name='location'
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label='สถานที่'
+            name='area'
+            help='เช่น วงเวียนใหญ่, เชียงใหม่ ใช้สำหรับการค้นหา'
           >
             <Input />
           </Form.Item>
