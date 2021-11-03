@@ -38,6 +38,17 @@ const plugins = [
       return config;
     },
   }),
+  {
+    async redirects() {
+      return [
+        {
+          source: '/',
+          destination: '/gang',
+          permanent: true,
+        },
+      ]
+    },
+  }
 ]
 
 module.exports = withPlugins(plugins, nextConfig);
