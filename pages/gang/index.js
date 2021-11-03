@@ -155,13 +155,17 @@ const Gang = () => {
         <Form
           style={{ height: '500px', overflow: 'scroll' }}
           onFinish={onFinish}
+          scrollToFirstError
           {...formItemLayout}
         >
           <Form.Item
             label='ชื่อก๊วน'
             name='name'
             rules={[
-              { required: true },
+              {
+                required: true,
+                message: 'กรุณาระบุชื่อก๊วน',
+              },
             ]}
           >
             <Input maxLength={15} />
@@ -183,7 +187,10 @@ const Gang = () => {
             label='ค่าสนาม'
             name='courtFeeType'
             rules={[
-              { required: true },
+              {
+                required: true,
+                message: 'กรุณาเลือกประเภทการเก็บค่าสนาม',
+              },
             ]}
           >
             <Radio.Group onChange={(e) => setCourtFeeType(e.target.value)}>
@@ -198,6 +205,7 @@ const Gang = () => {
             rules={[
               {
                 required: true,
+                message: 'กรุณาระบุค่าสนาม',
               },
             ]}
           >
@@ -208,7 +216,10 @@ const Gang = () => {
             label='ค่าลูกขนไก่'
             name='shuttlecockFee'
             rules={[
-              { required: true },
+              {
+                required: true,
+                message: 'กรุณาระบุค่าลูกขนไก่',
+              },
             ]}
           >
             <div><InputNumber min={0} /> บาท/ลูก/คน</div>

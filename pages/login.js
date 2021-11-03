@@ -14,7 +14,6 @@ const Login = () => {
   const state = useSelector(state => state)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  if (state.user.id) router.push('/')
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -53,7 +52,7 @@ const Login = () => {
       dispatch({ type: 'LOGIN', payload: user })
       dispatch({ type: 'ACTIVE_MENU', payload: 'home' })
       setLoading(false)
-      router.push('/')
+      router.back()
     } catch (error) {
       Modal.error({
         title: 'Log in ไม่สำเร็จ',

@@ -41,7 +41,7 @@ const MyGang = (props) => {
         })
         }
       </div>
-      {props.bottomLine && <div style={{ border: '1px solid #eee', width: '100%', marginTop: '20px' }}></div>}
+      {props.bottomLine && <div style={{ border: '1px solid #eee', width: '100%', marginTop: '5px' }}></div>}
     </>
   )
 

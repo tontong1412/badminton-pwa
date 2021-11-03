@@ -222,7 +222,7 @@ const GangID = () => {
       }}
       confirmLoading={confirmLoading}
       destroyOnClose>
-      <div style={{ minHeight: '450px' }}>
+      <div >
         {paymentData ?
           <div style={{ textAlign: 'center' }}>
             {qrSVG &&

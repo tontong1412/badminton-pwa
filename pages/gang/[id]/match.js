@@ -36,7 +36,7 @@ const MatchList = () => {
   const [tabData, setTabData] = useState()
   const [canManage, setCanManage] = useState(false)
   const { user } = useSelector(state => state)
-  const [canAddQueue, setcanAddQueue] = useState(false)
+  const [canAddQueue, setCanAddQueue] = useState(false)
   const [actionMode, setActionMode] = useState()
   const [selectedMatch, setMatch] = useState()
   const [setScoreModal, setSetScoreModal] = useState(false)
@@ -45,6 +45,8 @@ const MatchList = () => {
   const [scoreSet3, setScoreSet3] = useState()
   const [statModal, setStatModal] = useState(false)
   const [stat, setStat] = useState()
+  const [tabKey, setTabKey] = useState('1')
+  const [allowAddQueue, setAllowAddQueue] = useState(false)
 
   const dispatch = useDispatch()
 
@@ -56,9 +58,14 @@ const MatchList = () => {
     setQueue(gang?.queue)
     if (user && gang && (user.playerID === gang.creator._id || gang.managers.includes(user.playerID))) {
       setCanManage(true)
+      setAllowAddQueue(true)
     } else {
       setCanManage(false)
+      if (user && gang && gang.players.map(elm => elm._id).includes(user.playerID)) {
+        setAllowAddQueue(true)
+      }
     }
+
 
     setOptions(gang?.players.map(player => {
       return {
@@ -97,9 +104,9 @@ const MatchList = () => {
 
   useEffect(() => {
     if (player1 && player2 && player3 && player4) {
-      setcanAddQueue(true)
+      setCanAddQueue(true)
     } else {
-      setcanAddQueue(false)
+      setCanAddQueue(false)
     }
   }, [player1, player2, player3, player4])
 
@@ -139,8 +146,7 @@ const MatchList = () => {
         </div>
       </Menu.Item>
     </Menu>
-  );
-
+  )
 
   const showModal = () => {
     setIsModalVisible(true)
@@ -329,9 +335,10 @@ const MatchList = () => {
       status
     }).then(() => {
       mutate(`${API_ENDPOINT}/gang/${id}`)
-      // if (status === 'playing') {
-      //   addShuttlecock(matchID)
-      // }
+      if (status === 'playing') {
+        setTabKey('2')
+        // addShuttlecock(matchID)
+      }
     }).catch(() => {
       Modal.error({
         title: 'ผิดพลาด',
@@ -354,12 +361,16 @@ const MatchList = () => {
       })
       .catch(() => { })
   }
+
+  const onTabClick = (key) => {
+    setTabKey(key)
+  }
   if (isError) return 'An error has occurred.'
   if (isLoading) return <Loading />
 
   return (
     <div>
-      <Tabs defaultActiveKey='1' >
+      <Tabs defaultActiveKey='1' activeKey={tabKey} onTabClick={onTabClick}>
         {tabData?.map(tab => (
           <TabPane tab={tab.label} key={tab.key}>
             {
@@ -421,10 +432,10 @@ const MatchList = () => {
           </TabPane>
         ))}
       </Tabs>
-      <AddButton onClick={() => {
+      {allowAddQueue && <AddButton onClick={() => {
         setActionMode('create')
         showModal()
-      }} />
+      }} />}
       <Modal
         title='เพิ่มคิว'
         visible={isModalVisible}

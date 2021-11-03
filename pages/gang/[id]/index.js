@@ -7,7 +7,7 @@ import { TAB_OPTIONS } from '../../../constant'
 import Image from 'next/image'
 import { useGang } from '../../../utils'
 import Loading from '../../../components/loading'
-import { Button, Modal, Form, Checkbox, Input, InputNumber, Radio } from 'antd'
+import { Button, Modal, Form, Checkbox, Input, InputNumber, Radio, Popconfirm } from 'antd'
 import { EnvironmentOutlined } from '@ant-design/icons';
 import axios from 'axios'
 import { API_ENDPOINT } from '../../../config'
@@ -132,6 +132,32 @@ const GangDetail = () => {
     })
   }
 
+  const joinGang = () => {
+    if (user.playerID) {
+      logEvent(analytics, 'player register')
+      axios.post(`${API_ENDPOINT}/gang/register`, {
+        gangID: id,
+        player: {
+          _id: user.playerID
+        }
+      }).then(() => router.push(`/gang/${id}/player`))
+    } else {
+      Modal.confirm({
+        title: 'กรุณาเข้าสู่ระบบ',
+        content: (
+          <div>
+            <p>คุณจำเป็นต้องเข้าสู่ระบบเพื่อเข้าร่วมก๊วน</p>
+          </div>
+        ),
+        onOk() { router.push('/login') },
+        onCancel() {
+          logEvent(analytics, 'not register')
+        }
+      })
+    }
+
+  }
+
   if (isError) return "An error has occurred."
   if (isLoading) return <Loading />
   return (
@@ -172,11 +198,24 @@ const GangDetail = () => {
           </div>
         </div>
 
-        {isManager &&
+        {isManager ?
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
             <Button type='primary' style={{ width: '100%' }} onClick={() => setEditModal(true)}>แก้ไขข้อมูล</Button>
           </div>
+          :
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+            <Popconfirm
+              title="คุณแน่ใจที่จะเข้าร่วมก๊วนนี้หรือไม่"
+              onConfirm={() => joinGang()}
+              onCancel={() => { }}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button type='primary' style={{ width: '100%' }}>เข้าร่วมก๊วน</Button>
+            </Popconfirm>
+          </div>
         }
+
       </div>
 
       <Modal
