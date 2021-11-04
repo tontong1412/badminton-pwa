@@ -122,8 +122,8 @@ const MatchList = () => {
 
   const menu = (match) => (
     <Menu>
-      <Menu.Item key='stat' disabled>
-        <div>
+      <Menu.Item key='stat'>
+        <div onClick={() => getStat(match._id)}>
           ดูสถิติ
         </div>
       </Menu.Item>

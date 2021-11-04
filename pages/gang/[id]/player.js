@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import { useState, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { mutate } from 'swr'
-import { Modal, AutoComplete, Popconfirm, Empty } from 'antd'
+import { Modal, AutoComplete, Popconfirm, Tag, Button } from 'antd'
 import { API_ENDPOINT } from '../../../config'
 import Layout from '../../../components/Layout/gang'
 import AddButton from '../../../components/addButton'
@@ -108,6 +108,24 @@ const GangID = () => {
     )
   }
 
+  const modalFooter = () => {
+    let footer = []
+    if (isManager) {
+      footer.push(
+        <Popconfirm
+          title="ยืนยัน"
+          onConfirm={() => updateBillStatus(paymentData._id)}
+          onCancel={() => { }}
+          okText="Yes"
+          cancelText="No"
+        ><Button key="status-paid">จ่ายแล้ว</Button>
+        </Popconfirm>
+      )
+    }
+    footer.push(<Button key="ok" type="primary" onClick={onClosePaymentModal} >ปิด</Button>)
+    return footer
+  }
+
   const onSelect = (data, options) => {
     setValue(data)
     setPlayerID(options.key)
@@ -142,8 +160,14 @@ const GangID = () => {
       }
     })
       .catch(() => { })
+  }
 
-
+  const updateBillStatus = (transactionID) => {
+    axios.put(`${API_ENDPOINT}/transaction/${transactionID}`, {
+      status: 'paid'
+    }).then((res) => {
+      setPaymentData(res.data)
+    }).catch(() => { })
   }
 
   const onRemovePlayer = (playerID) => {
@@ -153,6 +177,12 @@ const GangID = () => {
     }).then(() => {
       mutate(`${API_ENDPOINT}/gang/${id}`)
     }).catch(() => { })
+  }
+
+  const onClosePaymentModal = () => {
+    setIsPaymentModalVisible(false)
+    setQrSVG(null)
+    setPaymentData()
   }
 
   if (isError) return "An error has occurred."
@@ -174,7 +204,7 @@ const GangID = () => {
               <div className='player-name'>{player.displayName || player.officialName}<span style={{ color: '#ccc', marginLeft: '10px' }}>{`${player.displayName ? (player.officialName || '') : ''}`}</span></div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              {(isManager || user.playerID === player._id) && <div onClick={() => getBill(player._id)} >จ่ายเงิน</div>}
+              {(isManager || user.playerID === player._id) && <div onClick={() => getBill(player._id)} >ดูบิล</div>}
               {isManager && <Popconfirm
                 title="คุณแน่ใจที่จะลบผู้เล่นนี้หรือไม่"
                 onConfirm={() => onRemovePlayer(player._id)}
@@ -215,11 +245,9 @@ const GangID = () => {
     <Modal
       title="รายการ"
       visible={isPaymentModalVisible}
-      onOk={() => setIsPaymentModalVisible(false)}
-      onCancel={() => {
-        setIsPaymentModalVisible(false)
-        setQrSVG(null)
-      }}
+      onOk={onClosePaymentModal}
+      onCancel={onClosePaymentModal}
+      footer={modalFooter()}
       confirmLoading={confirmLoading}
       destroyOnClose>
       <div >
@@ -231,9 +259,9 @@ const GangID = () => {
                 <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{paymentData?.payment?.name}</div>
                 <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{`${Math.ceil(paymentData?.total)} บาท`}</div>
               </>}
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex' }}>
               <div style={{ fontWeight: 'bold' }}>{`${paymentData.payer.displayName || paymentData.payer.officialName}`}</div>
-              <div></div>
+              <div style={{ marginLeft: '5px' }}><Tag color={paymentData.status === 'pending' ? 'red' : 'green'}>{paymentData.status === 'pending' ? 'ยังไม่จ่าย' : 'จ่ายแล้ว'}</Tag></div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div>ค่าสนาม</div>
