@@ -1,8 +1,8 @@
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { Modal, Button } from 'antd'
+import { useDispatch, useSelector } from 'react-redux'
+import { Modal, Button, AutoComplete } from 'antd'
 import { API_ENDPOINT } from '../../../config'
 import Layout from '../../../components/Layout/gang'
 import { useGang } from '../../../utils'
@@ -11,15 +11,23 @@ import { WEB_URL } from '../../../config'
 import Loading from '../../../components/loading'
 import { TAB_OPTIONS } from '../../../constant'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { usePlayers } from '../../../utils'
 
 const GangID = () => {
   const router = useRouter()
+  const user = useSelector(state => state.user)
   const { id } = router.query
   const { gang, isLoading, isError } = useGang(id)
   const [qrSVG, setQrSVG] = useState()
   const dispatch = useDispatch()
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const [addManagerVisible, setAddManagerVisible] = useState(false)
+  const [options, setOptions] = useState([])
   const [stat, setStat] = useState()
+  const [playerID, setPlayerID] = useState()
+  const { players } = usePlayers()
+  const [confirmLoading, setConfirmLoading] = useState(false)
+  const [isCreator, setIsCreator] = useState(false)
 
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.GANG.SETTING })
@@ -29,6 +37,14 @@ const GangID = () => {
       setQrSVG(svg)
     })
   }, [])
+
+  useEffect(() => {
+    if (user && gang && user.playerID === gang.creator._id) {
+      setIsCreator(true)
+    } else {
+      setIsCreator(false)
+    }
+  }, [gang, user])
 
   const getStat = () => {
     axios.get(`${API_ENDPOINT}/gang/stat/${id}`)
@@ -68,6 +84,59 @@ const GangID = () => {
     });
   }
 
+  const addManager = () => {
+    console.log(user)
+    setConfirmLoading(true)
+    axios.post(`${API_ENDPOINT}/gang/addManager`, {
+      gangID: id,
+      playerID,
+    }, {
+      headers: {
+        'Authorization': `Token ${user.token}`
+      }
+    }).then(() => {
+      setAddManagerVisible(false)
+      setConfirmLoading(false)
+    }).catch(err => {
+      setAddManagerVisible(false)
+      setConfirmLoading(false)
+      Modal.error({
+        title: 'ผิดพลาด',
+        content: (
+          <div>
+            <p>เกิดปัญหาขณะอัพเดทข้อมูล กรุณาลองใหม่ในภายหลัง</p>
+          </div>
+        ),
+        onOk() { },
+      })
+    })
+  }
+
+  const onSearch = (searchText) => {
+    const searchTextLower = searchText.toLowerCase()
+    const searchOptions = players.filter(player =>
+      player.userID &&
+      (player.displayName?.toLowerCase().includes(searchTextLower)
+        || player.officialName?.toLowerCase().includes(searchTextLower))
+    ).map(player => {
+      return {
+        key: player._id,
+        value: player.displayName || player.officialName,
+      }
+    })
+    setOptions(
+      !searchText ? [] : searchOptions,
+    )
+  }
+
+  const onSelect = (data, options) => {
+    setPlayerID(options.key)
+  }
+
+  const onChange = (data) => {
+    setPlayerID()
+  }
+
 
   if (isError) return "An error has occurred."
   if (isLoading) return <Loading />
@@ -79,8 +148,9 @@ const GangID = () => {
           <div dangerouslySetInnerHTML={{ __html: qrSVG }} />
           <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{gang.name}</div>
           <div><Button onClick={getStat} style={{ width: '200px', marginBottom: '10px' }}>สถิติ</Button></div>
-          <div><Button onClick={clear} type='primary' style={{ width: '200px', marginBottom: '50px' }}>Reset</Button></div>
-          <div><Button onClick={removeGang} type='danger' style={{ width: '200px', marginBottom: '10px' }}>ลบก๊วน</Button></div>
+          <div><Button onClick={clear} type='primary' style={{ width: '200px', marginBottom: '10px' }}>Reset</Button></div>
+          {isCreator && <div><Button onClick={() => setAddManagerVisible(true)} type='primary' style={{ width: '200px', marginBottom: '50px' }}>เพิ่มผู้จัดการก๊วน</Button></div>}
+          {isCreator && <div><Button onClick={removeGang} type='danger' style={{ width: '200px', marginBottom: '10px' }}>ลบก๊วน</Button></div>}
         </div>
         :
         <Loading />
@@ -90,6 +160,25 @@ const GangID = () => {
         <p>ใช้ลูกแบดทั้งหมด: {stat?.totalShuttlecockUsed} ลูก</p>
         <p>จำนวนเกมทั้งหมด: {stat?.totalMatchPlayed} เกม</p>
         <p>รายรับทั้งหมด: {stat?.totalIncome} บาท</p>
+      </Modal>
+
+      <Modal
+        title="เพิ่มผู้จัดการ"
+        visible={addManagerVisible}
+        onOk={addManager}
+        onCancel={() => setAddManagerVisible(false)}
+        confirmLoading={confirmLoading}
+        destroyOnClose>
+        <AutoComplete
+          options={options}
+          style={{
+            width: 200,
+          }}
+          onSelect={onSelect}
+          onSearch={onSearch}
+          onChange={onChange}
+          placeholder="ชื่อผู้เล่น"
+        />
       </Modal>
     </div >
   )

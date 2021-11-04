@@ -31,7 +31,7 @@ const GangDetail = () => {
   const dispatch = useDispatch()
   const { gang, isLoading, isError, mutate } = useGang(id)
   const { user } = useSelector(state => state)
-  const [isManager, setIsManager] = useState(false)
+  const [isCreator, setIsCreator] = useState(false)
   const [editModal, setEditModal] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [courtFeeType, setCourtFeeType] = useState('buffet')
@@ -42,10 +42,10 @@ const GangDetail = () => {
   }, [])
 
   useEffect(() => {
-    if (user && gang && (user.playerID === gang.creator?._id || gang.managers?.includes(user.playerID))) {
-      setIsManager(true)
+    if (user && gang && user.playerID === gang.creator?._id) {
+      setIsCreator(true)
     } else {
-      setIsManager(false)
+      setIsCreator(false)
     }
   }, [user, gang])
 
@@ -198,7 +198,7 @@ const GangDetail = () => {
           </div>
         </div>
 
-        {isManager ?
+        {isCreator ?
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
             <Button type='primary' style={{ width: '100%' }} onClick={() => setEditModal(true)}>แก้ไขข้อมูล</Button>
           </div>

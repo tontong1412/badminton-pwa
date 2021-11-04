@@ -31,7 +31,7 @@ const GangLayout = (props) => {
       alias: TAB_OPTIONS.GANG.QUEUE
     }
   ]
-  if (user.playerID === gang?.creator?._id) {
+  if (user.playerID === gang?.creator?._id || gang?.managers.includes(user.playerID)) {
     tabOptions = [
       {
         name: 'ข้อมูล',
