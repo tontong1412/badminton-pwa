@@ -211,6 +211,7 @@ const GangID = () => {
                 onCancel={() => { }}
                 okText="Yes"
                 cancelText="No"
+                placement="topRight"
               ><div
                 style={{ marginLeft: '20px', color: 'red' }}>
                   <DeleteOutlined />
