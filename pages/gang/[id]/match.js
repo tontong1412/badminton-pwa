@@ -418,7 +418,7 @@ const MatchList = () => {
                       {canManage && match.status === 'playing' && <div className='controller' onClick={() => addShuttlecock(match._id)}>เพิ่มลูก</div>}
                       {canManage && match.status !== 'finished' && <div className='controller' onClick={() => updateStatus(match._id, match.status)}>{match.status === 'waiting' ? 'เริ่มเกม' : 'จบเกม'}</div>}
                       {match.status === 'finished' && <div onClick={() => getStat(match._id)} className='controller'>สถิติ</div>}
-                      {user.id && match.status === 'finished' && <div className='controller' onClick={() => {
+                      {user.id && allowAddQueue && match.status === 'finished' && <div className='controller' onClick={() => {
                         setSetScoreModal(true)
                         setMatch(match)
                       }}>บันทึกผล

@@ -198,22 +198,22 @@ const GangDetail = () => {
           </div>
         </div>
 
-        {isCreator ?
+        {isCreator &&
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
             <Button type='primary' style={{ width: '100%' }} onClick={() => setEditModal(true)}>แก้ไขข้อมูล</Button>
           </div>
-          :
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-            <Popconfirm
-              title="คุณแน่ใจที่จะเข้าร่วมก๊วนนี้หรือไม่"
-              onConfirm={() => joinGang()}
-              onCancel={() => { }}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button type='primary' style={{ width: '100%' }}>เข้าร่วมก๊วน</Button>
-            </Popconfirm>
-          </div>
+          // :
+          // <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+          //   <Popconfirm
+          //     title="คุณแน่ใจที่จะเข้าร่วมก๊วนนี้หรือไม่"
+          //     onConfirm={() => joinGang()}
+          //     onCancel={() => { }}
+          //     okText="Yes"
+          //     cancelText="No"
+          //   >
+          //     <Button type='primary' style={{ width: '100%' }}>เข้าร่วมก๊วน</Button>
+          //   </Popconfirm>
+          // </div>
         }
 
       </div>
