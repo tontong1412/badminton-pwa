@@ -149,7 +149,7 @@ const GangID = () => {
           <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{gang.name}</div>
           <div><Button onClick={getStat} style={{ width: '200px', marginBottom: '10px' }}>สถิติ</Button></div>
           <div><Button onClick={clear} type='primary' style={{ width: '200px', marginBottom: '10px' }}>Reset</Button></div>
-          {isCreator && <div><Button onClick={() => setAddManagerVisible(true)} type='primary' style={{ width: '200px', marginBottom: '50px' }}>เพิ่มผู้จัดการก๊วน</Button></div>}
+          {isCreator && <div><Button onClick={() => router.push(`/gang/${id}/manager`)} type='primary' style={{ width: '200px', marginBottom: '50px' }}>ผู้จัดการ</Button></div>}
           {isCreator && <div><Button onClick={removeGang} type='danger' style={{ width: '200px', marginBottom: '10px' }}>ลบก๊วน</Button></div>}
         </div>
         :
@@ -177,7 +177,7 @@ const GangID = () => {
           onSelect={onSelect}
           onSearch={onSearch}
           onChange={onChange}
-          placeholder="ชื่อผู้เล่น"
+          placeholder="ชื่อผู้จัดการ"
         />
       </Modal>
     </div >

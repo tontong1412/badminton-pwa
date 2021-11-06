@@ -2,7 +2,7 @@ import axios from 'axios'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import logo from '../public/icon/logo.png'
-import { Form, Input, Button, Checkbox, Steps } from 'antd'
+import { Form, Input, Button, Checkbox, Steps, Modal } from 'antd'
 import { useDispatch, useSelector } from 'react-redux';
 import { API_ENDPOINT } from '../config'
 import Layout from '../components/Layout/noFooter'
@@ -21,23 +21,35 @@ const Signup = () => {
 
   const onFinish = async (values) => {
     setLoading(true)
-    const { data: login } = await axios.post(`${API_ENDPOINT}/signup`,
+
+    axios.post(`${API_ENDPOINT}/signup`,
       {
         user: {
           email: values.email.toLowerCase(),
           password: values.password
         }
+      }).then(res => {
+        const user = {
+          id: res.data.user._id,
+          token: res.data.user.token,
+          email: res.data.user.email,
+        }
+        dispatch({ type: 'LOGIN', payload: user })
+        router.push('/claim-player')
+        setLoading(false)
+      }).catch((err) => {
+        setLoading(false)
+        Modal.error({
+          title: 'ผิดพลาด',
+          content: (
+            <div>
+              <p>{err.response.data.message || 'เกิดปัญหาขณะอัพเดทข้อมูล กรุณาลองใหม่ในภายหลัง'}</p>
+            </div>
+          ),
+          onOk() { },
+        })
       })
 
-    const user = {
-      id: login.user._id,
-      token: login.user.token,
-      email: login.user.email,
-    }
-
-    dispatch({ type: 'LOGIN', payload: user })
-    router.push('/claim-player')
-    setLoading(false)
   }
 
   const onFinishFailed = (errorInfo) => {

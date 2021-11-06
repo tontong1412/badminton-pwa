@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { useEffect } from 'react'
+import { useRouter } from 'next/router';
 import Head from 'next/head'
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios'
@@ -10,6 +11,7 @@ import { LeftOutlined } from '@ant-design/icons'
 const Header = (props) => {
   const { user } = useSelector(state => state);
   const dispatch = useDispatch()
+  const router = useRouter()
 
   useEffect(() => {
     const login = async () => {
@@ -59,10 +61,10 @@ const Header = (props) => {
         <meta name="description" content={props.description} />
       </Head>
       <div className='header'>
-        <div>{props.back?.href ?
-          <Link passHref href={props.back.href}>
+        <div >{props.back?.href || props.previous ?
+          <div onClick={props.previous ? router.back : () => router.push(props.back.href)}>
             <LeftOutlined />
-          </Link>
+          </div>
           :
           null}
         </div>
