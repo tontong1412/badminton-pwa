@@ -125,7 +125,7 @@ const Gang = () => {
   return (
     <div>
       <MyGang bottomLine />
-      <div style={{ margin: '10px' }}><Input.Search enterButton="Search" placeholder='ค้นหาโดยชื่อก๊วน ชื่อสนาม จังหวัด หรือย่าน' onSearch={onSearch} /></div>
+      <div style={{ margin: '10px' }}><Input.Search allowClear enterButton="Search" placeholder='ค้นหาโดยชื่อก๊วน ชื่อสนาม จังหวัด หรือย่าน' onSearch={onSearch} /></div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', margin: '5px' }}>
         {displayGangs?.length > 0 ? displayGangs?.map(gang => {
           return <Card key={`gang-card-${gang._id}`} gang={gang} />
