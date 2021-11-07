@@ -25,7 +25,7 @@ const GangID = () => {
   const [isCreator, setIsCreator] = useState(false)
 
   useEffect(() => {
-    if (user && gang && (user.playerID === gang.creator?._id || gang.managers.map(elm => elm._id)?.includes(user.playerID))) {
+    if (user && gang && (user.playerID === gang.creator?._id)) {
       setIsCreator(true)
     } else {
       setIsCreator(false)
@@ -38,7 +38,6 @@ const GangID = () => {
   }
 
   const addManager = () => {
-    console.log(user)
     setConfirmLoading(true)
     axios.post(`${API_ENDPOINT}/gang/add-manager`, {
       gangID: id,
@@ -110,6 +109,7 @@ const GangID = () => {
 
   if (isError) return "An error has occurred."
   if (isLoading) return <Loading />
+  if (!isCreator) return <div>permission denied</div>
   return <>
     <div style={{ fontSize: '20px' }}>{gang.name} </div>
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
