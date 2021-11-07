@@ -39,7 +39,7 @@ const GangID = () => {
   }, [])
 
   useEffect(() => {
-    if (user && gang && user.playerID === gang.creator._id) {
+    if (user && gang && user.playerID === gang.creator?._id) {
       setIsCreator(true)
     } else {
       setIsCreator(false)

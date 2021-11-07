@@ -62,7 +62,7 @@ const GangLayout = (props) => {
 
   return (
     <>
-      <Header description='This is Home Page' back={{ href: '/gang', alias: 'gang' }} />
+      <Header description='จัดการก๊วนง่ายๆ ด้วย Badminstar' back={{ href: '/gang', alias: 'gang' }} />
       <main>
         <div className='content'>
           {props.children}
