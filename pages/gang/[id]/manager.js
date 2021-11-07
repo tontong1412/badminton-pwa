@@ -22,16 +22,7 @@ const GangID = () => {
   const { gang, isLoading, isError, mutate } = useGang(id)
   const { players } = usePlayers()
   const playerEndRef = useRef(null)
-  const [isManager, setIsManager] = useState(false)
 
-
-  useEffect(() => {
-    if (user && gang && (user.playerID === gang.creator?._id || gang.managers?.includes(user.playerID))) {
-      setIsManager(true)
-    } else {
-      setIsManager(false)
-    }
-  }, [user, gang])
 
   const showModal = () => {
     setIsModalVisible(true)

@@ -40,7 +40,7 @@ const GangID = () => {
   }, [])
 
   useEffect(() => {
-    if (user && gang && (user.playerID === gang.creator?._id || gang.managers?.includes(user.playerID))) {
+    if (user && gang && (user.playerID === gang.creator?._id || gang.managers.map(elm => elm._id)?.includes(user.playerID))) {
       setIsManager(true)
     } else {
       setIsManager(false)

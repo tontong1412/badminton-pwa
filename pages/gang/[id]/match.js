@@ -10,7 +10,7 @@ import AddButton from '../../../components/addButton'
 import { useGang } from '../../../utils'
 import { API_ENDPOINT } from '../../../config'
 import Loading from '../../../components/loading'
-import { Tabs, Menu, Dropdown } from 'antd'
+import { Tabs, Menu, Dropdown, Button } from 'antd'
 import { TAB_OPTIONS } from '../../../constant'
 import Stat from '../../../components/Stat'
 import { analytics, logEvent } from '../../../utils/firebase'
@@ -56,7 +56,7 @@ const MatchList = () => {
 
   useEffect(() => {
     setQueue(gang?.queue)
-    if (user && gang && (user.playerID === gang.creator._id || gang.managers.includes(user.playerID))) {
+    if (user && gang && (user.playerID === gang.creator._id || gang.managers.map(elm => elm._id).includes(user.playerID))) {
       setCanManage(true)
       setAllowAddQueue(true)
     } else {
@@ -140,11 +140,11 @@ const MatchList = () => {
           แก้ไข
         </div>
       </Menu.Item>
-      <Menu.Item key='delete'>
+      {tabKey === '1' && <Menu.Item key='delete'>
         <div onClick={() => removeQueue(match._id)}>
           ลบคิวนี้
         </div>
-      </Menu.Item>
+      </Menu.Item>}
     </Menu>
   )
 
@@ -184,6 +184,7 @@ const MatchList = () => {
       setPlayer2()
       setPlayer3()
       setPlayer4()
+      setTabKey('1')
     })
       .catch(() => {
         setConfirmLoading(false)
@@ -539,8 +540,10 @@ const MatchList = () => {
       <Modal
         title='สถิติ'
         visible={statModal}
-        onOk={() => setStatModal(false)}
         onCancel={() => setStatModal(false)}
+        footer={[
+          <Button key="ok" type="primary" onClick={() => setStatModal(false)} >ปิด</Button>
+        ]}
         destroyOnClose>
         <Stat stat={stat} />
       </Modal>
