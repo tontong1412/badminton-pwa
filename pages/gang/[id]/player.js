@@ -58,6 +58,18 @@ const GangID = () => {
   }
 
   const handleOk = () => {
+    if (!value) {
+      Modal.error({
+        title: 'ผิดพลาด',
+        content: (
+          <div>
+            <p>กรุณากรอกชื่อ</p>
+          </div>
+        ),
+        onOk() { },
+      })
+      return
+    }
     setConfirmLoading(true)
     let player
     if (playerID) {

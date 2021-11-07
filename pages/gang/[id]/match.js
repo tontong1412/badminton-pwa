@@ -127,6 +127,11 @@ const MatchList = () => {
           ดูสถิติ
         </div>
       </Menu.Item>
+      {tabKey === '2' && <Menu.Item key='stat'>
+        <div onClick={() => manageShuttleCock(match._id, 'decrement')}>
+          ลบลูก
+        </div>
+      </Menu.Item>}
       <Menu.Item key='edit'>
         <div onClick={() => {
           setActionMode('update')
@@ -142,7 +147,7 @@ const MatchList = () => {
       </Menu.Item>
       {tabKey === '1' && <Menu.Item key='delete'>
         <div onClick={() => removeQueue(match._id)}>
-          ลบคิวนี้
+          ลบคิว
         </div>
       </Menu.Item>}
     </Menu>
@@ -302,15 +307,16 @@ const MatchList = () => {
     }
   }
 
-  const addShuttlecock = (matchID) => {
+  const manageShuttleCock = (matchID, action = 'increment') => {
+    const diff = action === 'increment' ? 1 : -1
     const queueIndex = gang.queue.findIndex(match => match._id === matchID)
     const tempQueue = [...gang.queue]
-    tempQueue[queueIndex].shuttlecockUsed = tempQueue[queueIndex].shuttlecockUsed + 1
+    tempQueue[queueIndex].shuttlecockUsed = tempQueue[queueIndex].shuttlecockUsed + diff
     setQueue(tempQueue)
 
     axios.post(`${API_ENDPOINT}/match/manage-shuttlecock`, {
       matchID,
-      action: 'increment'
+      action,
     }).then(() => {
       mutate(`${API_ENDPOINT}/gang/${id}`)
     }).catch(() => {
@@ -338,7 +344,7 @@ const MatchList = () => {
       mutate(`${API_ENDPOINT}/gang/${id}`)
       if (status === 'playing') {
         setTabKey('2')
-        // addShuttlecock(matchID)
+        // manageShuttleCock(matchID)
       }
     }).catch(() => {
       Modal.error({
@@ -416,7 +422,7 @@ const MatchList = () => {
                     <div className='controller-container'>
                       {!canManage && match.status !== 'finished' && <div onClick={() => getStat(match._id)} className='controller'>สถิติ</div>}
                       {canManage && match.status !== 'finished' && <Dropdown overlay={menu(match)} placement='topLeft' trigger={['click']}><div className='controller'>เพิ่มเติม</div></Dropdown>}
-                      {canManage && match.status === 'playing' && <div className='controller' onClick={() => addShuttlecock(match._id)}>เพิ่มลูก</div>}
+                      {canManage && match.status === 'playing' && <div className='controller' onClick={() => manageShuttleCock(match._id)}>เพิ่มลูก</div>}
                       {canManage && match.status !== 'finished' && <div className='controller' onClick={() => updateStatus(match._id, match.status)}>{match.status === 'waiting' ? 'เริ่มเกม' : 'จบเกม'}</div>}
                       {match.status === 'finished' && <div onClick={() => getStat(match._id)} className='controller'>สถิติ</div>}
                       {user.id && allowAddQueue && match.status === 'finished' && <div className='controller' onClick={() => {
