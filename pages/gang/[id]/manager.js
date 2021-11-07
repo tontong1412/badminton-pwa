@@ -22,11 +22,15 @@ const GangID = () => {
   const { gang, isLoading, isError, mutate } = useGang(id)
   const { players } = usePlayers()
   const playerEndRef = useRef(null)
-  const [permissionDenied, setPermissionDenied] = useState(true)
+  const [isCreator, setIsCreator] = useState(false)
 
   useEffect(() => {
-    if (gang && user && gang.creator === user.id) setPermissionDenied(false)
-  }, [gang, user])
+    if (user && gang && (user.playerID === gang.creator?._id || gang.managers.map(elm => elm._id)?.includes(user.playerID))) {
+      setIsCreator(true)
+    } else {
+      setIsCreator(false)
+    }
+  }, [user, gang])
 
 
   const showModal = () => {
@@ -106,7 +110,6 @@ const GangID = () => {
 
   if (isError) return "An error has occurred."
   if (isLoading) return <Loading />
-  if (permissionDenied) return <div>You do not have permission to this page</div>
   return <>
     <div style={{ fontSize: '20px' }}>{gang.name} </div>
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -143,7 +146,7 @@ const GangID = () => {
       })
         : <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}><div style={{ color: '#ccc' }}>เพิ่มผู้จัดการได้ที่ปุ่ม + ด้านล่าง</div></div>
     }
-    {isManager && <AddButton onClick={showModal} style={{ bottom: '40px' }} />}
+    {isCreator && <AddButton onClick={showModal} style={{ bottom: '40px' }} />}
     <Modal
       title="เพิ่มผู้จัดการ"
       visible={isModalVisible}
