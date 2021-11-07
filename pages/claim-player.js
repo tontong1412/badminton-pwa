@@ -5,6 +5,7 @@ import Layout from '../components/Layout/noFooter'
 import axios from 'axios'
 import { API_ENDPOINT } from "../config"
 import { useRouter } from "next/router"
+import { useState } from "react"
 
 
 const ClaimPlayer = () => {
