@@ -10,9 +10,11 @@ import { useRouter } from "next/router"
 const ClaimPlayer = () => {
   const { user } = useSelector(state => state)
   const { players } = usePlayers()
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
   const dispatch = useDispatch()
   const onFinish = (values) => {
+    setLoading(true)
     axios.post(`${API_ENDPOINT}/player`, values)
       .then(res => {
         axios.post(`${API_ENDPOINT}/player/claim`, {
@@ -27,7 +29,6 @@ const ClaimPlayer = () => {
               'Authorization': `Token ${user.token}`
             }
           }).then((res2) => {
-            console.log(res2.data)
             router.push('/account')
             dispatch({
               type: 'LOGIN',
@@ -39,11 +40,13 @@ const ClaimPlayer = () => {
                 club: res.data.club
               }
             })
+            setLoading(false)
           })
 
         })
       })
       .catch(err => {
+        setLoading(false)
         Modal.error({
           title: 'ผิดพลาด',
           content: (
@@ -84,7 +87,7 @@ const ClaimPlayer = () => {
           <Input />
         </Form.Item>
         <Form.Item style={{ textAlign: "center", marginTop: '20px' }}>
-          <Button type='primary' htmlType='submit'>
+          <Button type='primary' htmlType='submit' loading={loading}>
             Submit
           </Button>
         </Form.Item>
