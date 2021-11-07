@@ -30,7 +30,6 @@ const MyGang = (props) => {
   return (
     <><div style={{ margin: '15px 0 0 10px' }}>ก๊วนของฉัน</div>
       <div style={{
-        width: '100%',
         overflowX: 'scroll',
         overflowY: 'hidden',
         display: 'flex',

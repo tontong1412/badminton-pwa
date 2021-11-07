@@ -22,6 +22,11 @@ const GangID = () => {
   const { gang, isLoading, isError, mutate } = useGang(id)
   const { players } = usePlayers()
   const playerEndRef = useRef(null)
+  const [permissionDenied, setPermissionDenied] = useState(true)
+
+  useEffect(() => {
+    if (gang && user && gang.creator === user.id) setPermissionDenied(false)
+  }, [gang, user])
 
 
   const showModal = () => {
@@ -101,6 +106,7 @@ const GangID = () => {
 
   if (isError) return "An error has occurred."
   if (isLoading) return <Loading />
+  if (permissionDenied) return <div>You do not have permission to this page</div>
   return <>
     <div style={{ fontSize: '20px' }}>{gang.name} </div>
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -118,7 +124,7 @@ const GangID = () => {
               <div className='player-name'>{player.displayName || player.officialName}<span style={{ color: '#ccc', marginLeft: '10px' }}>{`${player.displayName ? (player.officialName || '') : ''}`}</span></div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              {isManager && <Popconfirm
+              {<Popconfirm
                 title="คุณแน่ใจที่จะลบผู้จัดการคนนี้หรือไม่"
                 onConfirm={() => onRemoveManager(player._id)}
                 onCancel={() => { }}
