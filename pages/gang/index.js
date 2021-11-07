@@ -10,8 +10,7 @@ import Card from '../../components/gangCard'
 import { Modal, Form, Input, Radio, InputNumber, Button, Checkbox } from 'antd'
 import Loading from '../../components/loading'
 import MyGang from '../../components/gang/myGang'
-
-// TODO: search gang
+import router from 'next/router'
 
 const Gang = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -139,7 +138,8 @@ const Gang = () => {
         if (user.id) setIsModalVisible(true)
         else {
           Modal.info({
-            title: 'กรุณา Log in ก่อนสร้างก๊วน'
+            title: 'กรุณา Log in ก่อนสร้างก๊วน',
+            onOk: () => router.push('/login')
           })
         }
       }} />
@@ -148,7 +148,6 @@ const Gang = () => {
         visible={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
-        confirmLoading={confirmLoading}
         destroyOnClose
         initialValues={{ courtFeeType: courtFeeType }}
       >
@@ -266,7 +265,7 @@ const Gang = () => {
             <Checkbox>ก๊วนส่วนตัว</Checkbox>
           </Form.Item>
           <Form.Item >
-            <Button key='submit' type='primary' htmlType='submit' style={{ width: '100%', marginTop: '20px' }}>
+            <Button key='submit' loading={confirmLoading} type='primary' htmlType='submit' style={{ width: '100%', marginTop: '20px' }}>
               Submit
             </Button>
           </Form.Item>

@@ -155,7 +155,12 @@ const GangID = () => {
         :
         <Loading />
       }
-      <Modal title="สถิติ" visible={isModalVisible} onOk={() => setIsModalVisible(false)} onCancel={() => setIsModalVisible(false)}>
+      <Modal
+        title="สถิติ"
+        visible={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        footer={[<Button key="ok" type="primary" onClick={() => setIsModalVisible(false)} >ปิด</Button>]}
+      >
         <p>ผู้เล่นทั้งหมด: {stat?.totalPlayer} คน</p>
         <p>ใช้ลูกแบดทั้งหมด: {stat?.totalShuttlecockUsed} ลูก</p>
         <p>จำนวนเกมทั้งหมด: {stat?.totalMatchPlayed} เกม</p>

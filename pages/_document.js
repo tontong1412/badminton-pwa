@@ -12,8 +12,6 @@ class MyDocument extends Document {
           <link rel="apple-touch-icon" href="/icon/icon-192x192.png"></link>
           <link rel="icon" href="/icon/logo.png" />
           <meta name="theme-color" content="#39576E" />
-          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-
 
           <link rel="apple-touch-startup-image" href="/splash/launch-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
           <link rel="apple-touch-startup-image" href="/splash/launch-750x1294.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />

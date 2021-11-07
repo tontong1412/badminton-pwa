@@ -22,16 +22,25 @@ const ClaimPlayer = () => {
             'Authorization': `Token ${user.token}`
           }
         }).then(() => {
-          router.push('/account')
-          dispatch({
-            type: 'LOGIN',
-            payload: {
-              ...user,
-              playerID: res.data._id,
-              officialName: res.data.officialName,
-              club: res.data.club
+          axios.get(`${API_ENDPOINT}/user/current`, {
+            headers: {
+              'Authorization': `Token ${user.token}`
             }
+          }).then((res2) => {
+            console.log(res2.data)
+            router.push('/account')
+            dispatch({
+              type: 'LOGIN',
+              payload: {
+                ...user,
+                token: res2.data.user.token,
+                playerID: res.data._id,
+                officialName: res.data.officialName,
+                club: res.data.club
+              }
+            })
           })
+
         })
       })
       .catch(err => {
