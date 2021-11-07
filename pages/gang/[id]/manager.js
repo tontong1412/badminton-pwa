@@ -79,6 +79,12 @@ const GangID = () => {
       return {
         key: player._id,
         value: player.displayName || player.officialName,
+        label: (
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div>{player.displayName || player.officialName}</div>
+            <div style={{ color: '#aaa' }}>{player.displayName && player.officialName}</div>
+          </div>
+        )
       }
     })
     setOptions(
