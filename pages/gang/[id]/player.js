@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Modal, AutoComplete, Popconfirm, Tag, Button, Collapse } from 'antd'
+import { Modal, AutoComplete, Popconfirm, Tag, Button, Collapse, Form, Input, Space, InputNumber } from 'antd'
 import { API_ENDPOINT } from '../../../config'
 import Layout from '../../../components/Layout/gang'
 import AddButton from '../../../components/addButton'
@@ -13,10 +13,11 @@ import { useBills, useGang, usePlayers } from '../../../utils'
 import qrcode from 'qrcode'
 import Loading from '../../../components/loading'
 import { TAB_OPTIONS } from '../../../constant'
-import { DeleteOutlined, RightOutlined, DownOutlined } from '@ant-design/icons'
+import { DeleteOutlined, RightOutlined, DownOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 
 const GangID = () => {
   const router = useRouter()
+  const [form] = Form.useForm()
   const { id } = router.query
   const { user } = useSelector(state => state)
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -35,6 +36,7 @@ const GangID = () => {
   const [playerArray, setPlayerArray] = useState(gang?.players)
   const { bills, mutate: mutateBills } = useBills(id)
   const [collapseActive, setCollapseActive] = useState(false)
+  const [otherFieldLength, setOtherFieldLength] = useState(0)
 
   useEffect(() => {
     logEvent(analytics, `gang-${id}`)
@@ -223,6 +225,22 @@ const GangID = () => {
     setCollapseActive(false)
   }
 
+  const onAddOther = (values, transactionID) => {
+    axios.put(`${API_ENDPOINT}/transaction/${transactionID}/add-other`, values.others)
+      .then(res => {
+        setPaymentData(res.data)
+        form.resetFields()
+        setOtherFieldLength(0)
+      })
+      .catch(err => console.log(err))
+  }
+
+  const removeOther = (other, transactionID) => {
+    axios.put(`${API_ENDPOINT}/transaction/${transactionID}/remove-other`, { other })
+      .then(res => setPaymentData(res.data))
+      .catch(err => console.log(err))
+  }
+
   if (isError) return "An error has occurred."
   if (isLoading) return <Loading />
   return <>
@@ -315,7 +333,6 @@ const GangID = () => {
                 <Collapse.Panel header={<div>{`ค่าลูกแบด (${paymentData?.shuttlecockUsed} ลูก)`} <span >{collapseActive ? <DownOutlined /> : <RightOutlined />}</span></div>} key="1" showArrow={false}>
                   {
                     paymentData.matches.map((match, index) => {
-                      console.log(match)
                       return (
                         <div key={`match-${index + 1}`} >
                           <div style={{ display: 'flex', justifyContent: 'space-between', marginLeft: '15px' }}>
@@ -336,12 +353,75 @@ const GangID = () => {
                   }
                 </Collapse.Panel>
               </Collapse>
-              <div>{`${paymentData?.total - paymentData?.courtFee} บาท`}</div>
+              <div>{`${paymentData?.shuttlecockTotal} บาท`}</div>
             </div>
+            {
+              paymentData.other?.map((elm, index) => {
+                return (
+                  <div key={`other-${index + 1}`} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      {isManager && <DeleteOutlined
+                        style={{ color: 'red', marginRight: '10px' }}
+                        onClick={() => removeOther(elm, paymentData._id)}
+                      />}
+                      <div>{elm.name}</div>
+                    </div>
+                    <div>{`${elm.amount} บาท`}</div>
+                  </div>
+                )
+              })
+            }
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div>{`รวม`}</div>
               <div>{`${paymentData?.total} บาท`}</div>
             </div>
+            {isManager && <Form form={form} name="otherItem" onFinish={(values) => onAddOther(values, paymentData._id)} >
+              <Form.List name="others">
+                {(fields, { add, remove }) => {
+                  return (
+                    <>
+                      {fields.map(({ key, name, fieldKey, ...restField }) => (
+                        <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline" >
+                          <Form.Item
+                            {...restField}
+                            name={[name, 'name']}
+                            fieldKey={[fieldKey, 'name']}
+                            rules={[{ required: true, message: '' }]}
+                          >
+                            <Input placeholder="รายการ" allowClear />
+                          </Form.Item>
+                          <Form.Item
+                            {...restField}
+                            name={[name, 'amount']}
+                            fieldKey={[fieldKey, 'amount']}
+                            rules={[{ required: true, message: '' }]}
+                          >
+                            <InputNumber placeholder="จำนวนเงิน" />
+                          </Form.Item>
+                          <MinusCircleOutlined onClick={() => {
+                            remove(name)
+                            setOtherFieldLength(otherFieldLength - 1)
+                          }} />
+                        </Space>
+                      ))}
+                      <Form.Item>
+                        <Button type="dashed" onClick={() => {
+                          add()
+                          setOtherFieldLength(otherFieldLength + 1)
+                        }} block icon={<PlusOutlined />}>
+                          เพิ่มรายการ
+                        </Button>
+                      </Form.Item>
+                    </>
+                  )
+                }}
+              </Form.List>
+              {otherFieldLength > 0 && <Form.Item>
+                <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+                  เพิ่ม
+                </Button>
+              </Form.Item>}
+            </Form>}
           </div>
           :
           <Loading />
