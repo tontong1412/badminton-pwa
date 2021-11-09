@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Modal, AutoComplete, Popconfirm, Tag, Button } from 'antd'
+import { Modal, AutoComplete, Popconfirm, Tag, Button, Collapse } from 'antd'
 import { API_ENDPOINT } from '../../../config'
 import Layout from '../../../components/Layout/gang'
 import AddButton from '../../../components/addButton'
@@ -13,7 +13,7 @@ import { useBills, useGang, usePlayers } from '../../../utils'
 import qrcode from 'qrcode'
 import Loading from '../../../components/loading'
 import { TAB_OPTIONS } from '../../../constant'
-import { DeleteOutlined } from '@ant-design/icons'
+import { DeleteOutlined, RightOutlined, DownOutlined } from '@ant-design/icons'
 
 const GangID = () => {
   const router = useRouter()
@@ -34,6 +34,7 @@ const GangID = () => {
   const dispatch = useDispatch()
   const [playerArray, setPlayerArray] = useState(gang?.players)
   const { bills, mutate: mutateBills } = useBills(id)
+  const [collapseActive, setCollapseActive] = useState(false)
 
   useEffect(() => {
     logEvent(analytics, `gang-${id}`)
@@ -51,7 +52,7 @@ const GangID = () => {
 
   useEffect(() => {
     if (gang && bills) formatPlayerWithPayment()
-  }, [gang, bills,])
+  }, [gang, bills])
 
   const formatPlayerWithPayment = () => {
     const tempPlayers = gang?.players?.map(player => {
@@ -219,6 +220,7 @@ const GangID = () => {
     setIsPaymentModalVisible(false)
     setQrSVG(null)
     setPaymentData()
+    setCollapseActive(false)
   }
 
   if (isError) return "An error has occurred."
@@ -291,7 +293,7 @@ const GangID = () => {
       footer={modalFooter()}
       confirmLoading={confirmLoading}
       destroyOnClose>
-      <div >
+      <div style={{ height: '500px', overflow: 'scroll' }}>
         {paymentData ?
           <div style={{ textAlign: 'center' }}>
             {qrSVG &&
@@ -309,7 +311,31 @@ const GangID = () => {
               <div>{`${Math.ceil(paymentData?.courtFee)} บาท`}</div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <div>{`ค่าลูกแบด (${paymentData?.shuttlecockUsed} ลูก)`}</div>
+              <Collapse ghost expandIconPosition='left' accordion onChange={(value) => setCollapseActive(value)} style={{ width: '80%' }}>
+                <Collapse.Panel header={<div>{`ค่าลูกแบด (${paymentData?.shuttlecockUsed} ลูก)`} <span >{collapseActive ? <DownOutlined /> : <RightOutlined />}</span></div>} key="1" showArrow={false}>
+                  {
+                    paymentData.matches.map((match, index) => {
+                      console.log(match)
+                      return (
+                        <div key={`match-${index + 1}`} >
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginLeft: '15px' }}>
+                            <div>{`เกมที่ ${index + 1}`}</div>
+                            <div>{`${match.shuttlecockUsed} ลูก`}</div>
+                          </div>
+                          <div style={{ marginLeft: '30px' }}>
+                            {match.teamA.team.players.map((player, index) => (
+                              <div key={`teama-${index + 1}`} style={{ marginRight: '10px' }}>{player.displayName || player.officialName}</div>
+                            ))}
+                            {match.teamB.team.players.map((player, index) => (
+                              <div key={`teamb-${index + 1}`} style={{ marginRight: '10px' }}>{player.displayName || player.officialName}</div>
+                            ))}
+                          </div>
+                        </div>
+                      )
+                    })
+                  }
+                </Collapse.Panel>
+              </Collapse>
               <div>{`${paymentData?.total - paymentData?.courtFee} บาท`}</div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
