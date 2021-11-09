@@ -176,7 +176,6 @@ const GangID = () => {
 }
 
 GangID.getLayout = (page) => {
-  console.log(page)
   return (
     <Layout previous>
       {page}

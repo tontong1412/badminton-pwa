@@ -5,12 +5,11 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { mutate } from 'swr'
 import { Modal, AutoComplete, Popconfirm, Tag, Button } from 'antd'
 import { API_ENDPOINT } from '../../../config'
 import Layout from '../../../components/Layout/gang'
 import AddButton from '../../../components/addButton'
-import { useGang, usePlayers } from '../../../utils'
+import { useBills, useGang, usePlayers } from '../../../utils'
 import qrcode from 'qrcode'
 import Loading from '../../../components/loading'
 import { TAB_OPTIONS } from '../../../constant'
@@ -26,13 +25,15 @@ const GangID = () => {
   const [value, setValue] = useState('')
   const [playerID, setPlayerID] = useState()
   const [options, setOptions] = useState([])
-  const { gang, isLoading, isError } = useGang(id)
+  const { gang, isLoading, isError, mutate } = useGang(id)
   const { players } = usePlayers()
   const [qrSVG, setQrSVG] = useState()
   const [paymentData, setPaymentData] = useState()
   const playerEndRef = useRef(null)
   const [isManager, setIsManager] = useState(false)
   const dispatch = useDispatch()
+  const [playerArray, setPlayerArray] = useState(gang?.players)
+  const { bills, mutate: mutateBills } = useBills(id)
 
   useEffect(() => {
     logEvent(analytics, `gang-${id}`)
@@ -45,7 +46,24 @@ const GangID = () => {
     } else {
       setIsManager(false)
     }
+    if (gang) formatPlayerWithPayment()
+
   }, [user, gang])
+
+  useEffect(() => {
+    if (gang) formatPlayerWithPayment()
+  }, [gang, bills,])
+
+  const formatPlayerWithPayment = () => {
+    const tempPlayers = gang?.players?.map(player => {
+      const billIndex = bills?.findIndex((bill => bill.payer._id === player._id))
+      return {
+        ...player,
+        payment: bills[billIndex]
+      }
+    })
+    setPlayerArray(tempPlayers)
+  }
 
   const scrollToBottom = () => {
     playerEndRef.current?.scrollIntoView({
@@ -81,7 +99,7 @@ const GangID = () => {
       gangID: id,
       player
     }).then(() => {
-      mutate(`${API_ENDPOINT}/gang/${id}`)
+      mutate()
       scrollToBottom()
       setIsModalVisible(false)
       setConfirmLoading(false)
@@ -185,6 +203,7 @@ const GangID = () => {
       status: 'paid'
     }).then((res) => {
       setPaymentData(res.data)
+      mutateBills()
     }).catch(() => { })
   }
 
@@ -193,7 +212,7 @@ const GangID = () => {
       playerID,
       gangID: id
     }).then(() => {
-      mutate(`${API_ENDPOINT}/gang/${id}`)
+      mutate()
     }).catch(() => { })
   }
 
@@ -209,19 +228,23 @@ const GangID = () => {
     <div style={{ fontSize: '20px' }}>{gang.name} </div>
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <div></div>
-      <div>ผู้เล่นทั้งหมด: {gang.players.length} คน</div>
+      <div>ผู้เล่นทั้งหมด: {playerArray?.length || ''} คน</div>
     </div>
     {
-      gang.players.length > 0 ? gang.players.map(player => {
+      playerArray?.length > 0 ? playerArray.map(player => {
         return (
           <div key={`player-${player._id}`} className='gang-player'>
             <div className='player-container'>
               <div className='avatar'>
                 <Image objectFit='cover' src={player.photo || `/avatar.png`} alt='' width={50} height={50} layout='responsive' />
               </div>
-              <div className='player-name'>{player.displayName || player.officialName}<span style={{ color: '#ccc', marginLeft: '10px' }}>{`${player.displayName ? (player.officialName || '') : ''}`}</span></div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div className='player-name'>{player.displayName || player.officialName}</div>
+                <div style={{ color: '#ccc', marginLeft: '10px' }}>{`${player.displayName ? (player.officialName || '') : ''}`}</div>
+              </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
+              {(isManager || user.playerID === player._id) && <div ><Tag color={player?.payment?.status === 'paid' ? 'green' : 'red'}>{player?.payment?.status === 'paid' ? 'จ่ายแล้ว' : 'ยังไม่จ่าย'}</Tag></div>}
               {(isManager || user.playerID === player._id) && <div onClick={() => getBill(player._id)} >ดูบิล</div>}
               {isManager && <Popconfirm
                 title="คุณแน่ใจที่จะลบผู้เล่นนี้หรือไม่"
@@ -231,7 +254,7 @@ const GangID = () => {
                 cancelText="No"
                 placement="topRight"
               ><div
-                style={{ marginLeft: '20px', color: 'red' }}>
+                style={{ marginLeft: '5px', color: 'red' }}>
                   <DeleteOutlined />
                 </div>
               </Popconfirm>}

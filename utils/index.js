@@ -26,6 +26,19 @@ export const useGang = (id) => {
   }
 }
 
+export const useBills = (id) => {
+  const { data, error, mutate } = useSWR(
+    `${API_ENDPOINT}/gang/${id}/bill`,
+    fetcher
+  )
+  return {
+    bills: data,
+    isLoading: !error && !data,
+    isError: error,
+    mutate
+  }
+}
+
 export const useGangs = (token, params) => {
   const { data, error, mutate } = useSWR(
     `${API_ENDPOINT}/gang`,
