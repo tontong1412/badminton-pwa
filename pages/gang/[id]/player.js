@@ -46,12 +46,11 @@ const GangID = () => {
     } else {
       setIsManager(false)
     }
-    if (gang) formatPlayerWithPayment()
 
   }, [user, gang])
 
   useEffect(() => {
-    if (gang) formatPlayerWithPayment()
+    if (gang && bills) formatPlayerWithPayment()
   }, [gang, bills,])
 
   const formatPlayerWithPayment = () => {
