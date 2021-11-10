@@ -8,7 +8,7 @@ const AppLayout = (props) => {
   const { activeMenu } = useSelector(state => state)
   return (
     <>
-      <Header description='This is Home Page' />
+      <Header />
       <main>
         <div className='content'>
           {props.children}
