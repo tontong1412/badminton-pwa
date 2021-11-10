@@ -223,6 +223,8 @@ const GangID = () => {
     setQrSVG(null)
     setPaymentData()
     setCollapseActive(false)
+    form.resetFields()
+    setOtherFieldLength(0)
   }
 
   const onAddOther = (values, transactionID) => {
@@ -304,6 +306,7 @@ const GangID = () => {
       />
     </Modal>
     <Modal
+      className='payment-modal'
       title="รายการ"
       visible={isPaymentModalVisible}
       onOk={onClosePaymentModal}
