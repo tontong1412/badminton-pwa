@@ -343,10 +343,10 @@ const GangID = () => {
                             <div>{`${match.shuttlecockUsed} ลูก`}</div>
                           </div>
                           <div style={{ marginLeft: '30px' }}>
-                            {match.teamA.team.players.map((player, index) => (
+                            {match?.teamA?.team?.players.map((player, index) => (
                               <div key={`teama-${index + 1}`} style={{ marginRight: '10px' }}>{player.displayName || player.officialName}</div>
                             ))}
-                            {match.teamB.team.players.map((player, index) => (
+                            {match?.teamB?.team?.players.map((player, index) => (
                               <div key={`teamb-${index + 1}`} style={{ marginRight: '10px' }}>{player.displayName || player.officialName}</div>
                             ))}
                           </div>
