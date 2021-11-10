@@ -167,7 +167,7 @@ const Gang = () => {
               },
             ]}
           >
-            <Input maxLength={15} />
+            <Input maxLength={30} />
           </Form.Item>
           <Form.Item
             label='สนาม'

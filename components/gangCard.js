@@ -34,7 +34,7 @@ const Card = ({ gang }) => {
           />
         </div>
         <div className='info-container'>
-          <div>{gang.name}</div>
+          <div className='gang-name'>{gang.name}</div>
           {(gang.area || gang.location) && <div className='sub-title'><EnvironmentOutlined style={{ marginRight: '5px' }} />{`${gang.area || gang.location || ''}`}</div>}
           <div className='info-item-container'>
             {

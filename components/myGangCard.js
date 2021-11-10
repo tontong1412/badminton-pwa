@@ -39,7 +39,7 @@ const MyGangCard = ({ gang }) => {
           />
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div>{gang.name}</div>
+          <div style={{ height: '50px', textOverflow: 'ellipsis', overflow: 'hidden' }}>{gang.name}</div>
         </div>
       </div>
     </Link >
