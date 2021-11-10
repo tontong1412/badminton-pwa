@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSWRConfig } from 'swr'
-import { Modal, AutoComplete, Input, Empty } from 'antd'
+import { Modal, AutoComplete, Input } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
 import Image from 'next/image'
