@@ -1,14 +1,25 @@
 .header {
   height: 60px;
   width: 100%;
-  background-color: #4F708A;
+  background-color: #FFDB8F;
+  // background-color: #4F708A;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  font-family: Comfortaa;
-  color: #DAA228;
+  font-family: Comfortaa !important;
+  color: #80644f !important;
+  // color: #DAA228 !important;
   letter-spacing: 2px;
-  font-size: 24px
+  font-size: 24px;
+  position: fixed;
+  top: 0;
+  z-index: 100;
+}
+
+.content {
+  padding-top: 60px;
+  padding-bottom: 80px;
+  width: 100%;
 }
 
 .footer {
@@ -17,8 +28,10 @@
   background-color: #eee;
   display: flex;
   justify-content: space-between;
-  position: absolute;
+  position: fixed;
   bottom: 0;
+  font-family: "IBM Plex Sans Thai";
+  color: #555;
 
   .footer-tab {
     width: 50%;

@@ -1,0 +1,138 @@
+import axios from 'axios'
+import Image from 'next/image'
+import { useRouter } from 'next/router'
+import logo from '../public/icon/logo.png'
+import { Form, Input, Button, Checkbox, Steps, Modal } from 'antd'
+import { useDispatch, useSelector } from 'react-redux';
+import { API_ENDPOINT } from '../config'
+import Layout from '../components/Layout/noFooter'
+import { useState, useEffect } from 'react'
+import { analytics, logEvent } from '../utils/firebase'
+
+const Signup = () => {
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    logEvent(analytics, 'sign up')
+  }, [])
+
+  const onFinish = async (values) => {
+    setLoading(true)
+
+    axios.post(`${API_ENDPOINT}/signup`,
+      {
+        user: {
+          email: values.email.toLowerCase(),
+          password: values.password
+        }
+      }).then(res => {
+        const user = {
+          id: res.data.user._id,
+          token: res.data.user.token,
+          email: res.data.user.email,
+        }
+        dispatch({ type: 'LOGIN', payload: user })
+        router.push('/claim-player')
+        setLoading(false)
+      }).catch((err) => {
+        setLoading(false)
+        Modal.error({
+          title: 'ผิดพลาด',
+          content: (
+            <div>
+              <p>{err.response.data.message || 'เกิดปัญหาขณะอัพเดทข้อมูล กรุณาลองใหม่ในภายหลัง'}</p>
+            </div>
+          ),
+          onOk() { },
+        })
+      })
+
+  }
+
+  const onFinishFailed = (errorInfo) => {
+    console.log('Failed:', errorInfo)
+  }
+  return (
+    <Form
+      form={form}
+      name='basic'
+      initialValues={{ remember: true }}
+      onFinish={onFinish}
+      onFinishFailed={onFinishFailed}
+      autoComplete='off'
+      style={{ maxWidth: '300px', margin: 'auto', textAlign: 'center' }}
+    >
+      <Image src={logo} alt='logo' />
+      <Form.Item
+        label='Email'
+        name='email'
+        rules={[
+          {
+            required: true,
+            message: 'Please input your username!',
+          },
+          {
+            type: 'email',
+            message: 'Please use a valid email'
+          }
+        ]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
+        label='Password'
+        name='password'
+        rules={[
+          {
+            required: true,
+            message: 'Please input your password!',
+          },
+        ]}
+      >
+        <Input.Password />
+      </Form.Item>
+
+      <Form.Item
+        label='Confirm Password'
+        name='confirmPassword'
+        dependencies={['password']}
+        rules={[
+          {
+            required: true,
+            message: 'Please input your password!',
+          },
+          {
+            validator: async () => {
+              if (form.getFieldValue('password') !== form.getFieldValue('confirmPassword')) {
+                throw new Error('Something wrong!');
+              }
+            },
+            message: 'password mismatch'
+          }
+        ]}
+      >
+        <Input.Password />
+      </Form.Item>
+
+      <Form.Item >
+        <Button type='primary' htmlType='submit' loading={loading}>
+          Submit
+        </Button>
+      </Form.Item>
+    </Form>
+
+  )
+}
+
+Signup.getLayout = (page) => {
+  return (
+    <Layout>
+      {page}
+    </Layout>
+  )
+}
+export default Signup

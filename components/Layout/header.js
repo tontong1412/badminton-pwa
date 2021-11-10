@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { useEffect } from 'react'
+import { useRouter } from 'next/router';
 import Head from 'next/head'
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios'
@@ -8,46 +9,66 @@ import { LeftOutlined } from '@ant-design/icons'
 
 
 const Header = (props) => {
-  const state = useSelector(state => state);
+  const { user } = useSelector(state => state);
   const dispatch = useDispatch()
+  const router = useRouter()
 
   useEffect(() => {
     const login = async () => {
       const rememberMe = localStorage.getItem('rememberMe') === 'true'
       const token = rememberMe ? localStorage.getItem('token') : ''
       if (rememberMe && token) {
-        const { data: login } = await axios.get(`${API_ENDPOINT}/user/current`, {
-          headers: {
-            'Authorization': `Token ${token}`
-          }
-        })
-        const { data: player } = await axios.get(`${API_ENDPOINT}/player/${login.user.playerID}`)
+        try {
+          const { data: login } = await axios.get(`${API_ENDPOINT}/user/current`, {
+            headers: {
+              'Authorization': `Token ${token}`
+            }
+          })
 
-        const user = {
-          id: login.user._id,
-          token: login.user.token,
-          email: login.user.email,
-          playerID: login.user.playerID,
-          officialName: player.officialName,
-          club: player.club
+          let player
+          if (login.user.playerID) {
+            const res = await axios.get(`${API_ENDPOINT}/player/${login.user.playerID}`)
+            player = res.data
+          }
+
+          const userObj = {
+            id: login.user._id,
+            token: login.user.token,
+            email: login.user.email,
+            playerID: login.user.playerID,
+            officialName: player?.officialName,
+            displayName: player?.displayName,
+            club: player?.club,
+            photo: player?.photo
+          }
+          localStorage.setItem('rememberMe', true);
+          localStorage.setItem('token', login.user.token);
+          dispatch({ type: 'LOGIN', payload: userObj })
+        } catch (error) {
+          dispatch({ type: 'LOGOUT' })
+          localStorage.clear()
         }
-        localStorage.setItem('rememberMe', true);
-        localStorage.setItem('token', login.user.token);
-        dispatch({ type: 'LOGIN', payload: user })
+
       }
     }
-    login()
-  })
+    if (!user.id) login()
+  }, [user])
 
   return (
     <>
       <Head>
-        <title>Bad Bay | Badminton Data Center</title>
+        <title>Badminstar | Badminton Data Center</title>
         <meta name="description" content={props.description} />
       </Head>
       <div className='header'>
-        <div>{props.backHref ? <Link passHref href={props.backHref}><LeftOutlined /></Link> : null}</div>
-        <div>badbay</div>
+        <div >{props.back?.href || props.previous ?
+          <div onClick={props.previous ? router.back : () => router.push(props.back.href)}>
+            <LeftOutlined />
+          </div>
+          :
+          null}
+        </div>
+        <Link passHref href='/'><div>badminstar</div></Link>
         <div>{props.rightIcon ? props.rightIcon : null}</div>
       </div>
     </>

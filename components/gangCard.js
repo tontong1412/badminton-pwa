@@ -1,6 +1,10 @@
 import Link from 'next/link'
-import Image from 'next/Image'
+import Image from 'next/image'
+import { useDispatch } from 'react-redux'
+import { EnvironmentOutlined } from '@ant-design/icons';
+
 const Card = ({ gang }) => {
+  const dispatch = useDispatch()
   const info = [
     {
       icon: '/icon/badminton-court.png',
@@ -13,14 +17,16 @@ const Card = ({ gang }) => {
   ]
   return (
     <Link
-      key={gang._id}
       href={`/gang/${gang._id}`}
       passHref
     >
-      <div className='gang-card'>
+      <div className='gang-card' onClick={() => {
+        dispatch({ type: 'GANG', payload: gang })
+        dispatch({ type: 'ACTIVE_MENU', payload: 'players' })
+      }}>
         <div className='gang-img'>
           <Image
-            src='/splash/launch-640x1136.png'
+            src='/icon/logo.png'
             alt=''
             width={150}
             height={120}
@@ -28,8 +34,8 @@ const Card = ({ gang }) => {
           />
         </div>
         <div className='info-container'>
-          <div>{gang.name}</div>
-          <div className='sub-title'>{`${gang.location}`}</div>
+          <div className='gang-name'>{gang.name}</div>
+          {(gang.area || gang.location) && <div className='sub-title'><EnvironmentOutlined style={{ marginRight: '5px' }} />{`${gang.area || gang.location || ''}`}</div>}
           <div className='info-item-container'>
             {
               info.map((elm, index) => {
