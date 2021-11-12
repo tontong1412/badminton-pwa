@@ -43,12 +43,17 @@ const Stat = ({ stat }) => {
         <div style={{ fontWeight: 'bold' }}>Won</div>
         <div style={{ width: '20%', textAlign: 'center' }}>{stat?.teamB.win}</div>
       </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px 0', borderBottom: '1px solid #eee' }}>
+        <div style={{ width: '20%', textAlign: 'center' }}>{stat?.teamB.win}</div>
+        <div style={{ fontWeight: 'bold' }}>Lose</div>
+        <div style={{ width: '20%', textAlign: 'center' }}>{stat?.teamA.win}</div>
+      </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px 0', }}>
         <div style={{ width: '20%', textAlign: 'center' }}>{stat?.tie}</div>
         <div style={{ fontWeight: 'bold' }}>Draw</div>
         <div style={{ width: '20%', textAlign: 'center' }}>{stat?.tie}</div>
       </div>
-    </div>
+    </div >
   )
 }
 
