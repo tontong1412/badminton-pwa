@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { analytics, logEvent } from '../../utils/firebase'
 import Layout from '../../components/Layout'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { API_ENDPOINT } from '../../config'
@@ -14,6 +14,7 @@ import router from 'next/router'
 import { useGangs } from '../../utils'
 
 const Gang = () => {
+  const myGangRef = useRef()
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [courtFeeType, setCourtFeeType] = useState('buffet')
@@ -100,6 +101,7 @@ const Gang = () => {
       fetchData()
       setIsModalVisible(false)
       setConfirmLoading(false)
+      myGangRef.current.mutateMyGang()
     }).catch(err => {
       setIsModalVisible(false)
       setConfirmLoading(false)
@@ -117,7 +119,7 @@ const Gang = () => {
   if (isLoading) return <Loading />
   return (
     <div>
-      <MyGang bottomLine />
+      <MyGang bottomLine ref={myGangRef} />
       <div style={{ margin: '10px' }}><Input.Search allowClear enterButton="Search" placeholder='ค้นหาโดยชื่อก๊วน ชื่อสนาม จังหวัด หรือย่าน' onSearch={onSearch} /></div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', margin: '5px' }}>
         {displayGangs?.length > 0 ? displayGangs?.map(gang => {
