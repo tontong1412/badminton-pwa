@@ -30,6 +30,10 @@ const MatchList = () => {
   const [player2, setPlayer2] = useState()
   const [player3, setPlayer3] = useState()
   const [player4, setPlayer4] = useState()
+  const [player1ID, setPlayer1ID] = useState()
+  const [player2ID, setPlayer2ID] = useState()
+  const [player3ID, setPlayer3ID] = useState()
+  const [player4ID, setPlayer4ID] = useState()
   const [waitingList, setWaitingList] = useState()
   const [playingList, setPlayingList] = useState()
   const [finishedList, setFinishedList] = useState()
@@ -67,10 +71,22 @@ const MatchList = () => {
     }
 
 
-    setOptions(gang?.players.map(player => {
+    setOptions(gang?.players.filter(player => {
+      if (player1 && player === player._id) return false
+      else if (player2 && player === player._id) return false
+      else if (player3 && player === player._id) return false
+      else if (player4 && player === player._id) return false
+      else return true
+    }).map(player => {
       return {
+        key: player._id,
         value: player.displayName || player.officialName,
-        label: renderItem(player.displayName, player.officialName)
+        label: (
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div>{player.displayName || player.officialName}</div>
+            <div style={{ color: '#aaa' }}>{player.displayName && player.officialName}</div>
+          </div>
+        )
       }
     }))
 
@@ -103,12 +119,31 @@ const MatchList = () => {
   }, [waitingList, playingList, finishedList])
 
   useEffect(() => {
-    if (player1 && player2 && player3 && player4) {
+    if (player1ID && player2ID && player3ID && player4ID) {
       setCanAddQueue(true)
     } else {
       setCanAddQueue(false)
     }
-  }, [player1, player2, player3, player4])
+    setOptions(gang?.players.filter(player => {
+      if (actionMode === 'update') return true
+      if (player1ID && player1ID === player._id) return false
+      if (player2ID && player2ID === player._id) return false
+      if (player3ID && player3ID === player._id) return false
+      if (player4ID && player4ID === player._id) return false
+      return true
+    }).map(player => {
+      return {
+        key: player._id,
+        value: player.displayName || player.officialName,
+        label: (
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div>{player.displayName || player.officialName}</div>
+            <div style={{ color: '#aaa' }}>{player.displayName && player.officialName}</div>
+          </div>
+        )
+      }
+    }))
+  }, [player1ID, player2ID, player3ID, player4ID])
 
   const removeQueue = async (matchID) => {
     logEvent(analytics, 'remove queue')
@@ -122,36 +157,57 @@ const MatchList = () => {
 
   const menu = (match) => (
     <Menu>
-      <Menu.Item key='stat'>
-        <div onClick={() => getStat(match._id)}>
-          ดูสถิติ
-        </div>
-      </Menu.Item>
-      {tabKey === '2' && <Menu.Item key='stat'>
-        <div onClick={() => manageShuttleCock(match._id, 'decrement')}>
-          ลบลูก
-        </div>
-      </Menu.Item>}
-      <Menu.Item key='edit'>
-        <div onClick={() => {
-          setActionMode('update')
-          showModal()
-          setMatch(match)
-          setPlayer1(match.teamA.team.players[0].displayName || match.teamA.team.players[0].officialName)
-          setPlayer2(match.teamA.team.players[1].displayName || match.teamA.team.players[1].officialName)
-          setPlayer3(match.teamB.team.players[0].displayName || match.teamB.team.players[0].officialName)
-          setPlayer4(match.teamB.team.players[1].displayName || match.teamB.team.players[1].officialName)
-        }}>
-          แก้ไข
-        </div>
-      </Menu.Item>
-      {tabKey === '1' && <Menu.Item key='delete'>
-        <div onClick={() => removeQueue(match._id)}>
-          ลบคิว
-        </div>
-      </Menu.Item>}
-    </Menu>
+      {
+        tabKey !== '3' && < Menu.Item key='stat'>
+          <div onClick={() => getStat(match._id)}>
+            ดูสถิติ
+          </div>
+        </Menu.Item>
+      }
+      {
+        tabKey === '3' && <Menu.Item key='shuttle-inc'>
+          <div onClick={() => manageShuttleCock(match._id, 'increment')}>
+            เพิ่มลูก
+          </div>
+        </Menu.Item>
+      }
+      {
+        tabKey !== '1' && <Menu.Item key='shuttle-dec'>
+          <div onClick={() => manageShuttleCock(match._id, 'decrement')}>
+            ลบลูก
+          </div>
+        </Menu.Item>
+      }
+      {
+        tabKey !== '1' && <Menu.Item key='edit'>
+          <div onClick={() => onClickEditMatch(match)}>
+            แก้ไข
+          </div>
+        </Menu.Item>
+      }
+      {
+        tabKey === '1' && <Menu.Item key='delete'>
+          <div onClick={() => removeQueue(match._id)}>
+            ลบคิว
+          </div>
+        </Menu.Item>
+      }
+    </Menu >
   )
+
+  const onClickEditMatch = (match) => {
+    setActionMode('update')
+    showModal()
+    setMatch(match)
+    setPlayer1(match.teamA.team.players[0].displayName || match.teamA.team.players[0].officialName)
+    setPlayer2(match.teamA.team.players[1].displayName || match.teamA.team.players[1].officialName)
+    setPlayer3(match.teamB.team.players[0].displayName || match.teamB.team.players[0].officialName)
+    setPlayer4(match.teamB.team.players[1].displayName || match.teamB.team.players[1].officialName)
+    setPlayer1ID(match.teamA.team.players[0]._id)
+    setPlayer2ID(match.teamA.team.players[1]._id)
+    setPlayer3ID(match.teamB.team.players[0]._id)
+    setPlayer4ID(match.teamB.team.players[1]._id)
+  }
 
   const showModal = () => {
     setIsModalVisible(true)
@@ -170,14 +226,14 @@ const MatchList = () => {
       matchID: selectedMatch?._id,
       teamA: {
         players: [
-          gang.players.find(player => player.officialName === player1 || player.displayName === player1)?._id,
-          gang.players.find(player => player.officialName === player2 || player.displayName === player2)?._id
+          player1ID,
+          player2ID
         ]
       },
       teamB: {
         players: [
-          gang.players.find(player => player.officialName === player3 || player.displayName === player3)?._id,
-          gang.players.find(player => player.officialName === player4 || player.displayName === player4)?._id
+          player3ID,
+          player4ID
         ]
       },
       reference: gang.reference
@@ -189,7 +245,11 @@ const MatchList = () => {
       setPlayer2()
       setPlayer3()
       setPlayer4()
-      setTabKey('1')
+      setPlayer1ID()
+      setPlayer2ID()
+      setPlayer3ID()
+      setPlayer4ID()
+      if (actionMode === 'create') setTabKey('1')
     })
       .catch(() => {
         setConfirmLoading(false)
@@ -205,6 +265,10 @@ const MatchList = () => {
             setPlayer2()
             setPlayer3()
             setPlayer4()
+            setPlayer1ID()
+            setPlayer2ID()
+            setPlayer3ID()
+            setPlayer4ID()
           },
         })
       })
@@ -217,6 +281,10 @@ const MatchList = () => {
     setPlayer2()
     setPlayer3()
     setPlayer4()
+    setPlayer1ID()
+    setPlayer2ID()
+    setPlayer3ID()
+    setPlayer4ID()
   }
 
   const onSearch = (searchText) => {
@@ -224,10 +292,22 @@ const MatchList = () => {
     const searchOptions = gang.players.filter(player =>
       player.displayName?.toLowerCase().includes(searchTextLower)
       || player.officialName?.toLowerCase().includes(searchTextLower)
-    ).map(player => {
+    ).filter(player => {
+      if (player1ID && player1ID === player._id) return false
+      else if (player2ID && player2ID === player._id) return false
+      else if (player3ID && player3ID === player._id) return false
+      else if (player4ID && player4ID === player._id) return false
+      else return true
+    }).map(player => {
       return {
+        key: player._id,
         value: player.displayName || player.officialName,
-        label: renderItem(player.displayName, player.officialName)
+        label: (
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div>{player.displayName || player.officialName}</div>
+            <div style={{ color: '#aaa' }}>{player.displayName && player.officialName}</div>
+          </div>
+        )
       }
     })
     setOptions(
@@ -280,28 +360,10 @@ const MatchList = () => {
     })
   }
 
-  const renderItem = (displayName, officialName) => (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-      }}>
-      <div>
-        {displayName || officialName}
-      </div>
-      {displayName ? <div style={{ color: '#bbb' }}>{officialName}</div> : null}
-    </div>
-  );
-
   const onBlur = (value, clearFunction) => {
-    if (value && !gang.players.find(player => player.officialName === value || player.displayName === value)) {
+    if (!value) {
       Modal.error({
-        title: 'ผู้เล่นไม่ได้ลงทะเบียน',
-        content: (
-          <div>
-            <p>กรุณาเลือกจากผู้เล่นที่ลงทะเบียนไว้แล้ว</p>
-          </div>
-        ),
+        title: 'กรุณาเลือกจากรายชื่อผู้เล่นที่ลงทะเบียนไว้แล้ว',
         onOk() { clearFunction() },
       })
     }
@@ -416,12 +478,13 @@ const MatchList = () => {
                         })}
                       </div>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <div style={{ width: '50%' }}>จำนวนลูก: {match.shuttlecockUsed}</div>
+                    <div style={{ display: 'flex', justifyContent: 'center', padding: '0px 10px' }}>
+                      <div >จำนวนลูก: {match.shuttlecockUsed}</div>
                     </div>
                     <div className='controller-container'>
                       {!canManage && match.status !== 'finished' && <div onClick={() => getStat(match._id)} className='controller'>สถิติ</div>}
-                      {canManage && match.status !== 'finished' && <Dropdown overlay={menu(match)} placement='topLeft' trigger={['click']}><div className='controller'>เพิ่มเติม</div></Dropdown>}
+                      {canManage && <Dropdown overlay={menu(match)} placement='topLeft' trigger={['click']}><div className='controller'>เพิ่มเติม</div></Dropdown>}
+                      {canManage && match.status === 'waiting' && <div className='controller' onClick={() => onClickEditMatch(match)}>แก้ไข</div>}
                       {canManage && match.status === 'playing' && <div className='controller' onClick={() => manageShuttleCock(match._id)}>เพิ่มลูก</div>}
                       {canManage && match.status !== 'finished' && <div className='controller' onClick={() => updateStatus(match._id, match.status)}>{match.status === 'waiting' ? 'เริ่มเกม' : 'จบเกม'}</div>}
                       {match.status === 'finished' && <div onClick={() => getStat(match._id)} className='controller'>สถิติ</div>}
@@ -459,11 +522,17 @@ const MatchList = () => {
               width: 250,
               marginLeft: '10px'
             }}
-            onSelect={(data => setPlayer1(data))}
+            onSelect={(data, options) => {
+              setPlayer1(data)
+              setPlayer1ID(options.key)
+            }}
             onSearch={onSearch}
             onChange={data => setPlayer1(data)}
             placeholder='ชื่อผู้เล่น'
-            onBlur={() => onBlur(player1, setPlayer1)}
+            onBlur={() => onBlur(player1ID, () => {
+              setPlayer1()
+              setPlayer1ID()
+            })}
             defaultValue={player1}
           />
         </div>
@@ -475,11 +544,17 @@ const MatchList = () => {
               width: 250,
               marginLeft: '10px'
             }}
-            onSelect={(data => setPlayer2(data))}
+            onSelect={(data, options) => {
+              setPlayer2(data)
+              setPlayer2ID(options.key)
+            }}
             onSearch={onSearch}
             onChange={data => setPlayer2(data)}
             placeholder='ชื่อผู้เล่น'
-            onBlur={() => onBlur(player2, setPlayer2)}
+            onBlur={() => onBlur(player2ID, () => {
+              setPlayer2()
+              setPlayer2ID()
+            })}
             defaultValue={player2}
           />
         </div>
@@ -492,11 +567,17 @@ const MatchList = () => {
               width: 250,
               marginLeft: '10px'
             }}
-            onSelect={(data => setPlayer3(data))}
+            onSelect={(data, options) => {
+              setPlayer3(data)
+              setPlayer3ID(options.key)
+            }}
             onSearch={onSearch}
             onChange={data => setPlayer3(data)}
             placeholder='ชื่อผู้เล่น'
-            onBlur={() => onBlur(player3, setPlayer3)}
+            onBlur={() => onBlur(player3ID, () => {
+              setPlayer3()
+              setPlayer3ID()
+            })}
             defaultValue={player3}
           />
         </div>
@@ -508,11 +589,17 @@ const MatchList = () => {
               width: 250,
               marginLeft: '10px'
             }}
-            onSelect={(data => setPlayer4(data))}
+            onSelect={(data, options) => {
+              setPlayer4(data)
+              setPlayer4ID(options.key)
+            }}
             onSearch={onSearch}
             onChange={data => setPlayer4(data)}
             placeholder='ชื่อผู้เล่น'
-            onBlur={() => onBlur(player4, setPlayer4)}
+            onBlur={() => onBlur(player4ID, () => {
+              setPlayer4()
+              setPlayer4ID()
+            })}
             defaultValue={player4}
           />
         </div>
