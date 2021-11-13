@@ -1,42 +1,31 @@
-import { useEffect, forwardRef, useImperativeHandle } from "react"
+import { useEffect, useState } from "react"
 import { useSelector } from 'react-redux'
 import MyGangCard from "../myGangCard"
 import axios from 'axios'
 import { API_ENDPOINT } from "../../config"
-import useSWR from "swr"
-
-
-const MyGang = (props, ref) => {
+const MyGang = (props) => {
   const user = useSelector(state => state.user)
-  const { data: myGangs, mutate } = useSWR(
-    `${API_ENDPOINT}/gang/my-gang`,
-    (url) => fetcher(url, user.token)
-  )
-
-  const fetcher = (url, token, params) => {
-    return axios.get(url, {
-      headers: {
-        'Authorization': `Token ${token}`
-      },
-      params
-    }).then((res) => {
-      return res.data
-    })
-  }
+  const [myGang, setMyGang] = useState()
 
   useEffect(() => {
     if (user.token) {
-      mutate()
+      fetchData()
     }
   }, [user])
 
-  useImperativeHandle(ref, () => ({
-    mutateMyGang() {
-      mutate()
+  const fetchData = () => {
+    if (user.token) {
+      axios.get(`${API_ENDPOINT}/gang/my-gang`, {
+        headers: {
+          'Authorization': `Token ${user.token}`
+        }
+      }).then(res => {
+        setMyGang(res.data)
+      })
+        .catch(() => { })
     }
-  }), [])
-
-  if (!myGangs || myGangs.length === 0 || !user.token) return <div />
+  }
+  if (!myGang || myGang.length === 0) return <div />
 
   return (
     <><div style={{ margin: '15px 0 0 10px' }}>ก๊วนของฉัน</div>
@@ -46,7 +35,7 @@ const MyGang = (props, ref) => {
         display: 'flex',
         marginLeft: '5px'
       }}>
-        {myGangs?.length > 0 && myGangs?.map(gang => {
+        {myGang?.length > 0 && myGang?.map(gang => {
           return <MyGangCard key={`mygang-card-${gang._id}`} gang={gang} style={{ float: 'right' }} />
         })
         }
@@ -56,4 +45,4 @@ const MyGang = (props, ref) => {
   )
 
 }
-export default forwardRef(MyGang)
+export default MyGang
