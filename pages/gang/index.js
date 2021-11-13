@@ -44,8 +44,11 @@ const Gang = () => {
   useEffect(() => {
     logEvent(analytics, 'gang')
     dispatch({ type: 'ACTIVE_MENU', payload: 'gang' })
-    setDisplayGangs(gangs)
   }, [])
+
+  useEffect(() => {
+    setDisplayGangs(gangs)
+  }, [gangs])
 
   const formatPromptpay = (input) => {
     if (input.length === 10) {
