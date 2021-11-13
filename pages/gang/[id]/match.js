@@ -125,11 +125,12 @@ const MatchList = () => {
       setCanAddQueue(false)
     }
     setOptions(gang?.players.filter(player => {
+      if (actionMode === 'update') return true
       if (player1ID && player1ID === player._id) return false
-      else if (player2ID && player2ID === player._id) return false
-      else if (player3ID && player3ID === player._id) return false
-      else if (player4ID && player4ID === player._id) return false
-      else return true
+      if (player2ID && player2ID === player._id) return false
+      if (player3ID && player3ID === player._id) return false
+      if (player4ID && player4ID === player._id) return false
+      return true
     }).map(player => {
       return {
         key: player._id,
