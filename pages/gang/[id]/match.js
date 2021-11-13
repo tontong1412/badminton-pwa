@@ -156,40 +156,57 @@ const MatchList = () => {
 
   const menu = (match) => (
     <Menu>
-      <Menu.Item key='stat'>
-        <div onClick={() => getStat(match._id)}>
-          ดูสถิติ
-        </div>
-      </Menu.Item>
-      {tabKey === '2' && <Menu.Item key='shuttle-dec'>
-        <div onClick={() => manageShuttleCock(match._id, 'decrement')}>
-          ลบลูก
-        </div>
-      </Menu.Item>}
-      <Menu.Item key='edit'>
-        <div onClick={() => {
-          setActionMode('update')
-          showModal()
-          setMatch(match)
-          setPlayer1(match.teamA.team.players[0].displayName || match.teamA.team.players[0].officialName)
-          setPlayer2(match.teamA.team.players[1].displayName || match.teamA.team.players[1].officialName)
-          setPlayer3(match.teamB.team.players[0].displayName || match.teamB.team.players[0].officialName)
-          setPlayer4(match.teamB.team.players[1].displayName || match.teamB.team.players[1].officialName)
-          setPlayer1ID(match.teamA.team.players[0]._id)
-          setPlayer2ID(match.teamA.team.players[1]._id)
-          setPlayer3ID(match.teamB.team.players[0]._id)
-          setPlayer4ID(match.teamB.team.players[1]._id)
-        }}>
-          แก้ไข
-        </div>
-      </Menu.Item>
-      {tabKey === '1' && <Menu.Item key='delete'>
-        <div onClick={() => removeQueue(match._id)}>
-          ลบคิว
-        </div>
-      </Menu.Item>}
-    </Menu>
+      {
+        tabKey !== '3' && < Menu.Item key='stat'>
+          <div onClick={() => getStat(match._id)}>
+            ดูสถิติ
+          </div>
+        </Menu.Item>
+      }
+      {
+        tabKey === '3' && <Menu.Item key='shuttle-inc'>
+          <div onClick={() => manageShuttleCock(match._id, 'increment')}>
+            เพิ่มลูก
+          </div>
+        </Menu.Item>
+      }
+      {
+        tabKey !== '1' && <Menu.Item key='shuttle-dec'>
+          <div onClick={() => manageShuttleCock(match._id, 'decrement')}>
+            ลบลูก
+          </div>
+        </Menu.Item>
+      }
+      {
+        tabKey !== '1' && <Menu.Item key='edit'>
+          <div onClick={() => onClickEditMatch(match)}>
+            แก้ไข
+          </div>
+        </Menu.Item>
+      }
+      {
+        tabKey === '1' && <Menu.Item key='delete'>
+          <div onClick={() => removeQueue(match._id)}>
+            ลบคิว
+          </div>
+        </Menu.Item>
+      }
+    </Menu >
   )
+
+  const onClickEditMatch = (match) => {
+    setActionMode('update')
+    showModal()
+    setMatch(match)
+    setPlayer1(match.teamA.team.players[0].displayName || match.teamA.team.players[0].officialName)
+    setPlayer2(match.teamA.team.players[1].displayName || match.teamA.team.players[1].officialName)
+    setPlayer3(match.teamB.team.players[0].displayName || match.teamB.team.players[0].officialName)
+    setPlayer4(match.teamB.team.players[1].displayName || match.teamB.team.players[1].officialName)
+    setPlayer1ID(match.teamA.team.players[0]._id)
+    setPlayer2ID(match.teamA.team.players[1]._id)
+    setPlayer3ID(match.teamB.team.players[0]._id)
+    setPlayer4ID(match.teamB.team.players[1]._id)
+  }
 
   const showModal = () => {
     setIsModalVisible(true)
@@ -231,7 +248,7 @@ const MatchList = () => {
       setPlayer2ID()
       setPlayer3ID()
       setPlayer4ID()
-      setTabKey('1')
+      if (actionMode === 'create') setTabKey('1')
     })
       .catch(() => {
         setConfirmLoading(false)
@@ -460,12 +477,13 @@ const MatchList = () => {
                         })}
                       </div>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <div style={{ width: '50%' }}>จำนวนลูก: {match.shuttlecockUsed}</div>
+                    <div style={{ display: 'flex', justifyContent: 'center', padding: '0px 10px' }}>
+                      <div >จำนวนลูก: {match.shuttlecockUsed}</div>
                     </div>
                     <div className='controller-container'>
                       {!canManage && match.status !== 'finished' && <div onClick={() => getStat(match._id)} className='controller'>สถิติ</div>}
-                      {canManage && match.status !== 'finished' && <Dropdown overlay={menu(match)} placement='topLeft' trigger={['click']}><div className='controller'>เพิ่มเติม</div></Dropdown>}
+                      {canManage && <Dropdown overlay={menu(match)} placement='topLeft' trigger={['click']}><div className='controller'>เพิ่มเติม</div></Dropdown>}
+                      {canManage && match.status === 'waiting' && <div className='controller' onClick={() => onClickEditMatch(match)}>แก้ไข</div>}
                       {canManage && match.status === 'playing' && <div className='controller' onClick={() => manageShuttleCock(match._id)}>เพิ่มลูก</div>}
                       {canManage && match.status !== 'finished' && <div className='controller' onClick={() => updateStatus(match._id, match.status)}>{match.status === 'waiting' ? 'เริ่มเกม' : 'จบเกม'}</div>}
                       {match.status === 'finished' && <div onClick={() => getStat(match._id)} className='controller'>สถิติ</div>}
