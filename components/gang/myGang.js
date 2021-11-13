@@ -6,6 +6,7 @@ import { API_ENDPOINT } from "../../config"
 import useSWR from "swr"
 
 const fetcher = (url, token, params) => {
+  console.log('>>>>>>>>', token)
   return axios.get(url, {
     headers: {
       'Authorization': `Token ${token}`
@@ -27,6 +28,7 @@ const MyGang = (props, ref) => {
     console.log('================ user')
     console.log(user)
     if (user.token) {
+      console.log(user.token)
       mutate()
     }
   }, [user])
