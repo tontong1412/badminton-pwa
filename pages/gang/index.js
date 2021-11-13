@@ -101,7 +101,7 @@ const Gang = () => {
       fetchData()
       setIsModalVisible(false)
       setConfirmLoading(false)
-      myGangRef.current.mutateMyGang()
+      myGangRef.current.fetchMyGang()
     }).catch(err => {
       setIsModalVisible(false)
       setConfirmLoading(false)

@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, forwardRef, useImperativeHandle } from "react"
 import { useSelector } from 'react-redux'
 import MyGangCard from "../myGangCard"
 import axios from 'axios'
 import { API_ENDPOINT } from "../../config"
-const MyGang = (props) => {
+const MyGang = (props, ref) => {
   const user = useSelector(state => state.user)
   const [myGang, setMyGang] = useState()
 
@@ -12,6 +12,12 @@ const MyGang = (props) => {
       fetchData()
     }
   }, [user])
+
+  useImperativeHandle(ref, () => ({
+    fetchMyGang() {
+      fetchData()
+    }
+  }), [])
 
   const fetchData = () => {
     if (user.token) {
@@ -45,4 +51,4 @@ const MyGang = (props) => {
   )
 
 }
-export default MyGang
+export default forwardRef(MyGang)
