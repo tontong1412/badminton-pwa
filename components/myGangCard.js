@@ -4,16 +4,6 @@ import { useDispatch } from 'react-redux'
 
 const MyGangCard = ({ gang }) => {
   const dispatch = useDispatch()
-  const info = [
-    {
-      icon: '/icon/badminton-court.png',
-      text: gang.courtFee.type === 'share' ? 'share' : gang.courtFee.amount
-    },
-    {
-      icon: '/icon/shuttlecock.png',
-      text: gang.shuttlecockFee
-    }
-  ]
   return (
     <Link
       href={`/gang/${gang._id}`}
