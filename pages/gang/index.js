@@ -51,6 +51,10 @@ const Gang = () => {
     setDisplayGangs(gangs)
   }, [gangs])
 
+  useEffect(() => {
+    myGangRef?.current?.mutateMyGang()
+  }, [user])
+
   const formatPromptpay = (input) => {
     if (input.length === 10) {
       const formattedCode = input.slice(0, 3) + '-' + input.slice(3, 6) + '-' + input.slice(6)
