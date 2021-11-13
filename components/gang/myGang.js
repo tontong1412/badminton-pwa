@@ -5,24 +5,26 @@ import axios from 'axios'
 import { API_ENDPOINT } from "../../config"
 import useSWR from "swr"
 
-const fetcher = (url, token, params) => {
-  console.log('>>>>>>>>', token)
-  return axios.get(url, {
-    headers: {
-      'Authorization': `Token ${token}`
-    },
-    params
-  }).then((res) => {
-    console.log(res.data)
-    return res.data
-  })
-}
+
 const MyGang = (props, ref) => {
   const user = useSelector(state => state.user)
   const { data: myGangs, mutate } = useSWR(
     `${API_ENDPOINT}/gang/my-gang`,
     (url) => fetcher(url, user.token)
   )
+
+  const fetcher = (url, token, params) => {
+    console.log('>>>>>>>>', token)
+    return axios.get(url, {
+      headers: {
+        'Authorization': `Token ${user.token}`
+      },
+      params
+    }).then((res) => {
+      console.log(res.data)
+      return res.data
+    })
+  }
 
   useEffect(() => {
     console.log('================ user')
