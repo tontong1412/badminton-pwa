@@ -29,6 +29,12 @@ const MyGang = (props, ref) => {
     }
   }, [user])
 
+  useEffect(() => {
+    if (user.token) {
+      mutate()
+    }
+  }, [])
+
   useImperativeHandle(ref, () => ({
     mutateMyGang() {
       mutate()
