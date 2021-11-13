@@ -14,34 +14,21 @@ const MyGang = (props, ref) => {
   )
 
   const fetcher = (url, token, params) => {
-    console.log('>>>>>>>>', token)
     return axios.get(url, {
       headers: {
-        'Authorization': `Token ${user.token}`
+        'Authorization': `Token ${token}`
       },
       params
     }).then((res) => {
-      console.log(res.data)
       return res.data
     })
   }
 
   useEffect(() => {
-    console.log('================ user')
-    console.log(user)
     if (user.token) {
-      console.log(user.token)
       mutate()
     }
   }, [user])
-
-  useEffect(() => {
-    console.log('------------------didmount')
-    console.log(user)
-    if (user.token) {
-      mutate()
-    }
-  }, [])
 
   useImperativeHandle(ref, () => ({
     mutateMyGang() {
