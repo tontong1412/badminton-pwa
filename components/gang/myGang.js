@@ -24,12 +24,16 @@ const MyGang = (props, ref) => {
   )
 
   useEffect(() => {
+    console.log('================ user')
+    console.log(user)
     if (user.token) {
       mutate()
     }
   }, [user])
 
   useEffect(() => {
+    console.log('------------------didmount')
+    console.log(user)
     if (user.token) {
       mutate()
     }
