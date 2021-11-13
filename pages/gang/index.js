@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { analytics, logEvent } from '../../utils/firebase'
 import Layout from '../../components/Layout'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { API_ENDPOINT } from '../../config'
@@ -11,15 +11,16 @@ import { Modal, Form, Input, Radio, InputNumber, Button, Checkbox } from 'antd'
 import Loading from '../../components/loading'
 import MyGang from '../../components/gang/myGang'
 import router from 'next/router'
+import { useGangs } from '../../utils'
 
 const Gang = () => {
+  const myGangRef = useRef()
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [courtFeeType, setCourtFeeType] = useState('buffet')
   const { user } = useSelector(state => state)
-  const [gangs, setGangs] = useState()
+  const { gangs, mutate, isLoading, isError } = useGangs()
   const dispatch = useDispatch()
-  const [loading, setLoading] = useState(true)
   const [displayGangs, setDisplayGangs] = useState()
   const formItemLayout = {
     labelCol: {
@@ -37,25 +38,18 @@ const Gang = () => {
   };
 
   const fetchData = async () => {
-    setLoading(true)
-    await axios.get(`${API_ENDPOINT}/gang`)
-      .then(res => {
-        setGangs(res.data)
-        setDisplayGangs(res.data)
-        setLoading(false)
-      })
-      .catch(() => { })
+    mutate()
+    setDisplayGangs(gangs)
   }
 
   useEffect(() => {
     logEvent(analytics, 'gang')
     dispatch({ type: 'ACTIVE_MENU', payload: 'gang' })
-    fetchData()
   }, [])
 
   useEffect(() => {
-    fetchData()
-  }, [user])
+    setDisplayGangs(gangs)
+  }, [gangs])
 
   const formatPromptpay = (input) => {
     if (input.length === 10) {
@@ -107,6 +101,7 @@ const Gang = () => {
       fetchData()
       setIsModalVisible(false)
       setConfirmLoading(false)
+      myGangRef.current.mutateMyGang()
     }).catch(err => {
       setIsModalVisible(false)
       setConfirmLoading(false)
@@ -121,10 +116,10 @@ const Gang = () => {
       })
     })
   }
-  if (loading) return <Loading />
+  if (isLoading) return <Loading />
   return (
     <div>
-      <MyGang bottomLine />
+      <MyGang bottomLine ref={myGangRef} />
       <div style={{ margin: '10px' }}><Input.Search allowClear enterButton="Search" placeholder='ค้นหาโดยชื่อก๊วน ชื่อสนาม จังหวัด หรือย่าน' onSearch={onSearch} /></div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', margin: '5px' }}>
         {displayGangs?.length > 0 ? displayGangs?.map(gang => {

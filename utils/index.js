@@ -39,10 +39,10 @@ export const useBills = (id) => {
   }
 }
 
-export const useGangs = (token, params) => {
+export const useGangs = () => {
   const { data, error, mutate } = useSWR(
     `${API_ENDPOINT}/gang`,
-    (url) => fetcher(url, token, params)
+    fetcher
   )
 
   return {

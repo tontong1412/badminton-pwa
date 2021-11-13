@@ -1,31 +1,55 @@
-import { useEffect, useState } from "react"
+import { useEffect, forwardRef, useImperativeHandle } from "react"
 import { useSelector } from 'react-redux'
 import MyGangCard from "../myGangCard"
 import axios from 'axios'
 import { API_ENDPOINT } from "../../config"
-const MyGang = (props) => {
+import useSWR from "swr"
+
+
+const MyGang = (props, ref) => {
   const user = useSelector(state => state.user)
-  const [myGang, setMyGang] = useState()
+  const { data: myGangs, mutate } = useSWR(
+    `${API_ENDPOINT}/gang/my-gang`,
+    (url) => fetcher(url, user.token)
+  )
+
+  const fetcher = (url, token, params) => {
+    console.log('>>>>>>>>', token)
+    return axios.get(url, {
+      headers: {
+        'Authorization': `Token ${user.token}`
+      },
+      params
+    }).then((res) => {
+      console.log(res.data)
+      return res.data
+    })
+  }
 
   useEffect(() => {
+    console.log('================ user')
+    console.log(user)
     if (user.token) {
-      fetchData()
+      console.log(user.token)
+      mutate()
     }
   }, [user])
 
-  const fetchData = () => {
+  useEffect(() => {
+    console.log('------------------didmount')
+    console.log(user)
     if (user.token) {
-      axios.get(`${API_ENDPOINT}/gang/my-gang`, {
-        headers: {
-          'Authorization': `Token ${user.token}`
-        }
-      }).then(res => {
-        setMyGang(res.data)
-      })
-        .catch(() => { })
+      mutate()
     }
-  }
-  if (!myGang || myGang.length === 0) return <div />
+  }, [])
+
+  useImperativeHandle(ref, () => ({
+    mutateMyGang() {
+      mutate()
+    }
+  }), [])
+
+  if (!myGangs || myGangs.length === 0 || !user.token) return <div />
 
   return (
     <><div style={{ margin: '15px 0 0 10px' }}>ก๊วนของฉัน</div>
@@ -35,7 +59,7 @@ const MyGang = (props) => {
         display: 'flex',
         marginLeft: '5px'
       }}>
-        {myGang?.length > 0 && myGang?.map(gang => {
+        {myGangs?.length > 0 && myGangs?.map(gang => {
           return <MyGangCard key={`mygang-card-${gang._id}`} gang={gang} style={{ float: 'right' }} />
         })
         }
@@ -45,4 +69,4 @@ const MyGang = (props) => {
   )
 
 }
-export default MyGang
+export default forwardRef(MyGang)
