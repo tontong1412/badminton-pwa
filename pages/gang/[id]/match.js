@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSWRConfig } from 'swr'
-import { Modal, AutoComplete, Input } from 'antd'
+import { Modal, AutoComplete, Input, Popconfirm } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
 import Image from 'next/image'
@@ -186,10 +186,16 @@ const MatchList = () => {
         </Menu.Item>
       }
       {
-        tabKey === '1' && <Menu.Item key='delete'>
-          <div onClick={() => removeQueue(match._id)}>
+        <Menu.Item key='delete'>
+          <Popconfirm
+            title="ยืนยัน"
+            onConfirm={() => removeQueue(match._id)}
+            onCancel={() => { }}
+            okText="Yes"
+            cancelText="No"
+          >
             ลบคิว
-          </div>
+          </Popconfirm>
         </Menu.Item>
       }
     </Menu >
@@ -251,26 +257,78 @@ const MatchList = () => {
       setPlayer4ID()
       if (actionMode === 'create') setTabKey('1')
     })
-      .catch(() => {
+      .catch((error) => {
         setConfirmLoading(false)
-        Modal.error({
-          title: 'ผิดพลาด',
-          content: (
-            <div>
-              <p>เกิดปัญหาขณะอัพเดทข้อมูล กรุณาลองใหม่ในภายหลัง</p>
-            </div>
-          ),
-          onOk() {
-            setPlayer1()
-            setPlayer2()
-            setPlayer3()
-            setPlayer4()
-            setPlayer1ID()
-            setPlayer2ID()
-            setPlayer3ID()
-            setPlayer4ID()
-          },
-        })
+        if (error.response.data.message === 'match exist') {
+          Modal.confirm({
+            title: 'คิวนี้มีอยู่แล้ว ยืนยันเพิ่มคิวนี้ซ้ำหรือไม่',
+            onOk() {
+              axios.post(endpoint, {
+                gangID: id,
+                matchID: selectedMatch?._id,
+                teamA: {
+                  players: [
+                    player1ID,
+                    player2ID
+                  ]
+                },
+                teamB: {
+                  players: [
+                    player3ID,
+                    player4ID
+                  ]
+                },
+                reference: gang.reference,
+                force: true
+              }).then(() => {
+                mutate(`${API_ENDPOINT}/gang/${id}`)
+                setIsModalVisible(false)
+                setConfirmLoading(false)
+                setPlayer1()
+                setPlayer2()
+                setPlayer3()
+                setPlayer4()
+                setPlayer1ID()
+                setPlayer2ID()
+                setPlayer3ID()
+                setPlayer4ID()
+                if (actionMode === 'create') setTabKey('1')
+              })
+            },
+            onCancel() {
+              setIsModalVisible(false)
+              setConfirmLoading(false)
+              setPlayer1()
+              setPlayer2()
+              setPlayer3()
+              setPlayer4()
+              setPlayer1ID()
+              setPlayer2ID()
+              setPlayer3ID()
+              setPlayer4ID()
+            }
+          })
+        }
+        else {
+          Modal.error({
+            title: 'ผิดพลาด',
+            content: (
+              <div>
+                <p>เกิดปัญหาขณะอัพเดทข้อมูล กรุณาลองใหม่ในภายหลัง</p>
+              </div>
+            ),
+            onOk() {
+              setPlayer1()
+              setPlayer2()
+              setPlayer3()
+              setPlayer4()
+              setPlayer1ID()
+              setPlayer2ID()
+              setPlayer3ID()
+              setPlayer4ID()
+            },
+          })
+        }
       })
   }
 

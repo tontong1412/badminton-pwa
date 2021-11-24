@@ -249,7 +249,7 @@ const GangID = () => {
     <div style={{ fontSize: '20px' }}>{gang.name} </div>
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <div></div>
-      <div>ผู้เล่นทั้งหมด: {playerArray?.length || ''} คน</div>
+      <div>ผู้เล่นทั้งหมด: {playerArray?.length || '0'} คน</div>
     </div>
     {
       playerArray?.length > 0 ? playerArray.map(player => {
