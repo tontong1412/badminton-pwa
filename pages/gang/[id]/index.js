@@ -248,7 +248,7 @@ const GangDetail = () => {
             <Button style={{ width: '100%' }} onClick={() => setEditModal(true)}>แก้ไขข้อมูล</Button>
           </div>
           :
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+          gang.isActive && <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
             <Popconfirm
               title="คุณแน่ใจที่จะเข้าร่วมก๊วนนี้หรือไม่"
               onConfirm={() => joinGang()}
