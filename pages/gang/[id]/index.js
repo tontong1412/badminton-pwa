@@ -3,12 +3,12 @@ import { analytics, logEvent } from '../../../utils/firebase'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
-import { TAB_OPTIONS } from '../../../constant'
+import { COLOR, TAB_OPTIONS } from '../../../constant'
 import Image from 'next/image'
 import { useGang } from '../../../utils'
 import Loading from '../../../components/loading'
 import { Button, Modal, Form, Checkbox, Input, InputNumber, Radio, Popconfirm, message } from 'antd'
-import { EnvironmentOutlined, ShareAltOutlined } from '@ant-design/icons'
+import { EnvironmentOutlined, ShareAltOutlined, StarOutlined, StarFilled } from '@ant-design/icons'
 import axios from 'axios'
 import { API_ENDPOINT, WEB_URL } from '../../../config'
 import copy from 'copy-to-clipboard';
@@ -38,6 +38,7 @@ const GangDetail = () => {
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [courtFeeType, setCourtFeeType] = useState('buffet')
   const [initialValue, setInitialValue] = useState()
+  const [isFavorite, setIsFavorite] = useState(false)
   useEffect(() => {
     logEvent(analytics, `gang-${id}`)
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.GANG.DETAIL })
@@ -48,6 +49,11 @@ const GangDetail = () => {
       setIsCreator(true)
     } else {
       setIsCreator(false)
+    }
+    if (user && gang && gang.members.includes(user.playerID)) {
+      setIsFavorite(true)
+    } else {
+      setIsFavorite(false)
     }
   }, [user, gang])
 
@@ -86,6 +92,42 @@ const GangDetail = () => {
       return formattedCode
     } else {
       return input
+    }
+  }
+
+  const onToggleFavorite = () => {
+    if (isFavorite) {
+      axios.post(`${API_ENDPOINT}/gang/remove-member`, {
+        gangID: id,
+        playerID: user.playerID
+      }, {
+        headers: {
+          'Authorization': `Token ${user.token}`
+        }
+      }).then(() => {
+        const tempMembers = [...gang.members]
+        var index = tempMembers.indexOf(user.playerID);
+        if (index !== -1) {
+          tempMembers.splice(index, 1);
+        }
+        mutate({
+          ...gang,
+          members: tempMembers
+        })
+      }).catch(() => { })
+    } else {
+      axios.post(`${API_ENDPOINT}/gang/add-member`, {
+        gangID: id,
+        playerID: user.playerID
+      }, {
+        headers: {
+          'Authorization': `Token ${user.token}`
+        }
+      }).then(() => mutate({
+        ...gang,
+        members: [...gang.members, user.playerID]
+      }))
+        .catch(() => { })
     }
   }
 
@@ -177,7 +219,7 @@ const GangDetail = () => {
       <div style={{ padding: '20px' }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{gang.name}</div>
-          <div style={{ marginLeft: '5px', padding: '0px 10px', border: '1px solid #87e8de', backgroundColor: '#e6fffb', color: "#08979c", borderRadius: '20px' }}>{gang.courtFee.type}</div>
+          {user.playerID && !isCreator && <div onClick={onToggleFavorite} style={{ marginLeft: '5px' }}>{isFavorite ? <StarFilled style={{ color: COLOR.MAIN_THEME }} /> : <StarOutlined />}</div>}
         </div>
         {gang.location && <div><EnvironmentOutlined style={{ marginRight: '5px' }} />{gang.location}</div>}
 
@@ -185,6 +227,7 @@ const GangDetail = () => {
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <div style={{ fontWeight: 'bold', marginRight: '5px', width: '80px' }}>ค่าสนาม</div>
             <div>{`${gang.courtFee.amount} บาท`}</div>
+            <div style={{ marginLeft: '5px', padding: '0px 10px', border: '1px solid #87e8de', backgroundColor: '#e6fffb', color: "#08979c", borderRadius: '20px' }}>{gang.courtFee.type}</div>
           </div>
           <div style={{ display: 'flex', }}>
             <div style={{ fontWeight: 'bold', marginRight: '5px', width: '80px' }}>ค่าลูกแบด</div>
