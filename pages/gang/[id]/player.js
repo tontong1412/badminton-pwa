@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Modal, AutoComplete, Popconfirm, Tag, Button, Collapse, Form, Input, Space, InputNumber } from 'antd'
+import { Modal, AutoComplete, Popconfirm, Tag, Button, Collapse, Form, Input, Space, InputNumber, Upload } from 'antd'
 import { API_ENDPOINT } from '../../../config'
 import Layout from '../../../components/Layout/gang'
 import AddButton from '../../../components/addButton'
@@ -14,6 +14,24 @@ import qrcode from 'qrcode'
 import Loading from '../../../components/loading'
 import { TAB_OPTIONS } from '../../../constant'
 import { DeleteOutlined, RightOutlined, DownOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
+
+const getBase64 = (img, callback) => {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result));
+  reader.readAsDataURL(img);
+}
+
+const beforeUpload = (file) => {
+  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+  if (!isJpgOrPng) {
+    message.error('You can only upload JPG/PNG file!');
+  }
+  const isLt5M = file.size / 1024 / 1024 < 5;
+  if (!isLt5M) {
+    message.error('Image must smaller than 5MB!');
+  }
+  return isJpgOrPng && isLt5M;
+}
 
 const GangID = () => {
   const router = useRouter()
@@ -37,6 +55,7 @@ const GangID = () => {
   const { bills, mutate: mutateBills } = useBills(id)
   const [collapseActive, setCollapseActive] = useState(false)
   const [otherFieldLength, setOtherFieldLength] = useState(0)
+  const [loadingImage, setLoadingImage] = useState(false)
 
   useEffect(() => {
     logEvent(analytics, `gang-${id}`)
@@ -148,6 +167,17 @@ const GangID = () => {
 
   const modalFooter = () => {
     let footer = []
+    footer.push(<Upload
+      action={`${API_ENDPOINT}/mock`}
+      name='file'
+      onChange={onChangeImage}
+      maxCount={1}
+      beforeUpload={beforeUpload}
+      showUploadList={false}
+
+    >
+      <Button style={{ marginRight: '8px' }} loading={loadingImage}>อัพโหลด slip</Button>
+    </Upload>)
     if (isManager) {
       footer.push(
         <Popconfirm
@@ -245,6 +275,23 @@ const GangID = () => {
         getBill(playerID)
       })
       .catch(err => console.log(err))
+  }
+
+  const onChangeImage = (info) => {
+    if (info.file.status === 'done') {
+      getBase64(info.file.originFileObj, image => {
+        setLoadingImage(true)
+        axios.put(`${API_ENDPOINT}/transaction/${paymentData._id}`, {
+          slip: image
+        }).then(() => {
+          setLoadingImage(false)
+          getBill(paymentData.payer._id)
+        }).catch(() => { })
+      })
+    } else if (info.file.status === 'error') {
+      message.error(`${info.file.name} file upload failed.`);
+      message.error(JSON.stringify(info, null, 1));
+    }
   }
 
   if (isError) return "An error has occurred."
@@ -429,6 +476,7 @@ const GangID = () => {
                 </Button>
               </Form.Item>}
             </Form>}
+            {paymentData?.slip && <Image objectFit='contain' src={paymentData.slip} alt='' width={50} height={50} layout='responsive' />}
           </div>
           :
           <Loading />
