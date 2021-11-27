@@ -7,10 +7,12 @@ import { TAB_OPTIONS } from '../../../constant'
 import Image from 'next/image'
 import { useGang } from '../../../utils'
 import Loading from '../../../components/loading'
-import { Button, Modal, Form, Checkbox, Input, InputNumber, Radio, Popconfirm } from 'antd'
-import { EnvironmentOutlined } from '@ant-design/icons';
+import { Button, Modal, Form, Checkbox, Input, InputNumber, Radio, Popconfirm, message } from 'antd'
+import { EnvironmentOutlined, ShareAltOutlined } from '@ant-design/icons'
 import axios from 'axios'
-import { API_ENDPOINT } from '../../../config'
+import { API_ENDPOINT, WEB_URL } from '../../../config'
+import copy from 'copy-to-clipboard';
+
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -200,7 +202,7 @@ const GangDetail = () => {
 
         {isCreator ?
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-            <Button type='primary' style={{ width: '100%' }} onClick={() => setEditModal(true)}>แก้ไขข้อมูล</Button>
+            <Button style={{ width: '100%' }} onClick={() => setEditModal(true)}>แก้ไขข้อมูล</Button>
           </div>
           :
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
@@ -215,6 +217,19 @@ const GangDetail = () => {
             </Popconfirm>
           </div>
         }
+        <Button
+          style={{ width: '100%', marginTop: '20px' }}
+          type='primary'
+          onClick={() => {
+            copy(`${WEB_URL}/gang/${id}`, {
+              debug: true,
+              message: 'Press to copy',
+              onCopy: () => message.info('Copied Url to Clipboard')
+            })
+          }}>
+          Share
+          <ShareAltOutlined />
+        </Button>
 
       </div>
 
