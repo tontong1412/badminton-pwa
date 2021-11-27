@@ -227,19 +227,23 @@ const GangID = () => {
     setOtherFieldLength(0)
   }
 
-  const onAddOther = (values, transactionID) => {
+  const onAddOther = (values, transactionID, playerID) => {
     axios.put(`${API_ENDPOINT}/transaction/${transactionID}/add-other`, values.others)
       .then(res => {
         setPaymentData(res.data)
         form.resetFields()
         setOtherFieldLength(0)
+        getBill(playerID)
       })
       .catch(err => console.log(err))
   }
 
-  const removeOther = (other, transactionID) => {
+  const removeOther = (other, transactionID, playerID) => {
     axios.put(`${API_ENDPOINT}/transaction/${transactionID}/remove-other`, { other })
-      .then(res => setPaymentData(res.data))
+      .then(res => {
+        setPaymentData(res.data)
+        getBill(playerID)
+      })
       .catch(err => console.log(err))
   }
 
@@ -365,7 +369,7 @@ const GangID = () => {
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       {isManager && <DeleteOutlined
                         style={{ color: 'red', marginRight: '10px' }}
-                        onClick={() => removeOther(elm, paymentData._id)}
+                        onClick={() => removeOther(elm, paymentData._id, paymentData.payer._id)}
                       />}
                       <div>{elm.name}</div>
                     </div>
@@ -378,7 +382,7 @@ const GangID = () => {
               <div>{`รวม`}</div>
               <div>{`${paymentData?.total} บาท`}</div>
             </div>
-            {isManager && <Form form={form} name="otherItem" onFinish={(values) => onAddOther(values, paymentData._id)} >
+            {isManager && <Form form={form} name="otherItem" onFinish={(values) => onAddOther(values, paymentData._id, paymentData.payer._id)} >
               <Form.List name="others">
                 {(fields, { add, remove }) => {
                   return (
