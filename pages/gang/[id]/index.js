@@ -224,8 +224,8 @@ const GangDetail = () => {
             copy(`${WEB_URL}/gang/${id}`, {
               debug: true,
               message: 'Press to copy',
-              onCopy: () => message.info('Copied Url to Clipboard')
             })
+            message.info('Copied Url to Clipboard')
           }}>
           Share
           <ShareAltOutlined />
