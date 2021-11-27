@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Modal, Button, AutoComplete } from 'antd'
+import { Modal, Button, AutoComplete, Switch } from 'antd'
 import { API_ENDPOINT } from '../../../config'
 import Layout from '../../../components/Layout/gang'
 import { useGang } from '../../../utils'
@@ -17,7 +17,7 @@ const GangID = () => {
   const router = useRouter()
   const user = useSelector(state => state.user)
   const { id } = router.query
-  const { gang, isLoading, isError } = useGang(id)
+  const { gang, isLoading, isError, mutate } = useGang(id)
   const [qrSVG, setQrSVG] = useState()
   const dispatch = useDispatch()
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -137,6 +137,14 @@ const GangID = () => {
     setPlayerID()
   }
 
+  const onToggleActive = (checked) => {
+    console.log(checked)
+    axios.put(`${API_ENDPOINT}/gang/${id}`, {
+      isActive: checked
+    }).then(() => mutate())
+      .catch(() => { })
+  }
+
 
   if (isError) return "An error has occurred."
   if (isLoading) return <Loading />
@@ -146,7 +154,10 @@ const GangID = () => {
       {qrSVG ?
         <div style={{ textAlign: 'center', maxWidth: '350px', margin: 'auto' }}>
           <div dangerouslySetInnerHTML={{ __html: qrSVG }} />
-          <div style={{ fontWeight: 'bold', fontSize: '20px' }}>{gang.name}</div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '5px' }}>
+            <div style={{ fontWeight: 'bold', fontSize: '20px', marginRight: '5px' }}>{gang.name}</div>
+            <Switch defaultChecked={gang.isActive} onChange={onToggleActive} />
+          </div>
           <div><Button onClick={getStat} style={{ width: '200px', marginBottom: '10px' }}>สถิติ</Button></div>
           <div><Button onClick={clear} type='primary' style={{ width: '200px', marginBottom: '10px' }}>Reset</Button></div>
           {isCreator && <div><Button onClick={() => router.push(`/gang/${id}/manager`)} type='primary' style={{ width: '200px', marginBottom: '50px' }}>ผู้จัดการ</Button></div>}
