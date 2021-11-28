@@ -12,7 +12,7 @@ import AddButton from '../../../components/addButton'
 import { useBills, useGang, usePlayers } from '../../../utils'
 import qrcode from 'qrcode'
 import Loading from '../../../components/loading'
-import { TAB_OPTIONS } from '../../../constant'
+import { TAB_OPTIONS, TRANSACTION } from '../../../constant'
 import { DeleteOutlined, RightOutlined, DownOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 
 const getBase64 = (img, callback) => {
@@ -282,10 +282,12 @@ const GangID = () => {
       getBase64(info.file.originFileObj, image => {
         setLoadingImage(true)
         axios.put(`${API_ENDPOINT}/transaction/${paymentData._id}`, {
-          slip: image
+          slip: image,
+          status: isManager ? 'paid' : 'pending'
         }).then(() => {
           setLoadingImage(false)
           getBill(paymentData.payer._id)
+          mutateBills()
         }).catch(() => { })
       })
     } else if (info.file.status === 'error') {
@@ -316,7 +318,14 @@ const GangID = () => {
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              {(isManager || user.playerID === player._id) && <div ><Tag color={player?.payment?.status === 'paid' ? 'green' : 'red'}>{player?.payment?.status === 'paid' ? 'จ่ายแล้ว' : 'ยังไม่จ่าย'}</Tag></div>}
+              {(isManager || user.playerID === player._id) &&
+                <div >
+                  <Tag
+                    color={TRANSACTION[player?.payment?.status || 'notpaid'].COLOR}
+                  >
+                    {TRANSACTION[player?.payment?.status || 'notpaid'].LABEL}
+                  </Tag>
+                </div>}
               {(isManager || user.playerID === player._id) && <div onClick={() => getBill(player._id)} >ดูบิล</div>}
               {isManager && <Popconfirm
                 title="คุณแน่ใจที่จะลบผู้เล่นนี้หรือไม่"
@@ -364,8 +373,12 @@ const GangID = () => {
       onCancel={onClosePaymentModal}
       footer={modalFooter()}
       confirmLoading={confirmLoading}
-      destroyOnClose>
-      <div style={{ height: '500px', overflow: 'scroll' }}>
+      destroyOnClose
+      style={{ height: 'calc(100vh - 200px)' }}
+      bodyStyle={{ overflowY: 'scroll' }}
+    >
+      {/* <div style={{ height: '400px', overflow: 'scroll' }}> */}
+      <div >
         {paymentData ?
           <div style={{ textAlign: 'center' }}>
             {qrSVG &&
@@ -376,7 +389,7 @@ const GangID = () => {
               </>}
             <div style={{ display: 'flex' }}>
               <div style={{ fontWeight: 'bold' }}>{`${paymentData.payer.displayName || paymentData.payer.officialName}`}</div>
-              <div style={{ marginLeft: '5px' }}><Tag color={paymentData.status === 'pending' ? 'red' : 'green'}>{paymentData.status === 'pending' ? 'ยังไม่จ่าย' : 'จ่ายแล้ว'}</Tag></div>
+              <div style={{ marginLeft: '5px' }}><Tag color={TRANSACTION[paymentData.status || 'notpaid'].COLOR}>{TRANSACTION[paymentData.status || 'notpaid'].LABEL}</Tag></div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div>ค่าสนาม</div>
