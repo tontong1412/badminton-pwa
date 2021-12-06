@@ -1,8 +1,7 @@
 import { useEffect, useState, forwardRef, useImperativeHandle } from "react"
 import { useSelector } from 'react-redux'
 import MyGangCard from "../myGangCard"
-import axios from 'axios'
-import { API_ENDPOINT } from "../../config"
+import request from "../../utils/request"
 const MyGang = (props, ref) => {
   const user = useSelector(state => state.user)
   const [myGang, setMyGang] = useState()
@@ -21,11 +20,9 @@ const MyGang = (props, ref) => {
 
   const fetchData = () => {
     if (user.token) {
-      axios.get(`${API_ENDPOINT}/gang/my-gang`, {
-        headers: {
-          'Authorization': `Token ${user.token}`
-        }
-      }).then(res => {
+      request.get(`/gang/my-gang`,
+        { token: user.token }
+      ).then(res => {
         setMyGang(res.data)
       })
         .catch(() => { })
@@ -34,7 +31,8 @@ const MyGang = (props, ref) => {
   if (!myGang || myGang.length === 0) return <div />
 
   return (
-    <><div style={{ margin: '15px 0 0 10px' }}>ก๊วนของฉัน</div>
+    <>
+      <div style={{ margin: '15px 0 0 10px' }}>ก๊วนของฉัน</div>
       <div style={{
         overflowX: 'scroll',
         overflowY: 'hidden',

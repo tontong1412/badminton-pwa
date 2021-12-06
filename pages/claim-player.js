@@ -1,35 +1,28 @@
 import { useDispatch, useSelector } from "react-redux"
 import { Form, Input, Button, Modal } from 'antd'
-import { usePlayers } from "../utils"
 import Layout from '../components/Layout/noFooter'
-import axios from 'axios'
-import { API_ENDPOINT } from "../config"
 import { useRouter } from "next/router"
 import { useState } from "react"
+import request from "../utils/request"
 
 
 const ClaimPlayer = () => {
   const { user } = useSelector(state => state)
-  const { players } = usePlayers()
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const dispatch = useDispatch()
   const onFinish = (values) => {
     setLoading(true)
-    axios.post(`${API_ENDPOINT}/player`, values)
+    request.post(`/player`, values, user.token)
       .then(res => {
-        axios.post(`${API_ENDPOINT}/player/claim`, {
+        request.post(`/player/claim`, {
           playerID: res.data._id
-        }, {
-          headers: {
-            'Authorization': `Token ${user.token}`
-          }
-        }).then(() => {
-          axios.get(`${API_ENDPOINT}/user/current`, {
-            headers: {
-              'Authorization': `Token ${user.token}`
-            }
-          }).then((res2) => {
+        },
+          user.token
+        ).then(() => {
+          request.get(`/user/current`,
+            { token: user.token }
+          ).then((res2) => {
             router.push('/account')
             dispatch({
               type: 'LOGIN',
@@ -38,6 +31,7 @@ const ClaimPlayer = () => {
                 token: res2.data.user.token,
                 playerID: res.data._id,
                 officialName: res.data.officialName,
+                displayName: res.data.displayName,
                 club: res.data.club
               }
             })
