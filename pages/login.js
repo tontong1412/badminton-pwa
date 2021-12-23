@@ -1,17 +1,15 @@
-import axios from 'axios'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import logo from '../public/icon/logo.png'
 import { Form, Input, Button, Checkbox, Modal } from 'antd'
-import { useDispatch, useSelector } from 'react-redux';
-import { API_ENDPOINT } from '../config'
+import { useDispatch, useSelector } from 'react-redux'
 import Layout from '../components/Layout/noFooter'
 import { useState, useEffect } from 'react'
 import { analytics, logEvent } from '../utils/firebase'
+import request from '../utils/request'
 
 const Login = () => {
-  const state = useSelector(state => state)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const dispatch = useDispatch()
@@ -23,7 +21,8 @@ const Login = () => {
   const onFinish = async (values) => {
     setLoading(true)
     try {
-      const { data: login } = await axios.post(`${API_ENDPOINT}/login`,
+      const { data: login } = await request.post(
+        `/login`,
         {
           user: {
             email: values.email.toLowerCase(),
@@ -33,10 +32,9 @@ const Login = () => {
 
       let player
       if (login.user.playerID) {
-        const res = await axios.get(`${API_ENDPOINT}/player/${login.user.playerID}`)
+        const res = await request.get(`/player/${login.user.playerID}`)
         player = res.data
       }
-
       const user = {
         id: login.user._id,
         token: login.user.token,
@@ -50,7 +48,6 @@ const Login = () => {
       localStorage.setItem('rememberMe', values.remember);
       localStorage.setItem('token', values.remember ? login.user.token : '');
       dispatch({ type: 'LOGIN', payload: user })
-      dispatch({ type: 'ACTIVE_MENU', payload: 'home' })
       setLoading(false)
       router.back()
     } catch (error) {

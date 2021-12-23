@@ -4,91 +4,154 @@ import Layout from '../components/Layout/noFooter'
 import { useRouter } from "next/router"
 import { useState } from "react"
 import request from "../utils/request"
+import ServiceErrorModal from "../components/ServiceErrorModal"
 
 
 const ClaimPlayer = () => {
   const { user } = useSelector(state => state)
   const [loading, setLoading] = useState(false)
+  const [playerExistModal, setPlayerExistModal] = useState(false)
+  const [playerExistData, setPlayerExistData] = useState()
   const router = useRouter()
   const dispatch = useDispatch()
-  const onFinish = (values) => {
-    setLoading(true)
-    request.post(`/player`, values, user.token)
-      .then(res => {
-        request.post(`/player/claim`, {
-          playerID: res.data._id
-        },
-          user.token
-        ).then(() => {
-          request.get(`/user/current`,
-            { token: user.token }
-          ).then((res2) => {
-            router.push('/account')
-            dispatch({
-              type: 'LOGIN',
-              payload: {
-                ...user,
-                token: res2.data.user.token,
-                playerID: res.data._id,
-                officialName: res.data.officialName,
-                displayName: res.data.displayName,
-                club: res.data.club
-              }
-            })
-            setLoading(false)
-          })
-
+  const onFinish = async (values) => {
+    try {
+      setLoading(true)
+      // สร้าง player
+      const { data: player } = await request.post(`/player`, values, user.token)
+        .then(res => res)
+        .catch(error => {
+          if (error.response.status === 409) { // this player is already created
+            if (error.response.data.userID) { // check if player is owned by other account
+              throw new Error('player already claim')
+              // TODO: error player นี้มีคน claim ไปแล้ว หากเป็นตัวจริงกรุณาติดต่อทางเว็บไซต์เพื่อยืนยันตัวตน
+            } else {
+              // TODO: แสดงข้อมูล player + activity ล่าสุด พร้อมปุ่ม claim or decline
+              setPlayerExistData({
+                profile: error.response.data,
+                events: []
+              })
+              throw new Error('found player')
+            }
+          }
         })
+      // ผูก player ที่สร้างเข้ากับ account
+      await request.post('/player/claim', { playerID: player._id }, user.token)
+      // ขอ token ใหม่ที่มีข้อมูล player
+      const { data: userWithClaimPlayer } = await request.get('/user/current', { token: user.token })
+      // redirect ไปที่หน้า account
+      router.push('/account')
+      // เก็บข้อมูล user ใน redux
+      dispatch({
+        type: 'LOGIN',
+        payload: {
+          ...user,
+          token: userWithClaimPlayer.user.token,
+          playerID: player._id,
+          officialName: player.officialName,
+          displayName: player.displayName,
+          club: player.club
+        }
       })
-      .catch(err => {
-        setLoading(false)
+      setLoading(false)
+    } catch (err) {
+      setLoading(false)
+      if (err.message === 'player already claim') {
         Modal.error({
-          title: 'ผิดพลาด',
+          title: 'ชื่อนี้มีคนใช้แล้ว',
           content: (
             <div>
-              <p>เกิดปัญหาขณะอัพเดทข้อมูล กรุณาลองใหม่ในภายหลัง</p>
+              <p>โปรดตรวจสอบว่าเป็นชื่อและนามสกุลจริงของคุณ</p>
+              <p>หากพบมีคนแอบอ้างว่าเป็นคุณ สามารถส่งหลักฐานยืนยันตัวตนพร้อมช่องทางการติดต่อมาได้ที่อีเมล tontongfordev@gmail.com</p>
             </div>
           ),
           onOk() { },
         })
-      })
+      } else if (err.message === 'found player') {
+        setPlayerExistModal(true)
+      } else {
+        ServiceErrorModal()
+      }
+    }
   }
   return (
-    <div style={{ margin: '10px' }}>
-      <Form
-        name='basic'
-        onFinish={onFinish}
-        style={{ maxWidth: '320px', margin: 'auto' }}
+    <>
+      <div style={{ margin: '10px' }}>
+        <Form
+          name='basic'
+          onFinish={onFinish}
+          style={{ maxWidth: '320px', margin: 'auto' }}
+        >
+          <div>อีกนิดเดียว!</div>
+          <Form.Item
+            label='ชื่อ-นามสกุล'
+            name='officialName'
+            rules={[
+              {
+                required: true,
+                message: 'Please input your username!',
+              },
+            ]}
+            help='ชื่อจริง-นามสกุล เพื่อใช้ในการระบุตัวตน'
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label='ชื่อเล่น'
+            name='displayName'
+            help='ชื่อที่ใช้แสดงบนแอพ จะเป็นชื่อเล่น หรือชื่อที่คนอื่นๆในวงการใช้เรียกคุณก็ได้'
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item style={{ textAlign: "center", marginTop: '20px' }}>
+            <Button type='primary' htmlType='submit' loading={loading}>
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+      <Modal
+        title="พบผู้เล่นที่อาจเป็นคุณ"
+        visible={playerExistModal}
+        onOk={async () => {
+          await request.post('/player/claim', { playerID: playerExistData.profile._id }, user.token)
+          // ขอ token ใหม่ที่มีข้อมูล player
+          const { data: userWithClaimPlayer } = await request.get('/user/current', { token: user.token })
+          // redirect ไปที่หน้า account
+          router.push('/account')
+          // เก็บข้อมูล user ใน redux
+          dispatch({
+            type: 'LOGIN',
+            payload: {
+              ...user,
+              token: userWithClaimPlayer.user.token,
+              playerID: playerExistData.profile._id,
+              officialName: playerExistData.profile.officialName,
+              displayName: playerExistData.profile.displayName,
+              club: playerExistData.profile.club
+            }
+          })
+          setPlayerExistModal(false)
+        }}
+        onCancel={() => {
+          setPlayerExistModal(false)
+          Modal.error({
+            title: 'ชื่อนี้มีคนใช้แล้ว',
+            content: (
+              <div>
+                <p>โปรดตรวจสอบว่าเป็นชื่อและนามสกุลจริงของคุณ</p>
+                <p>หากพบมีคนแอบอ้างว่าเป็นคุณ สามารถส่งหลักฐานยืนยันตัวตนพร้อมช่องทางการติดต่อมาได้ที่อีเมล tontongfordev@gmail.com</p>
+              </div>
+            ),
+            onOk() { },
+          })
+        }}
+        okText='นี่คือฉัน'
+        cancelText='ไม่ใช่ฉัน'
       >
-        <div>อีกนิดเดียว!</div>
-        <Form.Item
-          label='ชื่อ-นามสกุล'
-          name='officialName'
-          rules={[
-            {
-              required: true,
-              message: 'Please input your username!',
-            },
-          ]}
-          help='ชื่อจริง-นามสกุล เพื่อใช้ในการระบุตัวตน'
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label='ชื่อเล่น'
-          name='displayName'
-          help='ชื่อที่ใช้แสดงบนแอพ จะเป็นชื่อเล่น หรือชื่อที่คนอื่นๆในวงการใช้เรียกคุณก็ได้'
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item style={{ textAlign: "center", marginTop: '20px' }}>
-          <Button type='primary' htmlType='submit' loading={loading}>
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
-
-    </div>
+        <div>{playerExistData?.profile.officialName}</div>
+      </Modal>
+    </>
   )
 }
 ClaimPlayer.getLayout = (page) => {

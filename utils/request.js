@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { API_ENDPOINT } from '../config'
 
-const get = (path, { params, token }) =>
+const get = (path, { params = {}, token } = {}) =>
   axios.get(`${API_ENDPOINT}${path}`, {
     headers: {
       'Authorization': `Token ${token}`
@@ -14,7 +14,7 @@ const post = (path, body, token) =>
   axios.post(`${API_ENDPOINT}${path}`,
     body,
     {
-      headers: {
+      headers: token && {
         'Authorization': `Token ${token}`
       },
     })
