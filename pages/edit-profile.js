@@ -1,9 +1,8 @@
 import { useDispatch, useSelector } from "react-redux"
 import { Form, Input, Button, Modal } from 'antd'
 import Layout from '../components/Layout/noFooter'
-import axios from 'axios'
-import { API_ENDPOINT } from "../config"
 import { useRouter } from "next/router"
+import request from "../utils/request"
 
 
 const EditAccount = () => {
@@ -11,7 +10,7 @@ const EditAccount = () => {
   const router = useRouter()
   const dispatch = useDispatch()
   const onFinish = (values) => {
-    axios.put(`${API_ENDPOINT}/player/${user.playerID}`, values)
+    request.put(`/player/${user.playerID}`, values)
       .then(res => {
         dispatch({
           type: 'LOGIN',

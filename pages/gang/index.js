@@ -1,10 +1,7 @@
-import axios from 'axios'
 import { analytics, logEvent } from '../../utils/firebase'
 import Layout from '../../components/Layout'
 import { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-
-import { API_ENDPOINT } from '../../config'
 import AddButton from '../../components/addButton'
 import Card from '../../components/gangCard'
 import { Modal, Form, Input, Radio, InputNumber, Button, Checkbox } from 'antd'
@@ -12,17 +9,20 @@ import Loading from '../../components/loading'
 import MyGang from '../../components/gang/myGang'
 import router from 'next/router'
 import { useGangs } from '../../utils'
+import { formatPromptpay } from '../../utils/formatter'
+import request from '../../utils/request'
 
 const Gang = () => {
   const myGangRef = useRef()
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [courtFeeType, setCourtFeeType] = useState('buffet')
+  const [displayGangs, setDisplayGangs] = useState()
   const { user } = useSelector(state => state)
   const { gangs, mutate, isLoading, isError } = useGangs()
   const dispatch = useDispatch()
-  const [displayGangs, setDisplayGangs] = useState()
-  const formItemLayout = {
+
+  const createGangFormLayout = {
     labelCol: {
       xs: { span: 24 },
       sm: { span: 24 },
@@ -35,11 +35,6 @@ const Gang = () => {
       lg: { span: 24 },
       xl: { span: 24 }
     },
-  };
-
-  const fetchData = async () => {
-    mutate()
-    setDisplayGangs(gangs)
   }
 
   useEffect(() => {
@@ -51,17 +46,6 @@ const Gang = () => {
     setDisplayGangs(gangs)
   }, [gangs])
 
-  const formatPromptpay = (input) => {
-    if (input.length === 10) {
-      const formattedCode = input.slice(0, 3) + '-' + input.slice(3, 6) + '-' + input.slice(6)
-      return formattedCode
-    } else if (input.length === 13) {
-      const formattedCode = input.slice(0, 1) + '-' + input.slice(1, 5) + '-' + input.slice(5, 10) + '-' + input.slice(10, 12) + '-' + input.slice(12)
-      return formattedCode
-    } else {
-      return input
-    }
-  }
   const onSearch = (value) => {
     const searchTextLower = value.toLowerCase().trim()
     const searchGang = gangs.filter(gang => gang.name?.toLowerCase().includes(searchTextLower)
@@ -71,12 +55,11 @@ const Gang = () => {
     setDisplayGangs(searchGang)
   }
 
-  const onFinish = (values) => {
+  const onCreateGang = (values) => {
     setConfirmLoading(true)
-    axios.post(`${API_ENDPOINT}/gang`, {
+    request.post(`/gang`, {
       name: values.name,
       location: values.location,
-      // type: 'nonRoutine',
       courtFee: {
         type: values.courtFeeType,
         amount: values.courtFee
@@ -93,12 +76,11 @@ const Gang = () => {
         lineID: values.lineID
       },
       area: values.area
-    }, {
-      headers: {
-        'Authorization': `Token ${user.token}`
-      }
-    }).then(res => {
-      fetchData()
+    },
+      user.token
+    ).then(() => {
+      mutate()
+      setDisplayGangs(gangs)
       setIsModalVisible(false)
       setConfirmLoading(false)
       myGangRef.current.fetchMyGang()
@@ -120,12 +102,22 @@ const Gang = () => {
   return (
     <div>
       <MyGang bottomLine ref={myGangRef} />
-      <div style={{ margin: '10px' }}><Input.Search allowClear enterButton="Search" placeholder='ค้นหาโดยชื่อก๊วน ชื่อสนาม จังหวัด หรือย่าน' onSearch={onSearch} /></div>
+      <div style={{ margin: '10px' }}>
+        <Input.Search
+          allowClear
+          enterButton="Search"
+          placeholder='ค้นหาโดยชื่อก๊วน ชื่อสนาม จังหวัด หรือย่าน'
+          onSearch={onSearch} />
+      </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', margin: '5px' }}>
-        {displayGangs?.length > 0 ? displayGangs?.map(gang => {
-          return <Card key={`gang-card-${gang._id}`} gang={gang} />
-        })
-          : <div style={{ margin: '20px auto' }}><div style={{ color: '#ccc' }}>ไม่พบก๊วน</div></div>
+        {displayGangs?.length > 0 ?
+          displayGangs?.map(gang => {
+            return <Card key={`gang-card-${gang._id}`} gang={gang} />
+          })
+          :
+          <div style={{ margin: '20px auto' }}>
+            <div style={{ color: '#ccc' }}>ไม่พบก๊วน</div>
+          </div>
         }
       </div>
 
@@ -148,9 +140,9 @@ const Gang = () => {
       >
         <Form
           style={{ height: '500px', overflow: 'scroll' }}
-          onFinish={onFinish}
+          onFinish={onCreateGang}
           scrollToFirstError
-          {...formItemLayout}
+          {...createGangFormLayout}
         >
           <Form.Item
             label='ชื่อก๊วน'

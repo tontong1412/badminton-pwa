@@ -1,19 +1,18 @@
-import Layout from '../../../components/Layout/gang'
-import { analytics, logEvent } from '../../../utils/firebase'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
-import { COLOR, TAB_OPTIONS } from '../../../constant'
+import { useRouter } from 'next/router'
 import Image from 'next/image'
-import { useGang } from '../../../utils'
-import Loading from '../../../components/loading'
 import { Button, Modal, Form, Checkbox, Input, InputNumber, Radio, Popconfirm, message } from 'antd'
 import { EnvironmentOutlined, ShareAltOutlined, StarOutlined, StarFilled } from '@ant-design/icons'
-import axios from 'axios'
-import { API_ENDPOINT, WEB_URL } from '../../../config'
-import copy from 'copy-to-clipboard';
+import copy from 'copy-to-clipboard'
+import Layout from '../../../components/Layout/gang'
+import { analytics, logEvent } from '../../../utils/firebase'
+import { COLOR, TAB_OPTIONS } from '../../../constant'
+import { useGang } from '../../../utils'
+import Loading from '../../../components/loading'
+import request from '../../../utils/request'
 
-const formItemLayout = {
+const editGangFormLayout = {
   labelCol: {
     xs: { span: 24 },
     sm: { span: 24 },
@@ -97,14 +96,12 @@ const GangDetail = () => {
 
   const onToggleFavorite = () => {
     if (isFavorite) {
-      axios.post(`${API_ENDPOINT}/gang/remove-member`, {
+      request.post(`/gang/remove-member`, {
         gangID: id,
         playerID: user.playerID
-      }, {
-        headers: {
-          'Authorization': `Token ${user.token}`
-        }
-      }).then(() => {
+      },
+        user.token
+      ).then(() => {
         const tempMembers = [...gang.members]
         var index = tempMembers.indexOf(user.playerID);
         if (index !== -1) {
@@ -116,14 +113,12 @@ const GangDetail = () => {
         })
       }).catch(() => { })
     } else {
-      axios.post(`${API_ENDPOINT}/gang/add-member`, {
+      request.post(`/gang/add-member`, {
         gangID: id,
         playerID: user.playerID
-      }, {
-        headers: {
-          'Authorization': `Token ${user.token}`
-        }
-      }).then(() => mutate({
+      },
+        user.token
+      ).then(() => mutate({
         ...gang,
         members: [...gang.members, user.playerID]
       }))
@@ -133,10 +128,9 @@ const GangDetail = () => {
 
   const onFinish = (values) => {
     setConfirmLoading(true)
-    axios.put(`${API_ENDPOINT}/gang/${id}`, {
+    request.put(`/gang/${id}`, {
       name: values.name,
       location: values.location,
-      // type: 'nonRoutine',
       courtFee: {
         type: values.courtFeeType,
         amount: values.courtFee
@@ -153,17 +147,16 @@ const GangDetail = () => {
         lineID: values.lineID
       },
       area: values.area
-    }, {
-      headers: {
-        'Authorization': `Token ${user.token}`
-      }
-    }).then(res => {
+    },
+      user.token
+    ).then(res => {
       mutate(res.data)
       setEditModal(false)
       setConfirmLoading(false)
     }).catch(err => {
       setEditModal(false)
       setConfirmLoading(false)
+      console.log(err)
       Modal.error({
         title: 'ผิดพลาด',
         content: (
@@ -179,7 +172,7 @@ const GangDetail = () => {
   const joinGang = () => {
     if (user.playerID) {
       logEvent(analytics, 'player register')
-      axios.post(`${API_ENDPOINT}/gang/register`, {
+      request.post(`/gang/register`, {
         gangID: id,
         player: {
           _id: user.playerID
@@ -288,7 +281,7 @@ const GangDetail = () => {
         <Form
           style={{ height: '500px', overflow: 'scroll' }}
           onFinish={onFinish}
-          {...formItemLayout}
+          {...editGangFormLayout}
           initialValues={initialValue}
         >
           <Form.Item

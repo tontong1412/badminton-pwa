@@ -1,10 +1,9 @@
-import axios from 'axios'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import logo from '../public/icon/logo.png'
-import { Form, Input, Button, Checkbox, Steps, Modal } from 'antd'
-import { useDispatch, useSelector } from 'react-redux';
-import { API_ENDPOINT } from '../config'
+import { Form, Input, Button, Modal } from 'antd'
+import { useDispatch } from 'react-redux';
+import request from '../utils/request'
 import Layout from '../components/Layout/noFooter'
 import { useState, useEffect } from 'react'
 import { analytics, logEvent } from '../utils/firebase'
@@ -22,7 +21,7 @@ const Signup = () => {
   const onFinish = async (values) => {
     setLoading(true)
 
-    axios.post(`${API_ENDPOINT}/signup`,
+    request.post(`/signup`,
       {
         user: {
           email: values.email.toLowerCase(),
