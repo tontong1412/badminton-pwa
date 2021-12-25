@@ -2,44 +2,29 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
-import { Button, Upload, Spin, message } from 'antd'
+import { Button, Upload, message } from 'antd'
 import Layout from '../components/Layout'
 import { TAB_OPTIONS } from '../constant'
 import { EditOutlined, CameraOutlined } from '@ant-design/icons'
-import axios from 'axios'
 import { API_ENDPOINT } from '../config'
 import Loading from '../components/loading'
 import { analytics, logEvent } from '../utils/firebase'
-
-const getBase64 = (img, callback) => {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
-
-const beforeUpload = (file) => {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-  if (!isJpgOrPng) {
-    message.error('You can only upload JPG/PNG file!');
-  }
-  const isLt5M = file.size / 1024 / 1024 < 5;
-  if (!isLt5M) {
-    message.error('Image must smaller than 5MB!');
-  }
-  return isJpgOrPng && isLt5M;
-}
+import request from '../utils/request'
+import { getBase64, beforeUpload } from '../utils/image'
 
 const Account = () => {
   const { user } = useSelector(state => state)
   const dispatch = useDispatch()
   const router = useRouter()
   const [imageUrl, setImageUrl] = useState()
-  const [imageLoading, setImageLoading] = useState(false)
+  const [ownPlayer, setOwnPlayer] = useState(false)
+
   const logout = () => {
     logEvent(analytics, 'log out')
     dispatch({ type: 'LOGOUT' })
     localStorage.clear()
   }
+
   useEffect(() => {
     logEvent(analytics, 'account')
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.ACCOUNT })
@@ -52,39 +37,40 @@ const Account = () => {
       // return <div onClick={() => router.push('/login')}>Please login <span style={{ color: '#4F708A' }}>Click here</span></div>
     }
     if (!user.playerID) {
-      // router.push('/claim-player')
-      // return <div />
-      return <div onClick={() => router.push('/claim-player')}>Please create profile <span style={{ color: '#4F708A' }}>Click here</span></div>
+      setOwnPlayer(false)
+    } else {
+      setOwnPlayer(true)
     }
   }, [user])
 
 
-  const onChange = (info) => {
+  const onChangeImage = (info) => {
     if (info.file.status === 'done') {
       getBase64(info.file.originFileObj, image => {
-        setImageUrl(image)
+        setImageUrl(image) // for user experience
+        uploadPhoto(image)
       })
     } else if (info.file.status === 'error') {
       message.error(`${info.file.name} file upload failed.`);
-      message.error(JSON.stringify(info, null, 1));
+      console.log(info)
     }
   }
 
-  const uploadPhoto = () => {
+  const uploadPhoto = (image) => {
     logEvent(analytics, 'upload profile photo')
-    setImageLoading(true)
-    axios.put(`${API_ENDPOINT}/player/${user.playerID}`, {
-      photo: imageUrl
-    }).then((res) => {
+    request.put(`/player/${user.playerID}`, {
+      photo: image
+    }, user.token
+    ).then((res) => {
       dispatch({ type: 'LOGIN', payload: { photo: res.data.photo } })
       setImageUrl()
-      setImageLoading(false)
     }).catch(() => {
-      setImageLoading(false)
       setImageUrl()
     })
   }
+
   if (!user.id) return <Loading />
+  if (!ownPlayer) return <div onClick={() => router.push('/claim-player')}>Please create profile <span style={{ color: '#4F708A' }}>Click here</span></div>
 
   return (
     <>
@@ -96,7 +82,7 @@ const Account = () => {
           <Upload
             action={`${API_ENDPOINT}/mock`}
             name='file'
-            onChange={onChange}
+            onChange={onChangeImage}
             maxCount={1}
             beforeUpload={beforeUpload}
             showUploadList={false}>
@@ -118,13 +104,6 @@ const Account = () => {
             </div>
           </Upload>
         </div>
-        {
-          imageUrl && (imageLoading ? <Spin size='small' /> :
-            <div style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
-              <div style={{ margin: '0px 5px' }} onClick={uploadPhoto}>ยืนยัน</div>
-              <div style={{ margin: '0px 5px' }} onClick={() => setImageUrl()}>ยกเลิก</div>
-            </div>)
-        }
 
         <div style={{ fontWeight: 'bold', marginTop: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           {user.displayName || user.officialName}
