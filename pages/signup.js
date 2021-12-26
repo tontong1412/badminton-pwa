@@ -83,6 +83,32 @@ const Signup = () => {
       </Form.Item>
 
       <Form.Item
+        label='Confirm Email'
+        name='confirmEmail'
+        dependencies={['email']}
+        rules={[
+          {
+            required: true,
+            message: 'Please confirm email!',
+          },
+          {
+            type: 'email',
+            message: 'Please use a valid email'
+          },
+          {
+            validator: async () => {
+              if (form.getFieldValue('email') !== form.getFieldValue('confirmEmail')) {
+                throw new Error('Something wrong!');
+              }
+            },
+            message: 'email mismatch'
+          }
+        ]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
         label='Password'
         name='password'
         rules={[
