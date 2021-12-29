@@ -17,6 +17,7 @@ const Participants = () => {
   const { tournament, isLoading, isError, mutate } = useTournament(id)
   const [formatParticipantTable, setFormatParticipantTable] = useState([])
   const [searchText, setSearchText] = useState('')
+  const [totalTeam, setTotalTeam] = useState()
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT_MANAGER.PARTICIPANTS })
   }, [])
@@ -84,6 +85,7 @@ const Participants = () => {
       return prev
     }, [])
     setFormatParticipantTable(tempParticipant)
+    setTotalTeam(tempParticipant?.length || 0)
   }, [tournament, searchText])
 
   const onUpdateStatus = (eventID, teamID, status) => {
@@ -234,7 +236,14 @@ const Participants = () => {
   return (
     <Layout>
       <h1>ประเมินมือ</h1>
-      <Table dataSource={formatParticipantTable} columns={columns} sticky />
+      <div style={{ textAlign: 'right', margin: '0 10px' }}>{`ทั้งหมด ${totalTeam} คู่`}</div>
+      <Table
+        dataSource={formatParticipantTable}
+        columns={columns}
+        sticky
+        scroll={{ y: 400 }}
+        pagination={false}
+        onChange={(pagination, filters, sorter, extra) => setTotalTeam(extra.currentDataSource.length)} />
     </Layout>
   )
 }
