@@ -12,14 +12,13 @@ const Home = () => {
   const { user } = useSelector(state => state)
   const dispatch = useDispatch()
   useEffect(() => {
-    router.push('/gang')
-    // logEvent(analytics, 'home')
-    // dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.HOME })
+    logEvent(analytics, 'home')
+    dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.HOME })
   }, [])
   return (
     <>
-      {/* <Greeting user={user} />
-      <MyGang /> */}
+      <Greeting user={user} />
+      <MyGang />
     </>
   )
 }

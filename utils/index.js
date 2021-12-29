@@ -25,6 +25,19 @@ export const useGang = (id) => {
     mutate
   }
 }
+export const useTournament = (id) => {
+  const { data, error, mutate } = useSWR(
+    `${API_ENDPOINT}/tournament/${id}`,
+    fetcher
+  )
+
+  return {
+    tournament: data,
+    isLoading: !error && !data,
+    isError: error,
+    mutate
+  }
+}
 
 export const useBills = (id) => {
   const { data, error, mutate } = useSWR(
