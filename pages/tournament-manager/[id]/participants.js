@@ -24,22 +24,22 @@ const Participants = () => {
 
   const menu = (event, team) => (
     <Menu>
-      {team.paymentStatus !== 'paid' && <Menu.Item>
+      {team.paymentStatus !== 'paid' && <Menu.Item key='update-payment'>
         <div onClick={() => onUpdatePaymentStatus(event._id, team._id, 'paid')}>
           จ่ายเงินแล้ว
         </div>
       </Menu.Item>}
-      <Menu.Item>
+      <Menu.Item key='payment-slip'>
         <div>
           ดู/อัพโหลดสลิป
         </div>
       </Menu.Item>
-      {team.status !== 'idle' && <Menu.Item>
+      {team.status !== 'idle' && <Menu.Item key='update-status'>
         <div onClick={() => onUpdateStatus(event._id, team._id, 'idle')}>
           แก้ไขผลประเมินมือ
         </div>
       </Menu.Item>}
-      <Menu.Item>
+      <Menu.Item key='leave-event'>
         <div onClick={() => Modal.confirm({
           title: 'แน่ใจที่จะถอนคู่นี้หรือไม่',
           onOk: () => onLeaveEvent(event._id, team._id)
@@ -52,12 +52,13 @@ const Participants = () => {
   useEffect(() => {
     let i = 0
     const tempParticipant = tournament?.events?.reduce((prev, event) => {
+      console.log(event)
       event.teams.forEach(team => {
         const searchTextLower = searchText.toLowerCase()
-        if (team.team.players[0].officialName?.toLowerCase().includes(searchTextLower)
-          || team.team.players[1].officialName?.toLowerCase().includes(searchTextLower)
-          || team.team.players[0].club?.toLowerCase().includes(searchTextLower)
-          || team.team.players[1].club?.toLowerCase().includes(searchTextLower)) {
+        if (team?.team?.players[0].officialName?.toLowerCase().includes(searchTextLower)
+          || team?.team?.players[1]?.officialName?.toLowerCase().includes(searchTextLower)
+          || team?.team?.players[0]?.club?.toLowerCase().includes(searchTextLower)
+          || team?.team?.players[1]?.club?.toLowerCase().includes(searchTextLower)) {
           prev.push({
             key: team._id,
             date: team.createdAt,
@@ -76,6 +77,7 @@ const Participants = () => {
             event: event.name,
             allow: { event, team },
             payment: team.paymentStatus,
+            note: { note: team.note, isInQueue: team.isInQueue },
             action: <Dropdown overlay={menu(event, team)} placement="bottomRight">
               <div>เพิ่มเติม</div>
             </Dropdown>
@@ -127,6 +129,18 @@ const Participants = () => {
       render: text => moment(text).format('DD MMM yyyy')
     },
     {
+      title: 'รายการ',
+      dataIndex: 'event',
+      key: 'event',
+      align: 'center',
+      width: '10%',
+      onFilter: (value, record) => record.event === value,
+      filters: tournament?.events.map(event => ({
+        text: event.name,
+        value: event.name
+      }))
+    },
+    {
       title: 'ผู้เล่น 1',
       dataIndex: 'player1',
       key: 'player1',
@@ -154,23 +168,11 @@ const Participants = () => {
       width: '22%'
     },
     {
-      title: 'รายการ',
-      dataIndex: 'event',
-      key: 'event',
-      align: 'center',
-      width: '10%',
-      onFilter: (value, record) => record.event === value,
-      filters: tournament?.events.map(event => ({
-        text: event.name,
-        value: event.name
-      }))
-    },
-    {
       title: 'ประเมินมือ',
       dataIndex: 'allow',
       key: 'allow',
       align: 'center',
-      width: '15%',
+      width: '10%',
       onFilter: (value, record) => record.allow.team.status === value,
       render: ({ event, team }) => {
         return (
@@ -226,6 +228,14 @@ const Participants = () => {
       ],
     },
     {
+      title: 'หมายเหตุ',
+      dataIndex: 'note',
+      key: 'note',
+      align: 'center',
+      width: '10%',
+      render: ({ note, isInQueue }) => <div>{`${isInQueue ? 'สำรอง' : ''}${isInQueue && note ? ',' : ''}${note || ''}`}</div>
+    },
+    {
       title: '',
       dataIndex: 'action',
       key: 'action',
@@ -241,6 +251,7 @@ const Participants = () => {
         dataSource={formatParticipantTable}
         columns={columns}
         sticky
+        size='small'
         scroll={{ y: 400 }}
         pagination={false}
         onChange={(pagination, filters, sorter, extra) => setTotalTeam(extra.currentDataSource.length)} />

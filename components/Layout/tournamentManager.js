@@ -4,13 +4,11 @@ import Header from './header'
 import { UnorderedListOutlined, TeamOutlined, SettingOutlined, SearchOutlined, TableOutlined, SyncOutlined, PartitionOutlined } from '@ant-design/icons'
 import { useSelector } from 'react-redux'
 import { COLOR, TAB_OPTIONS } from '../../constant'
-import { useGang } from '../../utils'
 
 const TournamentManagerLayout = (props) => {
   const router = useRouter()
   const { id } = router.query
   const { user, activeMenu } = useSelector(state => state)
-  const { gang } = useGang(id)
   let tabOptions = [
     {
       name: 'ข้อมูล',
