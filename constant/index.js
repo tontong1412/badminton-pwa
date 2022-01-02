@@ -63,10 +63,23 @@ const TAB_OPTIONS = {
     MATCHES: 'matces'
   }
 }
+
+const MATCH = {
+  TYPE: {
+    SINGLE: 'single',
+    DOUBLE: 'double'
+  },
+  STATUS: {
+    finished: {
+      LABEL: 'finished'
+    }
+  }
+}
 export {
   GANG,
   TAB_OPTIONS,
   COLOR,
   TRANSACTION,
-  EVENT
+  EVENT,
+  MATCH
 }

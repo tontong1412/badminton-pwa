@@ -65,6 +65,19 @@ export const useGangs = () => {
     mutate
   }
 }
+export const useTournaments = () => {
+  const { data, error, mutate } = useSWR(
+    `${API_ENDPOINT}/tournament`,
+    fetcher
+  )
+
+  return {
+    tournaments: data,
+    isLoading: !error && !data,
+    isError: error,
+    mutate
+  }
+}
 
 export const usePlayers = () => {
   const { data, error } = useSWR(
@@ -76,5 +89,32 @@ export const usePlayers = () => {
     players: data,
     isLoading: !error && !data,
     isError: error
+  }
+}
+
+export const useMatchDraws = (eventID) => {
+  const { data, error, mutate } = useSWR(
+    `${API_ENDPOINT}/match`,
+    (url) => fetcher(url, null, { eventID })
+  )
+
+  return {
+    matches: data,
+    isLoading: !error && !data,
+    isError: error,
+    mutate
+  }
+}
+export const useEvent = (id) => {
+  const { data, error, mutate } = useSWR(
+    `${API_ENDPOINT}/event/${id}`,
+    fetcher
+  )
+
+  return {
+    event: data,
+    isLoading: !error && !data,
+    isError: error,
+    mutate
   }
 }

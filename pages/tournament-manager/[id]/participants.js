@@ -25,7 +25,7 @@ const Participants = () => {
   const menu = (event, team) => (
     <Menu>
       {team.paymentStatus !== 'paid' && <Menu.Item key='update-payment'>
-        <div onClick={() => onUpdatePaymentStatus(event._id, team._id, 'paid')}>
+        <div onClick={() => onUpdateTeam(event._id, team._id, 'paymentStatus', 'paid')}>
           จ่ายเงินแล้ว
         </div>
       </Menu.Item>}
@@ -35,8 +35,13 @@ const Participants = () => {
         </div>
       </Menu.Item>
       {team.status !== 'idle' && <Menu.Item key='update-status'>
-        <div onClick={() => onUpdateStatus(event._id, team._id, 'idle')}>
+        <div onClick={() => onUpdateTeam(event._id, team._id, 'status', 'idle')}>
           แก้ไขผลประเมินมือ
+        </div>
+      </Menu.Item>}
+      {team.isInQueue && <Menu.Item key='update-queue'>
+        <div onClick={() => onUpdateTeam(event._id, team._id, 'isInQueue', false)}>
+          เปลี่ยนเป็นตัวจริง
         </div>
       </Menu.Item>}
       <Menu.Item key='leave-event'>
@@ -90,11 +95,12 @@ const Participants = () => {
     setTotalTeam(tempParticipant?.length || 0)
   }, [tournament, searchText])
 
-  const onUpdateStatus = (eventID, teamID, status) => {
-    request.post('/event/team-status', {
+  const onUpdateTeam = (eventID, teamID, field, value) => {
+    request.post('/event/team', {
       eventID,
       teamID,
-      status
+      value,
+      field,
     }).then(() => mutate())
       .catch((error) => console.log(error))
   }
@@ -105,15 +111,6 @@ const Participants = () => {
       teamID
     }).then(() => mutate())
       .catch(error => console.log(error))
-  }
-
-  const onUpdatePaymentStatus = (eventID, teamID, status) => {
-    request.post('/event/payment-status', {
-      eventID,
-      teamID,
-      paymentStatus: status
-    }).then(() => mutate())
-      .catch((error) => console.log(error))
   }
 
   const columns = [
@@ -178,8 +175,8 @@ const Participants = () => {
         return (
           team.status === 'idle' ?
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-              <Button size='small' type='primary' ghost onClick={() => onUpdateStatus(event._id, team._id, 'approved')}>ผ่าน</Button>
-              <Button size='small' danger onClick={() => onUpdateStatus(event._id, team._id, 'rejected')}>ไม่ผ่าน</Button>
+              <Button size='small' type='primary' ghost onClick={() => onUpdateTeam(event._id, team._id, 'status', 'approved')}>ผ่าน</Button>
+              <Button size='small' danger onClick={() => onUpdateTeam(event._id, team._id, 'status', 'rejected')}>ไม่ผ่าน</Button>
             </div>
             : <Tag color={EVENT.TEAM_STATUS[team.status].COLOR}>
               {EVENT.TEAM_STATUS[team.status].LABEL}
