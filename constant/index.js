@@ -71,7 +71,16 @@ const MATCH = {
   },
   STATUS: {
     finished: {
-      LABEL: 'finished'
+      LABEL: 'finished',
+      COLOR: 'green'
+    },
+    playing: {
+      LABEL: 'playing',
+      COLOR: 'cyan'
+    },
+    waiting: {
+      LABEL: 'waiting',
+      COLOR: 'orange'
     }
   }
 }

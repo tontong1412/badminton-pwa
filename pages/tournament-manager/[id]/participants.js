@@ -249,7 +249,7 @@ const Participants = () => {
         columns={columns}
         sticky
         size='small'
-        scroll={{ y: 400 }}
+        scroll={{ y: 400, x: 1000 }}
         pagination={false}
         onChange={(pagination, filters, sorter, extra) => setTotalTeam(extra.currentDataSource.length)} />
     </Layout>

@@ -86,7 +86,7 @@ const GroupTable = (props) => {
               return <div>{set}</div>
             })
             : <MatchDetail key={match._id} match={match} />
-          result.score += match.teamA.score
+          result.score += match.teamA.scoreSet
         })
         return result
       })

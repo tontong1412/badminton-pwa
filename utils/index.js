@@ -105,6 +105,23 @@ export const useMatchDraws = (eventID) => {
     mutate
   }
 }
+
+export const useMatches = (tournamentID) => {
+  console.log(tournamentID)
+  const { data, error, mutate } = useSWR(
+    `${API_ENDPOINT}/match`,
+    (url) => fetcher(url, null, { tournamentID })
+  )
+
+  return {
+    matches: data,
+    isLoading: !error && !data,
+    isError: error,
+    mutate
+  }
+}
+
+
 export const useEvent = (id) => {
   const { data, error, mutate } = useSWR(
     `${API_ENDPOINT}/event/${id}`,
