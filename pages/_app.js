@@ -2,6 +2,7 @@ import 'antd/dist/antd.css'
 require('../styles/index.less');
 import { wrapper } from '../redux/store'
 import Head from 'next/head'
+import 'moment/locale/th'
 
 function MyApp({ Component, pageProps }) {
   const getLayout = Component.getLayout || ((page) => page)

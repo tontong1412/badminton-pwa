@@ -107,6 +107,7 @@ const GroupTable = (props) => {
             bordered
             pagination={false}
             scroll={{ x: 1000 }}
+            size='small'
           />
         })
       }
