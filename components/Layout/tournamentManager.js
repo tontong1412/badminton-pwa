@@ -17,16 +17,10 @@ const TournamentManagerLayout = (props) => {
       alias: TAB_OPTIONS.TOURNAMENT_MANAGER.DETAIL
     },
     {
-      name: 'รายชื่อ',
+      name: 'ตรวจสอบรายชื่อ',
       icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.TOURNAMENT_MANAGER.PARTICIPANTS ? COLOR.MINOR_THEME : '#aaa' }} />,
       href: `/tournament-manager/${id}/participants`,
       alias: TAB_OPTIONS.TOURNAMENT_MANAGER.PARTICIPANTS
-    },
-    {
-      name: 'จับสาย',
-      icon: <TableOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.TOURNAMENT_MANAGER.MANAGE ? COLOR.MINOR_THEME : '#aaa' }} />,
-      href: `/tournament-manager/${id}/manage`,
-      alias: TAB_OPTIONS.TOURNAMENT_MANAGER.MANAGE
     },
     {
       name: 'สายการแข่งขัน',
@@ -39,6 +33,12 @@ const TournamentManagerLayout = (props) => {
       icon: <UnorderedListOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.TOURNAMENT_MANAGER.MATCHES ? COLOR.MINOR_THEME : '#aaa' }} />,
       href: `/tournament-manager/${id}/matches`,
       alias: TAB_OPTIONS.TOURNAMENT_MANAGER.MATCHES
+    },
+    {
+      name: 'จัดการการแข่งขัน',
+      icon: <TableOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.TOURNAMENT_MANAGER.MANAGE ? COLOR.MINOR_THEME : '#aaa' }} />,
+      href: `/tournament-manager/${id}/manage`,
+      alias: TAB_OPTIONS.TOURNAMENT_MANAGER.MANAGE
     },
   ]
 

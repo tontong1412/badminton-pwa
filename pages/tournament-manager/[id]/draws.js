@@ -23,7 +23,7 @@ const Draws = () => {
   if (isError) return <div>Error</div>
   return (
     <Layout>
-      <h1>Draws</h1>
+      <h1>สายการแข่งขัน</h1>
       <Tabs defaultActiveKey="1" >
         {tournament?.events.map(event => {
           return (
@@ -33,8 +33,8 @@ const Draws = () => {
                 <Radio.Button value="knockOut">รอบ Knock Out</Radio.Button>
               </Radio.Group>
               {
-                mode === 'knockOut' ?
-                  <Bracket event={event} />
+                mode === 'knockOut'
+                  ? <Bracket event={event} />
                   : <RoundRobin event={event} />
               }
             </TabPane>

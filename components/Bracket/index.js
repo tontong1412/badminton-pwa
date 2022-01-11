@@ -27,7 +27,7 @@ const Bracket = (props) => {
 
   useEffect(() => {
     if (matches) {
-      const bracketData = matches.filter(e => e.step === 'knockOut')
+      const bracketData = matches.filter(e => e.step === 'knockOut' && e.eventID === props.event._id)
       setBracket(processBracketData(bracketData))
     }
   }, [matches])

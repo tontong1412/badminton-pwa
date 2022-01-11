@@ -14,7 +14,7 @@ const fetcher = (url, token, params) => axios.get(url, {
 
 export const useGang = (id) => {
   const { data, error, mutate } = useSWR(
-    `${API_ENDPOINT}/gang/${id}`,
+    id ? `${API_ENDPOINT}/gang/${id}` : null,
     fetcher
   )
 
@@ -27,7 +27,7 @@ export const useGang = (id) => {
 }
 export const useTournament = (id) => {
   const { data, error, mutate } = useSWR(
-    `${API_ENDPOINT}/tournament/${id}`,
+    id ? `${API_ENDPOINT}/tournament/${id}` : null,
     fetcher
   )
 
@@ -41,7 +41,7 @@ export const useTournament = (id) => {
 
 export const useBills = (id) => {
   const { data, error, mutate } = useSWR(
-    `${API_ENDPOINT}/gang/${id}/bill`,
+    id ? `${API_ENDPOINT}/gang/${id}/bill` : null,
     fetcher
   )
   return {
@@ -94,7 +94,7 @@ export const usePlayers = () => {
 
 export const useMatchDraws = (eventID) => {
   const { data, error, mutate } = useSWR(
-    `${API_ENDPOINT}/match`,
+    eventID ? `${API_ENDPOINT}/match` : null,
     (url) => fetcher(url, null, { eventID })
   )
 
@@ -107,9 +107,8 @@ export const useMatchDraws = (eventID) => {
 }
 
 export const useMatches = (tournamentID) => {
-  console.log(tournamentID)
   const { data, error, mutate } = useSWR(
-    `${API_ENDPOINT}/match`,
+    tournamentID ? `${API_ENDPOINT}/match` : null,
     (url) => fetcher(url, null, { tournamentID })
   )
 
@@ -124,7 +123,7 @@ export const useMatches = (tournamentID) => {
 
 export const useEvent = (id) => {
   const { data, error, mutate } = useSWR(
-    `${API_ENDPOINT}/event/${id}`,
+    id ? `${API_ENDPOINT}/event/${id}` : null,
     fetcher
   )
 

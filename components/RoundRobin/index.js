@@ -8,6 +8,8 @@ const GroupTable = (props) => {
   const [groupMatches, setGroupMatches] = useState([])
   const { matches } = useMatchDraws(props.event?._id)
   const { event } = useEvent(props.event?._id)
+  const [columns, setColumns] = useState([])
+  const [dataSource, setDataSource] = useState([])
 
   useEffect(() => {
     if (matches) {
@@ -29,11 +31,11 @@ const GroupTable = (props) => {
       }
     ]
 
-    group.reduce((result, team, index) => {
+    group.reduce((result, team, i) => {
       result.push({
-        title: team.players.map((player, i) => <div key={`player-${i + 1}`}>{player.officialName}</div>),
+        title: team.players.map((player, j) => <div key={`player-${j + 1}`}>{player.officialName}</div>),
         dataIndex: team._id,
-        key: `${index + 1}-${index + 1}`,
+        key: `${index + 1}-${i + 1}`,
         align: 'center',
       })
       return result
@@ -93,8 +95,11 @@ const GroupTable = (props) => {
     })
   }
 
-  const columns = processColumn(event?.order.group)
-  const datasources = processDataSource(event?.order.group)
+  useEffect(() => {
+    setColumns(processColumn(event?.order.group))
+    setDataSource(processDataSource(event?.order.group))
+  }, [event, groupMatches])
+
   return (
     <div >
       {
@@ -102,7 +107,7 @@ const GroupTable = (props) => {
           return <Table
             key={index + 1}
             style={{ marginBottom: '20px', width: '1001px', zIndex: '-999' }}
-            dataSource={datasources[index]}
+            dataSource={dataSource[index]}
             columns={column}
             bordered
             pagination={false}
