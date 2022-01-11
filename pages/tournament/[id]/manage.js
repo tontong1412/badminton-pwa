@@ -6,18 +6,26 @@ import ManageEvent from '../../../components/TournamentManager/ManageEvent'
 import Participants from '../../../components/TournamentManager/participants'
 import Matches from '../../../components/TournamentManager/matches'
 import Draw from '../../../components/TournamentManager/draw'
+import ArrangeMatch from '../../../components/TournamentManager/arrangeMatch'
 import { Steps } from 'antd'
 import { useRouter } from 'next/router'
+import { useTournament } from '../../../utils'
 const { Step } = Steps
 
 const Manage = () => {
   const dispatch = useDispatch()
   const router = useRouter()
   const { id } = router.query
-  const [currentStep, setCurrentStep] = useState(0)
+  const { tournament } = useTournament(id)
+  const [currentStep, setCurrentStep] = useState(tournament?.status === 'ongoing' || 0)
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT_MANAGER.MANAGE })
   }, [])
+
+  useEffect(() => {
+    console.log(tournament?.status === 'ongoing' || 0)
+    setCurrentStep(tournament?.status === 'ongoing' ? 4 : 0)
+  }, [tournament?.status])
 
 
   const renderStepContent = () => {
@@ -29,11 +37,11 @@ const Manage = () => {
       case 2:
         return <Draw tournamentID={id} />
       case 3:
-        return <div>จัดเวลา</div>
+        return <ArrangeMatch tournamentID={id} setStep={setCurrentStep} />
       case 4:
         return <Matches isManager tournamentID={id} />
-      case 5:
-        return
+      // case 5:
+      //   return
       default:
         return
     }
@@ -45,9 +53,9 @@ const Manage = () => {
         <Step title="กำหนดรายการแข่งขัน" />
         <Step title="ประเมินมือ" />
         <Step title="จับสาย" />
-        <Step title="จัดเวลา" />
+        <Step title="จัดตารางแข่ง" />
         <Step title="ดำเนินการแข่งขัน" />
-        <Step title="สรุปผล" />
+        {/* <Step title="สรุปผล" /> */}
       </Steps>
       {renderStepContent()}
 

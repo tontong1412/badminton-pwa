@@ -60,7 +60,8 @@ const TAB_OPTIONS = {
     PARTICIPANTS: 'participants',
     MANAGE: 'manage',
     DRAWS: 'draws',
-    MATCHES: 'matces'
+    MATCHES: 'matces',
+    SETTING: 'setting'
   }
 }
 

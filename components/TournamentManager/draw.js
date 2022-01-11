@@ -25,6 +25,7 @@ const Draw = (props) => {
   const teamData = (teams) => {
     const returnData = teams.map((team, index) => {
       return ({
+        key: `team-${index}`,
         group: <div key={`team-${index}`}>
           {team.players.map((player) =>
             <div key={`${player._id}`} style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>

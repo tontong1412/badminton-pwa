@@ -1,14 +1,12 @@
-import { useDispatch, useSelector } from 'react-redux'
-import { TAB_OPTIONS, MATCH } from '../../constant'
+import { MATCH } from '../../constant'
 import { useEffect, useState } from 'react'
-import { Table, Tag, Modal, Input, Select } from 'antd'
+import { Table, Tag, Modal, Input } from 'antd'
 import moment from 'moment'
 import 'moment/locale/th'
 import { useMatches } from '../../utils'
 import Loading from '../../components/loading'
 import request from '../../utils/request'
 const Matches = (props) => {
-  const dispatch = useDispatch()
   const [filteredInfo, setFilteredInfo] = useState()
   const [formattedData, setFormattedData] = useState([])
   const [assignMatchModal, setAssignMatchModal] = useState(false)
@@ -30,7 +28,7 @@ const Matches = (props) => {
         title: 'Match',
         dataIndex: 'match',
         align: 'center',
-        width: '8%'
+        width: '6%'
       },
       {
         title: 'ประเภท',
@@ -53,18 +51,18 @@ const Matches = (props) => {
       {
         title: 'ผู้เข้าแข่งขัน',
         dataIndex: 'competitor1',
-        width: '25%',
+        width: '22%',
         align: 'center'
       },
       {
-        title: '',
+        title: 'ผลการแข่งขัน',
         dataIndex: 'result',
         align: 'center'
       },
       {
         title: 'ผู้เข้าแข่งขัน',
         dataIndex: 'competitor2',
-        width: '25%',
+        width: '22%',
         align: 'center'
       },
       {
@@ -72,6 +70,7 @@ const Matches = (props) => {
         dataIndex: 'status',
         key: 'status',
         align: 'center',
+        width: '8%',
         render: ({ text, court }) => <div>
           <Tag color={text.COLOR}>{text.LABEL}</Tag>
           {court ? <Tag color={text.COLOR}>{`คอร์ด ${court}`}</Tag> : null}
@@ -91,7 +90,7 @@ const Matches = (props) => {
         title: 'Action',
         dataIndex: 'action',
         align: 'center',
-        width: '10%'
+        width: '8%'
       })
     }
     return base
@@ -152,7 +151,7 @@ const Matches = (props) => {
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ width: '30%', textAlign: 'center' }}>
-            {selectedMatch?.teamA.team.players.map(player => <div key={player._id}>{player.officialName}</div>)}
+            {selectedMatch?.teamA?.team?.players.map(player => <div key={player._id}>{player.officialName}</div>)}
           </div>
           <div>
             <div style={{ paddingBottom: '5px' }}>
@@ -179,7 +178,7 @@ const Matches = (props) => {
             </div>
           </div>
           <div style={{ width: '30%', textAlign: 'center' }}>
-            {selectedMatch?.teamB.team.players.map(player => <div key={player._id}>{player.officialName}</div>)}
+            {selectedMatch?.teamB?.team?.players.map(player => <div key={player._id}>{player.officialName}</div>)}
           </div>
         </div>
 
@@ -236,8 +235,8 @@ const Matches = (props) => {
         key: match.matchNumber,
         match: match.matchNumber,
         event: match.eventName,
-        competitor1: match.teamA.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
-        competitor2: match.teamB.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
+        competitor1: match.teamA?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
+        competitor2: match.teamB?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
         date: moment(match.date).format('ll'),
         schedule: moment(match.date).format('LT'),
         status: { text: MATCH.STATUS[match.status], court: match.status === 'playing' ? match.court : null },
@@ -252,11 +251,6 @@ const Matches = (props) => {
     mutate()
   }, [props.tournamentID])
 
-
-  useEffect(() => {
-    dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT_MANAGER.MATCHES })
-  }, [])
-
   if (isError) return <div>Error</div>
   if (isLoading) return <Loading />
   return (
@@ -269,7 +263,6 @@ const Matches = (props) => {
         onChange={handleChange}
         rowKey='key'
         size='small'
-      // loading={loading}
       />
       {renderAssignMatchModal()}
       {renderSetScoreModal()}
