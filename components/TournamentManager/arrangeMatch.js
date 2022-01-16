@@ -35,14 +35,15 @@ const ArrangeMatch = ({ tournamentID, setStep }) => {
 
       <Form
         name="arrange-match"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
+        labelCol={{ span: 12 }}
+        wrapperCol={{ span: 12 }}
         // initialValues={}
         onFinish={onFinish}
         // onFinishFailed={onFinishFailed}
         autoComplete="off"
+        style={{ margin: '10px' }}
       >
-        <Form.Item label="รอบแบ่งกลุ่ม" colon={false} />
+        <Divider plain>รอบแบ่งกลุ่ม</Divider>
         <Form.Item
           label="วัน/เวลาที่เริ่มแข่ง"
           name="groupStartTime"
@@ -58,9 +59,7 @@ const ArrangeMatch = ({ tournamentID, setStep }) => {
           <InputNumber />
         </Form.Item>
 
-        <Divider />
-
-        <Form.Item label="รอบแพ้คัดออก" colon={false} />
+        <Divider plain>รอบแพ้คัดออก</Divider>
         <Form.Item
           label="วัน/เวลาที่เริ่มแข่ง"
           name="knockOutStartTime"
@@ -86,10 +85,12 @@ const ArrangeMatch = ({ tournamentID, setStep }) => {
           <InputNumber />
         </Form.Item>
 
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit" loading={loading}>
-            ตกลง
-          </Button>
+        <Form.Item wrapperCol={{ span: 24 }}>
+          <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <Button type="primary" htmlType="submit" loading={loading} style={{ minWidth: "350px" }}>
+              ตกลง
+            </Button>
+          </div>
         </Form.Item>
       </Form>
     </div>

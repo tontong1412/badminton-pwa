@@ -8,6 +8,7 @@ import { TAB_OPTIONS } from '../../../constant'
 import { Button, DatePicker, Form, Input, Modal, Select, Divider, AutoComplete } from 'antd'
 import { useState } from 'react'
 import request from '../../../utils/request'
+import moment from 'moment'
 
 const TournamentManagerID = () => {
   const router = useRouter()
@@ -28,8 +29,7 @@ const TournamentManagerID = () => {
   }, [])
 
   const onFinish = (values) => {
-    console.log(values)
-    console.log(player1)
+    setLoading(true)
     request.post('/event/register', {
       eventID: values.eventID,
       players: [
@@ -50,12 +50,20 @@ const TournamentManagerID = () => {
       ],
       contact: {
         _id: contactPerson,
+        officialName: values.contactName,
         lineID: values.lineID,
         tel: values.tel
       }
     },
       user.token
-    )
+    ).then(() => {
+      setRegisterModal(false)
+      setLoading(false)
+    })
+      .catch(err => {
+        setRegisterModal(false)
+        setLoading(false)
+      })
 
   }
 
@@ -97,7 +105,7 @@ const TournamentManagerID = () => {
       form.setFieldsValue({
         [`${player}Gender`]: selectedPlayer.gender,
         [`${player}Club`]: selectedPlayer.club,
-        [`${player}BirthdDate`]: selectedPlayer.birthDate,
+        [`${player}BirthDate`]: moment(selectedPlayer.birthDate),
       })
     }
   }
@@ -138,6 +146,7 @@ const TournamentManagerID = () => {
         title={`สมัครแข่งขัน`}
         style={{ height: '300px' }}
         destroyOnClose
+        confirmLoading={loading}
       >
         <Form
           name='createPlayer'
@@ -271,7 +280,7 @@ const TournamentManagerID = () => {
             label='ชื่อ'
             name='contactName'
             rules={[
-              { required: true, message: 'กรุณาระบุชื่อ-นามสกุล' },
+              { required: true, message: 'กรุณาระบุชื่อ' },
             ]}
           >
             <AutoComplete

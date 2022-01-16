@@ -165,10 +165,12 @@ const Participants = (props) => {
         render: ({ event, team }) => {
           return (
             team.status === 'idle' ?
-              <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+              props.isManager ? <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
                 <Button size='small' type='primary' ghost onClick={() => onUpdateTeam(event._id, team._id, 'status', 'approved')}>ผ่าน</Button>
                 <Button size='small' danger onClick={() => onUpdateTeam(event._id, team._id, 'status', 'rejected')}>ไม่ผ่าน</Button>
-              </div>
+              </div> : <Tag color={EVENT.TEAM_STATUS[team.status].COLOR}>
+                {EVENT.TEAM_STATUS[team.status].LABEL}
+              </Tag>
               : <Tag color={EVENT.TEAM_STATUS[team.status].COLOR}>
                 {EVENT.TEAM_STATUS[team.status].LABEL}
               </Tag>)

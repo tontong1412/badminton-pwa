@@ -72,7 +72,7 @@ const Draw = (props) => {
                     <Form
                       labelCol={{ span: 12 }}
                       wrapperCol={{ span: 12 }}
-                      style={{ width: 350, }}
+                      style={{ width: 350 }}
                       onFinish={(values) => onRandomOrder(values, event)}
                     >
                       <Form.Item
@@ -89,21 +89,23 @@ const Draw = (props) => {
                       >
                         <InputNumber />
                       </Form.Item>
-                      <Form.Item wrapperCol={{ offset: 7, span: 10 }}>
-                        < Button
-                          htmlType="submit"
-                          style={{
-                            padding: '10px 20px',
-                            backgroundColor: COLOR.MAIN_THEME,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '5px',
-                            borderRadius: '50px',
-                            justifyContent: 'center'
-                          }}>
-                          <div>Random</div>
-                          <SyncOutlined />
-                        </Button>
+                      <Form.Item >
+                        <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                          < Button
+                            htmlType="submit"
+                            style={{
+                              padding: '20px 20px',
+                              backgroundColor: COLOR.MAIN_THEME,
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '5px',
+                              borderRadius: '50px',
+                              justifyContent: 'center'
+                            }}>
+                            <div>Random</div>
+                            <SyncOutlined />
+                          </Button>
+                        </div>
                       </Form.Item>
                     </Form>
                   </div>

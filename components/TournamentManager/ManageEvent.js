@@ -11,6 +11,7 @@ const ManageEvent = ({ tournamentID }) => {
   const [mode, setMode] = useState('create')
   const [loading, setLoading] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState()
+  const [form] = Form.useForm()
   useEffect(() => {
     const tempData = tournament?.events.map(event => {
       return {
@@ -42,10 +43,14 @@ const ManageEvent = ({ tournamentID }) => {
           mutate()
           setLoading(false)
           setModalVisible(false)
+          form.resetFields()
+          setSelectedEvent()
         }).catch((err) => {
           console.log(err)
           setLoading(false)
           setModalVisible(false)
+          form.resetFields()
+          setSelectedEvent()
         })
     } else {
       request.put(`/event/${selectedEvent._id}`, { ...value, tournamentID })
@@ -54,10 +59,14 @@ const ManageEvent = ({ tournamentID }) => {
           setLoading(false)
           setModalVisible(false)
           setSelectedEvent()
+          form.resetFields()
+          setSelectedEvent()
         }).catch((err) => {
           console.log(err)
           setLoading(false)
           setModalVisible(false)
+          setSelectedEvent()
+          form.resetFields()
           setSelectedEvent()
         })
     }
@@ -133,20 +142,25 @@ const ManageEvent = ({ tournamentID }) => {
       <Modal
         visible={modalVisible}
         title={mode === 'create' ? 'เพิ่มรายการแข่งขัน' : 'แก้ไขรายการแข่งขัน'}
-        onCancel={() => setModalVisible(false)}
-        onOk={() => setModalVisible(false)}
+        onCancel={() => {
+          setSelectedEvent()
+          setModalVisible(false)
+          form.resetFields()
+        }}
+        onOk={() => form.submit()}
         destroyOnClose
-        footer={null}
       >
         <div>
           <Form
             name="event"
+            form={form}
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             initialValues={mode === 'edit' && selectedEvent}
             onFinish={onFinish}
             // onFinishFailed={onFinishFailed}
             autoComplete="off"
+            style={{ maxHeight: '500px', overflow: 'scroll' }}
           >
             <Form.Item
               label="ชื่อรายการ"
@@ -198,11 +212,11 @@ const ManageEvent = ({ tournamentID }) => {
               </Select>
             </Form.Item>
 
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+            {/* <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
               <Button type="primary" htmlType="submit" loading={loading}>
                 Submit
               </Button>
-            </Form.Item>
+            </Form.Item> */}
           </Form>
         </div>
       </Modal>
