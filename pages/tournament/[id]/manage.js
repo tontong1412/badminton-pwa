@@ -40,11 +40,11 @@ const Manage = () => {
       case 3:
         return <ArrangeMatch tournamentID={id} setStep={setCurrentStep} />
       case 4:
-        return <Matches isManager tournamentID={id} />
+        return <Matches isManager tournamentID={id} step='group' />
       case 5:
         return <RoundUp tournamentID={id} />
-      case 4:
-        return <Matches isManager tournamentID={id} />
+      case 6:
+        return <Matches isManager tournamentID={id} step='knockOut' />
       default:
         return
     }
@@ -57,8 +57,9 @@ const Manage = () => {
         <Step title="ประเมินมือ" />
         <Step title="จับสาย" />
         <Step title="จัดตารางแข่ง" />
-        <Step title="ดำเนินการแข่งขัน" />
+        <Step title="แข่งรอบแบ่งกลุ่ม" />
         <Step title="สรุปทีมเข้ารอบ" />
+        <Step title="แข่งรอบแพ้คัดออก" />
       </Steps>
       {renderStepContent()}
 

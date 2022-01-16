@@ -1,19 +1,114 @@
 import Layout from '../../../components/Layout/tournamentManager'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { useTournament } from '../../../utils'
+import { useTournament, usePlayers } from '../../../utils'
 import Loading from '../../../components/loading'
 import { useDispatch, useSelector } from 'react-redux'
 import { TAB_OPTIONS } from '../../../constant'
+import { Button, DatePicker, Form, Input, Modal, Select, Divider, AutoComplete } from 'antd'
+import { useState } from 'react'
+import request from '../../../utils/request'
 
 const TournamentManagerID = () => {
   const router = useRouter()
   const { id } = router.query
   const { tournament, isLoading, isError } = useTournament(id)
+  const [registerModal, setRegisterModal] = useState(false)
+  const { players } = usePlayers()
+  const { user } = useSelector(state => state)
+  const [loading, setLoading] = useState(false)
+  const [player1, setPlayer1] = useState()
+  const [player2, setPlayer2] = useState()
+  const [contactPerson, setContactPerson] = useState()
+  const [options, setOptions] = useState([])
+  const [form] = Form.useForm()
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT_MANAGER.DETAIL })
   }, [])
+
+  const onFinish = (values) => {
+    console.log(values)
+    console.log(player1)
+    request.post('/event/register', {
+      eventID: values.eventID,
+      players: [
+        {
+          _id: player1,
+          officialName: values.player1Name,
+          club: values.player1Club,
+          birthDate: values.player1BirthDate,
+          gender: values.player1Gender
+        },
+        {
+          _id: player2,
+          officialName: values.player2Name,
+          club: values.player2Club,
+          birthDate: values.player2BirthDate,
+          gender: values.player2Gender
+        }
+      ],
+      contact: {
+        _id: contactPerson,
+        lineID: values.lineID,
+        tel: values.tel
+      }
+    },
+      user.token
+    )
+
+  }
+
+  const onSearch = (searchText) => {
+    const searchTextLower = searchText.toLowerCase()
+    const searchOptions = players.filter(player =>
+      player.displayName?.toLowerCase().includes(searchTextLower)
+      || player.officialName?.toLowerCase().includes(searchTextLower)
+    ).map(player => {
+      return {
+        key: player._id,
+        value: player.officialName,
+        label: (
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div>{player.officialName}</div>
+          </div>
+        )
+      }
+    })
+    setOptions(
+      !searchText ? [] : searchOptions,
+    )
+  }
+
+  const onSelect = (data, options, player) => {
+    console.log('onSelect', data)
+    console.log(options)
+    if (player === 'player1') setPlayer1(options.key)
+    else if (player === 'player2') setPlayer2(options.key)
+    const selectedPlayer = players.find(player => player._id === options.key)
+
+    if (player === 'contact') {
+      setContactPerson(options.key)
+      form.setFieldsValue({
+        lineID: selectedPlayer.lineID,
+        tel: selectedPlayer.tel
+      })
+    } else {
+      form.setFieldsValue({
+        [`${player}Gender`]: selectedPlayer.gender,
+        [`${player}Club`]: selectedPlayer.club,
+        [`${player}BirthdDate`]: selectedPlayer.birthDate,
+      })
+    }
+  }
+
+  const onChange = (player) => {
+    if (player === 'player1') setPlayer1()
+    else if (player === 'player2') setPlayer2()
+    else if (player === 'contact') setContactPerson()
+  }
+
+
   if (isLoading) return <Loading />
   if (isError) return <p>error</p>
 
@@ -28,7 +123,182 @@ const TournamentManagerID = () => {
           )
         })}
       </div>
-    </Layout>
+      <Button type='primary' onClick={() => setRegisterModal(true)}>
+        สมัครแข่งขัน
+      </Button>
+      <Modal
+        visible={registerModal}
+        onCancel={() => {
+          setRegisterModal(false)
+          form.resetFields()
+          setPlayer1()
+          setPlayer2()
+        }}
+        onOk={() => form.submit()}
+        title={`สมัครแข่งขัน`}
+        style={{ height: '300px' }}
+        destroyOnClose
+      >
+        <Form
+          name='createPlayer'
+          form={form}
+          onFinish={onFinish}
+          style={{ maxWidth: '350px', margin: 'auto', height: '500px', overflow: 'scroll' }}
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          scrollToFirstError
+        >
+          <Form.Item
+            label='ประเภท'
+            name='eventID'
+            rules={[
+              { required: true, message: 'กรุณาระบุรายการที่ต้องการลงแข่ง' },
+            ]}
+          >
+            <Select
+              placeholder='กรุณาเลือก'
+              allowClear
+            >
+              {
+                tournament.events.map(event =>
+                  <Select.Option
+                    key={event._id}
+                    value={event._id}
+                  >
+                    {event.name}
+                  </Select.Option>)
+              }
+            </Select>
+          </Form.Item>
+          <Divider plain>ผู้เล่นคนที่ 1</Divider>
+          <Form.Item
+            label='ชื่อ-นามสกุล'
+            name='player1Name'
+            rules={[
+              { required: true, message: 'กรุณาระบุชื่อ-นามสกุล' },
+            ]}
+          >
+            <AutoComplete
+              options={options}
+              onSelect={(data, options) => onSelect(data, options, 'player1')}
+              onSearch={onSearch}
+              onChange={() => onChange('player1')}
+            />
+          </Form.Item>
+          <Form.Item
+            label='ทีม'
+            name='player1Club'
+            rules={[
+              { required: true, message: 'กรุณาระบุชื่อทีม' },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label='เพศ'
+            name='player1Gender'
+            rules={[
+              { required: true, message: 'กรุณาระบุเพศ' },
+            ]}
+          >
+            <Select
+              placeholder='กรุณาเลือก'
+              allowClear
+            >
+              <Select.Option value='male'>ชาย</Select.Option>
+              <Select.Option value='female'>หญิง</Select.Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label='วันเกิด'
+            name='player1BirthDate'
+            rules={[
+              { required: true, message: 'กรุณาระบุวันเกิด' },
+            ]}
+          >
+            <DatePicker />
+          </Form.Item>
+          <Divider plain>ผู้เล่นคนที่ 2</Divider>
+          <Form.Item
+            label='ชื่อ'
+            name='player2Name'
+            rules={[
+              { required: true, message: 'กรุณาระบุชื่อ-นามสกุล' },
+            ]}
+          >
+            <AutoComplete
+              options={options}
+              onSelect={(data, options) => onSelect(data, options, 'player2')}
+              onSearch={onSearch}
+              onChange={() => onChange('player2')}
+            />
+          </Form.Item>
+          <Form.Item
+            label='ทีม'
+            name='player2Club'
+            rules={[
+              { required: true, message: 'กรุณาระบุชื่อทีม' },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label='เพศ'
+            name='player2Gender'
+            rules={[
+              { required: true, message: 'กรุณาระบุเพศ' },
+            ]}
+          >
+            <Select
+              placeholder='กรุณาเลือก'
+              allowClear
+            >
+              <Select.Option value='male'>ชาย</Select.Option>
+              <Select.Option value='female'>หญิง</Select.Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label='วันเกิด'
+            name='player2BirthDate'
+            rules={[
+              { required: true, message: 'กรุณาระบุวันเกิด' },
+            ]}
+          >
+            <DatePicker />
+          </Form.Item>
+          <Divider plain>หัวหน้าทีม/ผู้จัดการทีม</Divider>
+          <Form.Item
+            label='ชื่อ'
+            name='contactName'
+            rules={[
+              { required: true, message: 'กรุณาระบุชื่อ-นามสกุล' },
+            ]}
+          >
+            <AutoComplete
+              options={options}
+              onSelect={(data, options) => onSelect(data, options, 'contact')}
+              onSearch={onSearch}
+              onChange={() => onChange('contact')}
+            />
+          </Form.Item>
+          <Form.Item
+            label='เบอร์โทรศัพท์'
+            name='tel'
+            rules={[
+              { required: true, message: 'กรุณาระบุเพื่อใช้ในการติดต่อ' },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label='Line ID'
+            name='lineID'
+          >
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </Layout >
   )
 }
 export default TournamentManagerID

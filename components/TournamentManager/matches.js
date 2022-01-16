@@ -231,7 +231,9 @@ const Matches = (props) => {
 
   useEffect(() => {
     if (matches) {
-      const data = matches?.map(match => ({
+      let processedMatches = [...matches]
+      if (props.step) processedMatches = matches.filter(match => match.step === props.step)
+      const data = processedMatches?.map(match => ({
         key: match.matchNumber,
         match: match.matchNumber,
         event: match.eventName,
@@ -245,7 +247,7 @@ const Matches = (props) => {
       }))
       setFormattedData(data)
     }
-  }, [matches])
+  }, [matches, props.step])
 
   useEffect(() => {
     mutate()
