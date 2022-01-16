@@ -9,7 +9,7 @@ const MatchUp = (props) => {
     <div className="matchup">
       <div className="participants">
         <div className='group'>
-          <div className={`participant ${match.teamA.score > match.teamB.score ? 'winner' : null}`}>
+          <div className={`participant ${match.teamA.scoreSet > match.teamB.scoreSet ? 'winner' : null}`}>
             {
               matchType === MATCH.TYPE.SINGLE
                 ? <span>{match.teamA?.team?.players[0]?.officialName || 'waiting'}</span>
@@ -23,7 +23,7 @@ const MatchUp = (props) => {
           {
             match.scoreLabel && match.scoreLabel.length > 0 ? (
               <React.Fragment>
-                {[0, 1, 2].map(index => <div className='detail-score'><p>{match.scoreLabel[index]?.split('-')[0]}</p></div>)}
+                {[0, 1, 2].map(index => <div className='detail-score' key={index}><p>{match.scoreLabel[index]?.split('-')[0]}</p></div>)}
               </React.Fragment>
             )
               : <div className='detail-date'>
@@ -32,7 +32,7 @@ const MatchUp = (props) => {
           }
         </div>
         <div className='group'>
-          <div className={`participant ${match.teamB.score > match.teamA.score ? 'winner' : null}`}>
+          <div className={`participant ${match.teamB.scoreSet > match.teamA.scoreSet ? 'winner' : null}`}>
             {
               matchType === MATCH.TYPE.SINGLE
                 // <span>{match.teamB[0] ? match.teamB.team.players[0]/*.officialName*/ : 'bye'}</span> :
@@ -46,7 +46,7 @@ const MatchUp = (props) => {
           {
             match.scoreLabel && match.scoreLabel.length > 0 ? (
               <React.Fragment>
-                {[0, 1, 2].map(index => <div className='detail-score'><p>{match.scoreLabel[index]?.split('-')[1]}</p></div>)}
+                {[0, 1, 2].map(index => <div key={index} className='detail-score'><p>{match.scoreLabel[index]?.split('-')[1]}</p></div>)}
               </React.Fragment>
             )
               : <div className='detail-time'><p>{moment(match.date).format('LT')}</p></div>
