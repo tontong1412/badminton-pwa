@@ -9,6 +9,7 @@ import { Switch, Button } from 'antd'
 import request from '../../../utils/request'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { Modal } from 'antd'
+import axios from 'axios'
 
 const Setting = () => {
   const router = useRouter()

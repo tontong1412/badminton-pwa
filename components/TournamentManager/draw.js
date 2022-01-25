@@ -89,7 +89,7 @@ const Draw = (props) => {
                       >
                         <InputNumber />
                       </Form.Item>
-                      <Form.Item >
+                      <Form.Item wrapperCol={{ span: 24 }}>
                         <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
                           < Button
                             htmlType="submit"
@@ -134,7 +134,7 @@ const Draw = (props) => {
                             })
                           }
                         </div>
-                        : event.order?.knockOut && drawBracket(event.order?.knockOut)
+                        : event.order?.knockOut.length > 0 && drawBracket(event.order?.knockOut)
                     }
 
 

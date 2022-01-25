@@ -85,11 +85,17 @@ const MATCH = {
     }
   }
 }
+
+const MAP_GENDER = {
+  male: 'ชาย',
+  female: 'หญิง'
+}
 export {
   GANG,
   TAB_OPTIONS,
   COLOR,
   TRANSACTION,
   EVENT,
-  MATCH
+  MATCH,
+  MAP_GENDER
 }

@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react"
 import { useTournament } from "../../utils"
-import { Table, Modal, Form, Input, Checkbox, Button, InputNumber, Select } from "antd"
+import { Table, Modal, Form, Input, Checkbox, Button, InputNumber, Popconfirm, Select } from "antd"
 import AddButton from '../../components/addButton'
 import request from "../../utils/request"
+import axios from "axios"
+import { API_ENDPOINT } from "../../config"
 
 const ManageEvent = ({ tournamentID }) => {
   const { tournament, isError, isLoading, mutate } = useTournament(tournamentID)
@@ -70,6 +72,22 @@ const ManageEvent = ({ tournamentID }) => {
           setSelectedEvent()
         })
     }
+  }
+
+  const onRemoveEvent = () => {
+    axios.delete(`${API_ENDPOINT}/event/${selectedEvent._id}`)
+      .then(() => {
+        setSelectedEvent()
+        setModalVisible(false)
+        form.resetFields()
+        mutate()
+      })
+      .catch((e) => {
+        setSelectedEvent()
+        setModalVisible(false)
+        form.resetFields()
+        console.log(e)
+      })
   }
 
   const columns = [
@@ -148,6 +166,25 @@ const ManageEvent = ({ tournamentID }) => {
           form.resetFields()
         }}
         onOk={() => form.submit()}
+        footer={[
+          <Popconfirm
+            key='remove'
+            title="คุณแน่ใจที่จะลบรายการนี้?"
+            onConfirm={onRemoveEvent}
+            okText="yes"
+            cancelText="No"
+          ><Button type='danger'>ลบรายการนี้</Button></Popconfirm>,
+          <Button key='cancle' onClick={() => {
+            setSelectedEvent()
+            setModalVisible(false)
+            form.resetFields()
+          }}>ยกเลิก</Button>,
+          <Button
+            onClick={() => form.submit()}
+            key='ok'
+            type='primary'>ตกลง</Button>
+
+        ]}
         destroyOnClose
       >
         <div>

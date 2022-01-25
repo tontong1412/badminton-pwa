@@ -5,6 +5,7 @@ import { useTournament } from '../../utils'
 import { Table, Button, Tag, Menu, Dropdown, Input, Modal } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import request from '../../utils/request'
+import PlayerDisplay from '../PlayerDisplay'
 
 const Participants = (props) => {
   const { tournament, isLoading, isError, mutate } = useTournament(props.tournamentID)
@@ -47,7 +48,6 @@ const Participants = (props) => {
   useEffect(() => {
     let i = 0
     const tempParticipant = tournament?.events?.reduce((prev, event) => {
-      console.log(event)
       event.teams.forEach(team => {
         const searchTextLower = searchText.toLowerCase()
         if (team?.team?.players[0].officialName?.toLowerCase().includes(searchTextLower)
@@ -57,18 +57,8 @@ const Participants = (props) => {
           prev.push({
             key: team._id,
             date: team.createdAt,
-            player1: <div>
-              {team.team.players[0].officialName}
-              <span style={{ marginLeft: '5px' }}>
-                {team.team.players[0].club ? `(${team.team.players[0].club})` : ''}
-              </span>
-            </div>,
-            player2: <div>
-              {team.team.players[1].officialName}
-              <span style={{ marginLeft: '5px' }}>
-                {team.team.players[1].club ? `(${team.team.players[1].club})` : ''}
-              </span>
-            </div>,
+            player1: <PlayerDisplay player={team.team.players[0]} />,
+            player2: <PlayerDisplay player={team.team.players[1]} />,
             event: event.name,
             allow: { event, team },
             payment: team.paymentStatus,

@@ -80,7 +80,7 @@ const TournamentManagerLayout = (props) => {
 
   return (
     <>
-      <Header description='โปรแกรมจัดการแข่งขันแบดมินตัน' back={{ href: '/tournament-manager', alias: 'tournament' }} />
+      <Header description='โปรแกรมแข่งขันแบดมินตัน' back={{ href: '/tournament', alias: 'tournament' }} />
       <main>
         <div className='content'>
           {props.children}
