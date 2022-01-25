@@ -60,7 +60,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
         setVisible(false)
         setLoading(false)
         mutate()
-        message.success('ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง')
+        Modal.error({ title: 'ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง' })
       })
 
   }

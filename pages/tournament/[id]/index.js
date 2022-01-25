@@ -1,9 +1,10 @@
 import Layout from '../../../components/Layout/tournamentManager'
+import { Modal } from 'antd'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { useTournament } from '../../../utils'
 import Loading from '../../../components/loading'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { TAB_OPTIONS } from '../../../constant'
 import { Button } from 'antd'
 import { useState } from 'react'
@@ -15,6 +16,7 @@ const TournamentManagerID = () => {
   const { tournament, isLoading, isError } = useTournament(id)
   const [registerModal, setRegisterModal] = useState(false)
   const dispatch = useDispatch()
+  const { user } = useSelector(state => state)
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT_MANAGER.DETAIL })
   }, [])
@@ -33,7 +35,16 @@ const TournamentManagerID = () => {
           )
         })}
       </div>
-      <Button type='primary' onClick={() => setRegisterModal(true)}>
+      <Button type='primary' onClick={() => {
+        if (user.id) setRegisterModal(true)
+        else {
+          Modal.info({
+            title: 'กรุณา Log in ก่อนสมัครแข่งขัน',
+            onOk: () => router.push('/login')
+          })
+        }
+
+      }}>
         สมัครแข่งขัน
       </Button>
       <RegisterModal
