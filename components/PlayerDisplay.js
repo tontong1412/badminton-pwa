@@ -2,7 +2,7 @@ import { Popover } from 'antd'
 import moment from 'moment'
 import Image from 'next/image'
 import { MAP_GENDER } from '../constant'
-const PlayerDisplay = ({ player }) => {
+const PlayerDisplay = ({ player, showContact }) => {
   const playerDetail = (
     <div style={{
       width: '200px',
@@ -32,7 +32,18 @@ const PlayerDisplay = ({ player }) => {
         <div style={{ width: '100px', textAlign: 'right' }}>เพศ:</div>
         <div>{MAP_GENDER[player.gender]}</div>
       </div>
-
+      {
+        showContact && <>
+          <div style={{ display: 'flex', gap: '10px', width: '200px' }}>
+            <div style={{ width: '100px', textAlign: 'right' }}>เบอร์โทรศัพท์:</div>
+            <div>{player.tel}</div>
+          </div>
+          <div style={{ display: 'flex', gap: '10px', width: '200px' }}>
+            <div style={{ width: '100px', textAlign: 'right' }}>Line ID:</div>
+            <div>{player.lineID}</div>
+          </div>
+        </>
+      }
     </div >
   )
   return (

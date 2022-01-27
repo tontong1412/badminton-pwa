@@ -116,6 +116,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
   return (
     <Modal
       visible={visible}
+      centered
       onCancel={() => {
         setVisible(false)
         form.resetFields()
@@ -124,7 +125,6 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
       }}
       onOk={() => form.submit()}
       title={`สมัครแข่งขัน`}
-      style={{ height: '300px' }}
       destroyOnClose
       confirmLoading={loading}
     >

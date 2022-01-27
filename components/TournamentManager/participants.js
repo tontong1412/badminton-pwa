@@ -6,15 +6,26 @@ import { Table, Button, Tag, Menu, Dropdown, Input, Modal } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import request from '../../utils/request'
 import PlayerDisplay from '../PlayerDisplay'
+import ContactPersonModal from '../Tournament/ContactPersonModal'
 
 const Participants = (props) => {
   const { tournament, isLoading, isError, mutate } = useTournament(props.tournamentID)
   const [formatParticipantTable, setFormatParticipantTable] = useState([])
   const [searchText, setSearchText] = useState('')
   const [totalTeam, setTotalTeam] = useState()
+  const [contactPersonVisible, setContactPersonVisible] = useState(false)
+  const [selectedTeam, setSelectedTeam] = useState()
 
   const menu = (event, team) => (
     <Menu>
+      <Menu.Item key='contact'>
+        <div onClick={() => {
+          setContactPersonVisible(true)
+          setSelectedTeam(team)
+        }}>
+          ข้อมูลผู้ติดต่อ
+        </div>
+      </Menu.Item>
       {team.paymentStatus !== 'paid' && <Menu.Item key='update-payment'>
         <div onClick={() => onUpdateTeam(event._id, team._id, 'paymentStatus', 'paid')}>
           จ่ายเงินแล้ว
@@ -238,6 +249,11 @@ const Participants = (props) => {
         scroll={{ y: 400, x: 1000 }}
         pagination={false}
         onChange={(pagination, filters, sorter, extra) => setTotalTeam(extra.currentDataSource.length)} />
+      <ContactPersonModal
+        visible={contactPersonVisible}
+        setVisible={setContactPersonVisible}
+        player={selectedTeam?.contact}
+        showContact />
     </div>
   )
 }
