@@ -100,7 +100,7 @@ const SlipModal = ({ event, team = {}, visible, setVisible, mutate, isManager })
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
           <div style={{ fontWeight: 'bold', width: '80px' }}>ผู้จัดการทีม:</div>
-          <div>{team?.contact.officialName}</div>
+          <div>{team?.contact?.officialName}</div>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
           <div style={{ fontWeight: 'bold', width: '80px' }}>ค่าสมัคร:</div>
