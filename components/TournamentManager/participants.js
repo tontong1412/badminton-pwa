@@ -7,6 +7,7 @@ import { SearchOutlined } from '@ant-design/icons'
 import request from '../../utils/request'
 import PlayerDisplay from '../PlayerDisplay'
 import ContactPersonModal from '../Tournament/ContactPersonModal'
+import SlipModal from '../Tournament/SlipModal'
 
 const Participants = (props) => {
   const { tournament, isLoading, isError, mutate } = useTournament(props.tournamentID)
@@ -15,6 +16,8 @@ const Participants = (props) => {
   const [totalTeam, setTotalTeam] = useState()
   const [contactPersonVisible, setContactPersonVisible] = useState(false)
   const [selectedTeam, setSelectedTeam] = useState()
+  const [slipModalVisible, setSlipModalVisible] = useState(false)
+  const [selectedEvent, setSelectedEvent] = useState();
 
   const menu = (event, team) => (
     <Menu>
@@ -26,13 +29,17 @@ const Participants = (props) => {
           ข้อมูลผู้ติดต่อ
         </div>
       </Menu.Item>
-      {team.paymentStatus !== 'paid' && <Menu.Item key='update-payment'>
+      {/* {team.paymentStatus !== 'paid' && <Menu.Item key='update-payment'>
         <div onClick={() => onUpdateTeam(event._id, team._id, 'paymentStatus', 'paid')}>
           จ่ายเงินแล้ว
         </div>
-      </Menu.Item>}
+      </Menu.Item>} */}
       <Menu.Item key='payment-slip'>
-        <div>
+        <div onClick={() => {
+          setSlipModalVisible(true)
+          setSelectedTeam(team)
+          setSelectedEvent(event)
+        }}>
           ดู/อัพโหลดสลิป
         </div>
       </Menu.Item>
@@ -254,6 +261,14 @@ const Participants = (props) => {
         setVisible={setContactPersonVisible}
         player={selectedTeam?.contact}
         showContact />
+      <SlipModal
+        visible={slipModalVisible}
+        setVisible={setSlipModalVisible}
+        team={selectedTeam}
+        event={selectedEvent}
+        mutate={mutate}
+        isManager
+      />
     </div>
   )
 }
