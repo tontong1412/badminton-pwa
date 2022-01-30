@@ -11,6 +11,7 @@ import { useState } from 'react'
 import RegisterModal from '../../../components/Tournament/RegisterModal'
 import Image from 'next/image'
 import moment from 'moment'
+import { EnvironmentOutlined } from '@ant-design/icons'
 
 const TournamentManagerID = () => {
   const router = useRouter()
@@ -35,6 +36,7 @@ const TournamentManagerID = () => {
         </div>
         <h2>{tournament.name}</h2>
         <div>{`${moment(tournament.startDate).format('ll')}-${moment(tournament.endDate).format('ll')}`}</div>
+        <div><EnvironmentOutlined />{tournament.location}</div>
         <div>รายการที่รับสมัคร</div>
         <div style={{
           display: 'flex',
