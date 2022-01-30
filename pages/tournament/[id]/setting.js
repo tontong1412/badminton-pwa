@@ -10,6 +10,7 @@ import request from '../../../utils/request'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { Modal } from 'antd'
 import axios from 'axios'
+import { API_ENDPOINT } from '../../../config'
 
 const Setting = () => {
   const router = useRouter()

@@ -1,5 +1,5 @@
 import Layout from '../../../components/Layout/tournamentManager'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { TAB_OPTIONS } from '../../../constant'
 import { useEffect, useState } from 'react'
 import ManageEvent from '../../../components/TournamentManager/ManageEvent'
@@ -18,14 +18,31 @@ const Manage = () => {
   const router = useRouter()
   const { id } = router.query
   const { tournament } = useTournament(id)
-  const [currentStep, setCurrentStep] = useState(tournament?.status === 'ongoing' || 0)
+  const [currentStep, setCurrentStep] = useState(0)
+  const [isManager, setIsManager] = useState(false)
+  const { user } = useSelector(state => state)
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT_MANAGER.MANAGE })
   }, [])
 
   useEffect(() => {
-    console.log(tournament?.status === 'ongoing' || 0)
-    setCurrentStep(tournament?.status === 'ongoing' ? 4 : 0)
+    if (user && tournament && (user.playerID === tournament.creator || tournament.managers.includes(user.playerID))) {
+      setIsManager(true)
+    } else {
+      setIsManager(false)
+    }
+  }, [user, tournament])
+
+  useEffect(() => {
+    console.log(tournament?.status);
+    if (tournament?.status === 'ongoing') {
+      setCurrentStep(4)
+    } else if (tournament?.status === 'knockOut') {
+      setCurrentStep(6)
+    } else {
+      setCurrentStep(0)
+    }
+
   }, [tournament?.status])
 
 
@@ -49,6 +66,9 @@ const Manage = () => {
         return
     }
   }
+
+
+  if (!isManager) return <div>permission denied</div>
   return (
     <Layout>
       <h1>Manage</h1>
