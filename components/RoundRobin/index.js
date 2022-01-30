@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Table } from 'antd'
-import { MATCH } from '../../constant'
+import { Table, BackTop } from 'antd'
+import { COLOR, MATCH } from '../../constant'
 import MatchDetail from './matchDetail'
 import { useMatchDraws, useEvent } from '../../utils'
 
@@ -17,7 +17,6 @@ const GroupTable = (props) => {
       setGroupMatches(filteredMatches)
     }
   }, [matches])
-
 
   const processColumn = (data) => data?.map((group, index) => {
     const result = [
@@ -116,6 +115,16 @@ const GroupTable = (props) => {
           />
         })
       }
+      <BackTop style={{
+        bottom: '100px',
+        backgroundColor: COLOR.MINOR_THEME,
+        height: 40,
+        width: 40,
+        lineHeight: '40px',
+        borderRadius: 20,
+        textAlign: 'center',
+        fontSize: 14,
+      }} />
     </div >
   )
 }

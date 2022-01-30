@@ -12,7 +12,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
   const [contactPerson, setContactPerson] = useState()
   const [loading, setLoading] = useState(false)
   const [options, setOptions] = useState([])
-  const { players } = usePlayers()
+  const { players, mutate: mutatePlayer } = usePlayers()
   const { user } = useSelector(state => state)
 
   const onFinish = (values) => {
@@ -54,13 +54,25 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
       setVisible(false)
       setLoading(false)
       mutate()
+      mutatePlayer()
+      form.resetFields()
+      setPlayer1()
+      setPlayer2()
       message.success('ลงทะเบียนแล้ว ท่านสามารถตรวจสอบได้ที่แท็บ "รายชื่อ"')
     })
       .catch(err => {
         setVisible(false)
         setLoading(false)
         mutate()
-        Modal.error({ title: 'ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง' })
+        form.resetFields()
+        setPlayer1()
+        setPlayer2()
+        if (err.response.status === 409) {
+          Modal.info({ title: 'คู่นี้ลงสมัครแล้ว', content: 'ท่านสามารถตรวจสอบผลการประเมินมือได้ที่แท็บรายชื่อ' })
+        } else {
+          Modal.error({ title: 'ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง' })
+        }
+
       })
 
   }

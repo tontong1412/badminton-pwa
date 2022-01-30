@@ -6,6 +6,7 @@ import 'moment/locale/th'
 import { useMatches } from '../../utils'
 import Loading from '../../components/loading'
 import request from '../../utils/request'
+import ServiceErrorModal from '../ServiceErrorModal'
 const Matches = (props) => {
   const [filteredInfo, setFilteredInfo] = useState()
   const [formattedData, setFormattedData] = useState([])
@@ -114,6 +115,9 @@ const Matches = (props) => {
         setAssignMatchModal(false)
         setSelectedCourt()
         mutate()
+      }).catch(() => {
+        ServiceErrorModal()
+        setSetScoreLoading(false)
       })
     } else if (modal === 'setScoreLoading') {
       setSetScoreLoading(true)
@@ -124,6 +128,9 @@ const Matches = (props) => {
         setSetScoreLoading(false)
         setSetScoreModal(false)
         mutate()
+      }).catch(() => {
+        Modal.error({ title: 'ผิดพลาด', content: 'กรุณากรอกรูปแบบคะแนนให้ถูกต้อง' })
+        setSetScoreLoading(false)
       })
     }
 
@@ -170,7 +177,7 @@ const Matches = (props) => {
             </div>
             <div style={{ paddingBottom: '5px' }}>
               <Input
-                disabled={selectedMatch?.competitiveType !== 'knockout'}
+                disabled={selectedMatch?.step !== 'knockOut'}
                 placeholder='เซ็ต 3'
                 style={{ width: 120 }}
                 onChange={(e) => onChangeFillScore(e.target.value, 2)}

@@ -253,7 +253,7 @@ const Participants = (props) => {
         columns={columns()}
         sticky
         size='small'
-        scroll={{ y: 400, x: 1000 }}
+        scroll={{ y: (typeof window !== "undefined") ? window.innerHeight - 350 : 400, x: 1000 }}
         pagination={false}
         onChange={(pagination, filters, sorter, extra) => setTotalTeam(extra.currentDataSource.length)} />
       <ContactPersonModal

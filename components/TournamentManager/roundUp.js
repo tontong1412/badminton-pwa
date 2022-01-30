@@ -1,4 +1,4 @@
-import { Tabs, Button, Table, InputNumber } from 'antd'
+import { Tabs, Button, Table, InputNumber, message } from 'antd'
 import { useTournament, useMatches } from '../../utils'
 import { useState, useEffect } from 'react'
 import drawBracket from '../../utils/drawBracket'
@@ -117,7 +117,7 @@ const RoundUpEvent = ({ event, matches }) => {
     request.post('/event/round-up', {
       eventID: event._id,
       order: order.map(elm => elm._id)
-    })
+    }).then(() => message.success('สำเร็จ'))
   }
 
   const columns = [
@@ -165,11 +165,11 @@ const RoundUpEvent = ({ event, matches }) => {
         dataSource={prepareData(event)}
         pagination={false}
         style={{ width: '50%' }}
-        scroll={{ y: 400 }}
+        scroll={{ y: (typeof window !== "undefined") ? window.innerHeight - 350 : 400 }}
         size='small'
       />
       <div style={{ marginLeft: '40px' }}>
-        {drawBracket(showOrder)}
+        {drawBracket(showOrder, 300)}
         <Button onClick={onRoundUp} type='primary'>บันทึก</Button>
       </div>
     </div>
@@ -184,10 +184,10 @@ const RoundUp = (props) => {
     <Tabs defaultActiveKey="1" >
       {tournament?.events.map(event => {
         return (
-          <Tabs.TabPane tab={event.name} key={event._id} style={{ display: 'flex' }}>
+          <Tabs.TabPane tab={event.name} key={`tab-${event._id}`} >
             {event.step === 'group'
               ? <RoundUpEvent event={event} matches={matches} />
-              : <div style={{ width: '100%', textAlign: 'center' }}>สรุปคนเข้ารอบแล้ว</div>
+              : <div style={{ width: '100%', textAlign: 'center' }}>สรุปทีมเข้ารอบแล้ว</div>
             }
 
           </Tabs.TabPane>
