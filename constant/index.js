@@ -86,6 +86,37 @@ const MATCH = {
   }
 }
 
+const MAP_TOURNAMENT_STATUS = {
+  'prepare': {
+    LABEL: 'เตรียมการ',
+    COLOR: 'purple'
+  },
+  'register': {
+    LABEL: 'เปิดรับสมัคร',
+    COLOR: 'geekblue'
+  },
+  'draw': {
+    LABEL: 'จับฉลากสาย',
+    COLOR: 'purple'
+  },
+  'arrange': {
+    LABEL: 'จัดตารางแข่ง',
+    COLOR: 'purple'
+  },
+  'ongoing': {
+    LABEL: 'กำลังแข่งขัน',
+    COLOR: 'blue'
+  },
+  'finish:': {
+    LABEL: 'แข่งเสร็จแล้ว',
+    COLOR: 'green'
+  },
+  knockOut: {
+    LABEL: 'กำลังแข่งขัน',
+    COLOR: 'blue'
+  },
+}
+
 const MAP_GENDER = {
   male: 'ชาย',
   female: 'หญิง'
@@ -97,5 +128,6 @@ export {
   TRANSACTION,
   EVENT,
   MATCH,
-  MAP_GENDER
+  MAP_GENDER,
+  MAP_TOURNAMENT_STATUS
 }

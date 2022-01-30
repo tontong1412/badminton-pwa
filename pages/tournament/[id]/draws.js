@@ -34,8 +34,8 @@ const Draws = () => {
               </Radio.Group>
               {
                 mode === 'knockOut'
-                  ? <Bracket event={event} />
-                  : <RoundRobin event={event} />
+                  ? <Bracket key={event._id} event={event} />
+                  : <RoundRobin key={event._id} event={event} />
               }
             </TabPane>
           )

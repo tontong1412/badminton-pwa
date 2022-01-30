@@ -9,15 +9,17 @@ const drawBracket = (order, blockWidth = 250) => {
       <div>
         {order.map((team, i) => {
           return <>
-            <div style={{
-              width: `${blockWidth}px`,
-              height: `${height}px`,
-              borderBottom: '1px solid #333',
-              borderRight: i % 2 === 1 ? '1px solid #333' : null,
-              display: 'flex',
-              alignItems: 'flex-end',
-              gap: '10px'
-            }}>
+            <div
+              key={i + 1}
+              style={{
+                width: `${blockWidth}px`,
+                height: `${height}px`,
+                borderBottom: '1px solid #333',
+                borderRight: i % 2 === 1 ? '1px solid #333' : null,
+                display: 'flex',
+                alignItems: 'flex-end',
+                gap: '10px'
+              }}>
               <div>{i + 1}</div>
               <div>{team}</div>
             </div>
