@@ -268,7 +268,7 @@ const Matches = (props) => {
         columns={columns()}
         dataSource={formattedData}
         pagination={false}
-        scroll={{ y: 450, x: 1000 }}
+        scroll={{ y: (typeof window !== "undefined") ? window.innerHeight - 280 : 400, x: 1000 }}
         onChange={handleChange}
         rowKey='key'
         size='small'

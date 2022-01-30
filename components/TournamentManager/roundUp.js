@@ -101,8 +101,7 @@ const RoundUpEvent = ({ event, matches }) => {
           diff: team.diff,
           group: team.group,
           draw: <InputNumber
-            onChange={(value) => onChangeOrder(value, team)}
-            onBlur={(value) => onChangeOrder(value, team)}
+            onBlur={(e) => onChangeOrder(e.target.value, team)}
             max={event.order.knockOut.length}
             min={1} />
         })

@@ -9,7 +9,7 @@ const MatchUp = (props) => {
     <div className="matchup">
       <div className="participants">
         <div className='group'>
-          <div className={`participant ${match.teamA.scoreSet > match.teamB.scoreSet ? 'winner' : null}`}>
+          <div className={`participant ${match.status === 'finished' ? match.teamA.scoreSet > match.teamB.scoreSet ? 'winner' : 'loser' : null}`}>
             {
               matchType === MATCH.TYPE.SINGLE
                 ? <span>{match.teamA?.team?.players[0]?.officialName || 'waiting'}</span>
@@ -32,14 +32,14 @@ const MatchUp = (props) => {
           }
         </div>
         <div className='group'>
-          <div className={`participant ${match.teamB.scoreSet > match.teamA.scoreSet ? 'winner' : null}`}>
+          <div className={`participant ${match.status === 'finished' ? match.teamB.scoreSet > match.teamA.scoreSet ? 'winner' : 'loser' : null}`}>
             {
               matchType === MATCH.TYPE.SINGLE
                 // <span>{match.teamB[0] ? match.teamB.team.players[0]/*.officialName*/ : 'bye'}</span> :
                 ? <span>{match.teamB?.team?.players[0]?.officialName || 'waiting'}</span>
                 : <React.Fragment>
                   <div>{match.teamB?.team?.players[0]?.officialName || 'waiting'} </div>
-                  < div > {match.teamB?.team?.players[1]?.officialName || 'waiting'} </div>
+                  <div>{match.teamB?.team?.players[1]?.officialName || 'waiting'} </div>
                 </React.Fragment>
             }
           </div>
