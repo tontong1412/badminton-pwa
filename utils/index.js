@@ -80,7 +80,7 @@ export const useTournaments = () => {
 }
 
 export const usePlayers = () => {
-  const { data, error } = useSWR(
+  const { data, error, mutate } = useSWR(
     `${API_ENDPOINT}/player`,
     fetcher
   )
@@ -88,13 +88,14 @@ export const usePlayers = () => {
   return {
     players: data,
     isLoading: !error && !data,
-    isError: error
+    isError: error,
+    mutate
   }
 }
 
 export const useMatchDraws = (eventID) => {
   const { data, error, mutate } = useSWR(
-    eventID ? `${API_ENDPOINT}/match` : null,
+    [eventID ? `${API_ENDPOINT}/match` : null, eventID],
     (url) => fetcher(url, null, { eventID })
   )
 
@@ -108,7 +109,7 @@ export const useMatchDraws = (eventID) => {
 
 export const useMatches = (tournamentID) => {
   const { data, error, mutate } = useSWR(
-    tournamentID ? `${API_ENDPOINT}/match` : null,
+    [tournamentID ? `${API_ENDPOINT}/match` : null, tournamentID],
     (url) => fetcher(url, null, { tournamentID })
   )
 
