@@ -10,6 +10,7 @@ import Link from 'next/link'
 import moment from 'moment'
 import { EnvironmentOutlined } from '@ant-design/icons'
 import { Tag } from 'antd'
+import MyTournament from '../../components/Tournament/MyTournament'
 
 const Tournament = () => {
   const dispatch = useDispatch()
@@ -20,6 +21,7 @@ const Tournament = () => {
   }, [])
   return (
     <Layout >
+      <MyTournament bottomLine />
       <div style={{ padding: '5px' }}>
         {tournaments?.map(tournament => {
           return (

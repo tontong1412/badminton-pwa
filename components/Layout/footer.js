@@ -1,18 +1,21 @@
 import Link from 'next/link'
 import { useSelector } from 'react-redux'
 import { COLOR } from '../../constant'
+import { Badge } from 'antd'
 
 const Footer = ({ tabOption }) => {
   const { activeMenu } = useSelector(state => state)
   return (
     <div className='footer'>
+
       {tabOption.map(tab => {
         return (
           <Link passHref href={tab.href} key={`tab-${tab.name}`}>
-            <div
-              className='footer-tab'
-            >
-              {tab.icon}
+
+            <div className='footer-tab'>
+              <Badge count={tab.notiCount}>
+                {tab.icon}
+              </Badge>
               <div
                 style={{
                   fontSize: '12px',
@@ -21,10 +24,12 @@ const Footer = ({ tabOption }) => {
                 }}>
                 {tab.name}
               </div>
+
             </div>
           </Link>
         )
       })}
+
     </div >
   )
 }

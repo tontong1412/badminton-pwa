@@ -81,7 +81,8 @@ const Matches = (props) => {
           { text: MATCH.STATUS.playing.LABEL, value: MATCH.STATUS.playing.LABEL },
           { text: MATCH.STATUS.finished.LABEL, value: MATCH.STATUS.finished.LABEL }
         ],
-        filteredValue: filteredInfo?.status || null,
+        // filteredValue: filteredInfo?.status || null,
+        defaultFilteredValue: [MATCH.STATUS.waiting.LABEL, MATCH.STATUS.playing.LABEL],
         onFilter: (value, record) => record.status.text.LABEL.includes(value)
       },
 

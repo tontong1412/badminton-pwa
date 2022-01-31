@@ -1,8 +1,10 @@
+import { COLOR } from "../constant"
+
 const Greeting = (props) => {
   return (
-    <div>
-      <div >
-        สวัสดี {props.user.officialName}
+    <div style={{ margin: '20px 20px' }}>
+      <div style={{ color: COLOR.MINOR_THEME, fontSize: '30px' }}>
+        สวัสดี, {props.user.displayName}
       </div>
     </div>
   )

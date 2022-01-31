@@ -6,6 +6,7 @@ import Layout from '../components/Layout'
 import { TAB_OPTIONS } from '../constant'
 import { useRouter } from 'next/router'
 import MyGang from '../components/gang/myGang'
+import MyTournament from '../components/Tournament/MyTournament'
 
 const Home = () => {
   const router = useRouter()
@@ -18,6 +19,7 @@ const Home = () => {
   return (
     <>
       <Greeting user={user} />
+      <MyTournament homePage />
       <MyGang />
     </>
   )

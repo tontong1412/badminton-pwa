@@ -35,9 +35,10 @@ const AppLayout = (props) => {
         },
         // {
         //   name: 'แจ้งเตือน',
-        //   icon: <BellOutlined style={{ fontSize: '24px', color: activeMenu === 'noti' ? '#DAA228' : '#aaa' }} />,
+        //   icon: <BellOutlined style={{ fontSize: '24px', color: activeMenu === 'noti' ? COLOR.MINOR_THEME : '#aaa' }} />,
         //   href: '/noti',
-        //   alias: 'noti'
+        //   alias: 'noti',
+        //   notiCount: 2
         // },
         {
           name: 'บัญชีของฉัน',
