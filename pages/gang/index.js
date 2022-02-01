@@ -11,6 +11,7 @@ import router from 'next/router'
 import { useGangs } from '../../utils'
 import { formatPromptpay } from '../../utils/formatter'
 import request from '../../utils/request'
+import { TAB_OPTIONS } from '../../constant'
 
 const Gang = () => {
   const myGangRef = useRef()
@@ -39,7 +40,7 @@ const Gang = () => {
 
   useEffect(() => {
     logEvent(analytics, 'gang')
-    dispatch({ type: 'ACTIVE_MENU', payload: 'gang' })
+    dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.GANG.INDEX })
   }, [])
 
   useEffect(() => {

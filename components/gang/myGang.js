@@ -2,6 +2,7 @@ import { useEffect, useState, forwardRef, useImperativeHandle } from "react"
 import { useSelector } from 'react-redux'
 import MyGangCard from "../myGangCard"
 import request from "../../utils/request"
+import { Divider } from "antd"
 const MyGang = (props, ref) => {
   const user = useSelector(state => state.user)
   const [myGang, setMyGang] = useState()
@@ -32,7 +33,7 @@ const MyGang = (props, ref) => {
 
   return (
     <>
-      <div style={{ margin: '15px 0 0 10px' }}>ก๊วนของฉัน</div>
+      <div style={{ margin: '20px 20px 0 20px' }}>ก๊วนของฉัน</div>
       <div style={{
         overflowX: 'scroll',
         overflowY: 'hidden',
@@ -44,7 +45,7 @@ const MyGang = (props, ref) => {
         })
         }
       </div>
-      {props.bottomLine && <div style={{ border: '1px solid #eee', width: '100%', marginTop: '5px' }}></div>}
+      {props.bottomLine && <Divider />}
     </>
   )
 

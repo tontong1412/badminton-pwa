@@ -1,5 +1,5 @@
-import { Modal } from "antd"
-const ServiceErrorModal = () => {
+import { Modal } from 'antd'
+const ServiceErrorModal = (onOk) => {
   return Modal.error({
     title: 'ผิดพลาด',
     content: (
@@ -7,7 +7,7 @@ const ServiceErrorModal = () => {
         <p>เกิดปัญหาขณะอัพเดทข้อมูล กรุณาลองใหม่ในภายหลัง</p>
       </div>
     ),
-    onOk() { },
+    onOk,
   })
 }
 export default ServiceErrorModal
