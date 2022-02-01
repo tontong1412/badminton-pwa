@@ -80,6 +80,7 @@ const MyTournamentCardHomePage = ({ tournament, mutate }) => {
 
     <div
       style={{
+        minWidth: '350px',
         width: '100%',
         maxWidth: '400px',
         margin: '10px',

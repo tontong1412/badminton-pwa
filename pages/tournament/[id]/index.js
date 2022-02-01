@@ -12,6 +12,7 @@ import RegisterModal from '../../../components/Tournament/RegisterModal'
 import Image from 'next/image'
 import moment from 'moment'
 import { EnvironmentOutlined } from '@ant-design/icons'
+import TournamentModal from '../../../components/Tournament/TournamentModal'
 
 const TournamentManagerID = () => {
   const router = useRouter()
@@ -21,9 +22,19 @@ const TournamentManagerID = () => {
   const dispatch = useDispatch()
   const { user } = useSelector(state => state)
   const [posterVisible, setPosterVisible] = useState(true)
+  const [isManager, setIsManager] = useState(false);
+  const [tournamentModal, setTournamentModal] = useState(false);
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT_MANAGER.DETAIL })
   }, [])
+
+  useEffect(() => {
+    if (user && tournament && (user.playerID === tournament.creator || tournament.managers.includes(user.playerID))) {
+      setIsManager(true)
+    } else {
+      setIsManager(false)
+    }
+  }, [user, tournament])
 
   if (isLoading) return <Loading />
   if (isError) return <p>error</p>
@@ -77,12 +88,26 @@ const TournamentManagerID = () => {
         }}>
           สมัครแข่งขัน
         </Button>
+        {
+          isManager && <Button style={{ width: '80%' }} type='primary' onClick={() => {
+            setTournamentModal(true)
+          }}>
+            แก้ไขข้อมูล
+          </Button>
+        }
+
       </div>
+
       <RegisterModal
         visible={registerModal}
         setVisible={setRegisterModal}
         tournamentID={id}
       />
+      <TournamentModal
+        visible={tournamentModal}
+        setVisible={setTournamentModal}
+        tournament={tournament} />
+
       {tournament?.poster && <Modal
         visible={posterVisible}
         onCancel={() => setPosterVisible(false)}

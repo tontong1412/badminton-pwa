@@ -99,8 +99,6 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
   }
 
   const onSelect = (data, options, player) => {
-    console.log('onSelect', data)
-    console.log(options)
     if (player === 'player1') setPlayer1(options.key)
     else if (player === 'player2') setPlayer2(options.key)
     const selectedPlayer = players.find(player => player._id === options.key)
