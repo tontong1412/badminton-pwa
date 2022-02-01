@@ -81,10 +81,10 @@ const GroupTable = (props) => {
             })
           }
           result[match.teamB.team?._id] = match.status === MATCH.STATUS.finished.LABEL
-            ? match.scoreLabel.map(set => {
+            ? match.scoreLabel.map((set, i) => {
               const score = set.split('-')
               result.diff += score[0] - score[1]
-              return <div>{set}</div>
+              return <div key={i + 1}>{set}</div>
             })
             : <MatchDetail key={match._id} match={match} />
           result.score += match.teamA.scoreSet
