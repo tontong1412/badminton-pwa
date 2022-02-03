@@ -1,5 +1,9 @@
 const processBracketData = (data) => {
+  console.log(data);
   data.sort((a, b) => {
+    if (b.round === a.round) {
+      return a.matchNumber - b.matchNumber
+    }
     return b.round - a.round
   })
   const maxRound = Math.max(...data.map(e => e.round))

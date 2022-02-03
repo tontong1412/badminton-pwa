@@ -23,7 +23,7 @@ const Tournament = () => {
     <Layout >
       <MyTournament bottomLine />
       <div style={{ padding: '5px' }}>
-        {tournaments?.map(tournament => {
+        {tournaments?.filter(e => e.status !== 'prepare' || e.registerOpen).map(tournament => {
           return (
             <Link
               href={`/tournament/${tournament._id}`}

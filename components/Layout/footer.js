@@ -6,7 +6,7 @@ import { Badge } from 'antd'
 const Footer = ({ tabOption }) => {
   const { activeMenu } = useSelector(state => state)
   return (
-    <div className='footer'>
+    <div className='footer noprint'>
 
       {tabOption.map(tab => {
         return (

@@ -61,7 +61,7 @@ const Header = (props) => {
         <meta name="description" content={props.description} />
       </Head>
       <div className='header'>
-        <div >{props.back?.href || props.previous ?
+        <div>{props.back?.href || props.previous ?
           <div onClick={props.previous ? router.back : () => router.push(props.back.href)}>
             <LeftOutlined />
           </div>

@@ -103,16 +103,23 @@ const GroupTable = (props) => {
     <div >
       {
         columns?.map((column, index) => {
-          return <Table
-            key={index + 1}
-            style={{ marginBottom: '20px', width: '1001px', zIndex: '-999' }}
-            dataSource={dataSource[index]}
-            columns={column}
-            bordered
-            pagination={false}
-            scroll={{ x: 1000 }}
-            size='small'
-          />
+          return <div key={index + 1}>
+            <div className='fix-printing'>{`กลุ่ม ${index + 1} - ${event.name} `}</div>
+            <Table
+              style={{
+                marginBottom: '20px',
+                width: '1001px',
+                zIndex: '-999',
+                pageBreakAfter: (index % 3 === 1) ? 'always' : 'auto'
+              }}
+              dataSource={dataSource[index]}
+              columns={column}
+              bordered
+              pagination={false}
+              scroll={{ x: 1000 }}
+              size='small'
+            />
+          </div>
         })
       }
       <BackTop style={{

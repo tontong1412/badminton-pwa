@@ -36,8 +36,14 @@ const Setting = () => {
   if (isError) return <p>error</p>
 
   const onToggleActive = (checked) => {
-    request.put(`/tournament/${id}`, {
+    const updateParams = {
       registerOpen: checked
+    }
+    if (checked) {
+      updateParams.status = 'register'
+    }
+    request.put(`/tournament/${id}`, {
+      registerOpen: checked,
     }).then(() => mutate())
       .catch(() => { })
   }
