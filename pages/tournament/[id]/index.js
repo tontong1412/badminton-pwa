@@ -69,7 +69,7 @@ const TournamentManagerID = () => {
               >
                 <div style={{ fontWeight: 'bold' }}>{event.name}</div>
                 <Divider />
-                <div>{`จำนวน ${event.limit} คู่`}</div>
+                {<div>{event.limit ? `จำนวน ${event.limit} คู่` : 'ไม่จำกัดจำนวน'}</div>}
                 {event?.prize && <div>{`รางวัล ${event.prize}`}</div>}
               </div>
             )
@@ -89,7 +89,7 @@ const TournamentManagerID = () => {
           สมัครแข่งขัน
         </Button>
         {
-          isManager && <Button style={{ width: '80%' }} type='primary' onClick={() => {
+          isManager && <Button style={{ width: '80%', marginBottom: '10px' }} type='primary' onClick={() => {
             setTournamentModal(true)
           }}>
             แก้ไขข้อมูล

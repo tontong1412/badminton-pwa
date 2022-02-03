@@ -14,7 +14,7 @@ const NextMatch = ({ event, tournamentID }) => {
         <Divider>{event.name}</Divider>
         <div style={{ padding: '0 20px 10px 20px' }}>
           {
-            matches?.nextMatch[0].matchNumber - matches?.latestMatch[0]?.matchNumber || 0 - 1 <= 0
+            matches?.nextMatch[0].matchNumber - (matches?.latestMatch[0]?.matchNumber || 0) - 1 <= 0
               ? <div style={{ fontSize: '40px', color: COLOR.MINOR_THEME }}>คู่ต่อไป</div>
               : <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div>อีก</div>

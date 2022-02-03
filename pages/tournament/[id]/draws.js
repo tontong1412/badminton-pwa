@@ -25,7 +25,7 @@ const Draws = () => {
     <Layout>
       <h1>สายการแข่งขัน</h1>
       <Tabs defaultActiveKey="1" >
-        {tournament?.events.map(event => {
+        {tournament?.events?.map(event => {
           return (
             <TabPane tab={event.name} key={event._id}>
               <Radio.Group onChange={e => setMode(e.target.value)} value={mode} style={{ marginBottom: 8 }}>
