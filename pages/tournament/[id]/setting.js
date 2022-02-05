@@ -64,6 +64,22 @@ const Setting = () => {
     });
   }
 
+  const finishTournament = () => {
+    Modal.confirm({
+      title: 'การแข่งขันสิ้นสุดลงแล้วใช่หรือไม่',
+      icon: <ExclamationCircleOutlined />,
+      // content: 'หากลบแล้วจะไม่สามารถกู้คืนข้อมูลได้',
+      onOk() {
+        request.put(`/tournament/${id}`, { status: 'finish' })
+          .then(() => { router.push('/tournament') })
+          .catch(() => { })
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  }
+
   return (
     <Layout>
       <div style={{ textAlign: 'center', maxWidth: '350px', margin: 'auto', marginTop: '10px' }}>
@@ -79,8 +95,8 @@ const Setting = () => {
           <div>เปิดรับสมัคร</div>
           <Switch defaultChecked={tournament.registerOpen} onChange={onToggleActive} />
         </div>
-        {/* <div><Button style={{ width: '200px', marginBottom: '10px' }}>สถิติ</Button></div>
-        <div><Button type='primary' style={{ width: '200px', marginBottom: '10px' }}>Reset</Button></div> */}
+
+        {isCreator && <div><Button onClick={finishTournament} type='primary' style={{ width: '200px', marginBottom: '10px' }}>สิ้นสุดการแข่งขัน</Button></div>}
         {isCreator && <div><Button onClick={() => router.push(`/tournament/${id}/manager`)} type='primary' style={{ width: '200px', marginBottom: '50px' }}>ผู้จัดการ</Button></div>}
         {isCreator && <div><Button onClick={removeTournament} type='danger' style={{ width: '200px', marginBottom: '10px' }}>ลบรายการนี้</Button></div>}
       </div>
