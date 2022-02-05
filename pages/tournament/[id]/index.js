@@ -76,6 +76,18 @@ const TournamentManagerID = () => {
           })}
         </div>
         {tournament?.poster && <div style={{ color: COLOR.MINOR_THEME }} onClick={() => setPosterVisible(true)}>ดูรายละเอียดเพิ่มเติม</div>}
+        <Divider>ผู้จัด</Divider>
+        <div>
+          <div style={{ textAlign: 'center' }}>{tournament?.contact?.displayName || tournament?.contact?.officialName}</div>
+          <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
+            <div style={{ width: '100px', textAlign: 'right' }}>เบอร์โทรศัพท์:</div>
+            <div><a href={`tel:${tournament.contact.tel}`}>{tournament.contact.tel}</a></div>
+          </div>
+          <div style={{ display: 'flex', gap: '10px', width: '200px' }}>
+            <div style={{ width: '100px', textAlign: 'right' }}>Line ID:</div>
+            <div>{tournament.contact.lineID}</div>
+          </div>
+        </div>
         <Button style={{ width: '80%' }} type='primary' onClick={() => {
           if (user.id) setRegisterModal(true)
           else {
