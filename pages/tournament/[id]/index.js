@@ -108,7 +108,7 @@ const TournamentManagerID = () => {
               }
             </div>
           </>}
-        <Button style={{ width: '80%' }} type='primary' onClick={() => {
+        {tournament.registerOpen && <Button style={{ width: '80%' }} type='primary' onClick={() => {
           if (user.id) setRegisterModal(true)
           else {
             Modal.info({
@@ -119,7 +119,7 @@ const TournamentManagerID = () => {
 
         }}>
           สมัครแข่งขัน
-        </Button>
+        </Button>}
         {
           isManager && <Button style={{ width: '80%', marginBottom: '10px' }} type='primary' onClick={() => {
             setTournamentModal(true)

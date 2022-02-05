@@ -23,52 +23,56 @@ const Tournament = () => {
     <Layout >
       <MyTournament bottomLine />
       <div style={{ padding: '5px' }}>
-        {tournaments?.filter(e => e.status !== 'prepare' || e.registerOpen).map(tournament => {
-          return (
-            <Link
-              href={`/tournament/${tournament._id}`}
-              passHref
-              key={tournament._id}
-            >
-              <div style={{
-                width: '100%',
-                maxWidth: '400px',
-                display: 'flex',
-                borderRadius: '10px',
-                border: '1px solid #ddd',
-                boxShadow: '2px 2px 10px -5px rgba(0,0,0,0.75)',
-                overflow: 'hidden',
-                marginBottom: '5px',
-                flexDirection: 'column',
-                alignItems: 'center',
-                padding: '20px',
-                gap: '5px',
-                position: 'relative'
+        {tournaments?.filter(e => e.status !== 'prepare').length > 0 ?
+          tournaments?.filter(e => e.status !== 'prepare').map(tournament => {
+            console.log(tournament);
+            return (
+              <Link
+                href={`/tournament/${tournament._id}`}
+                passHref
+                key={tournament._id}
+              >
+                <div style={{
+                  width: '100%',
+                  maxWidth: '400px',
+                  display: 'flex',
+                  borderRadius: '10px',
+                  border: '1px solid #ddd',
+                  boxShadow: '2px 2px 10px -5px rgba(0,0,0,0.75)',
+                  overflow: 'hidden',
+                  marginBottom: '5px',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  padding: '20px',
+                  gap: '5px',
+                  position: 'relative'
 
-              }}>
-                <div style={{ width: '40%' }}>
-                  <Image
-                    src={tournament?.logo || '/icon/logo.png'}
-                    alt=''
-                    width={150}
-                    height={150}
-                    objectFit='contain'
-                    layout='responsive'
-                  />
+                }}>
+                  <div style={{ width: '40%' }}>
+                    <Image
+                      src={tournament?.logo || '/icon/logo.png'}
+                      alt=''
+                      width={150}
+                      height={150}
+                      objectFit='contain'
+                      layout='responsive'
+                    />
+                  </div>
+                  <h3>{tournament.name}</h3>
+                  <div>{moment(tournament.startDate).format('ll')}</div>
+                  <div><EnvironmentOutlined />{tournament.location}</div>
+                  <div>
+                    {tournament.events.map(event => <Tag color='cyan' key={event._id}>{event.name}</Tag>)}
+                  </div>
+                  <div style={{ position: 'absolute', top: '5px', right: '5px' }}>
+                    <Tag color={MAP_TOURNAMENT_STATUS[tournament.status].COLOR}>{MAP_TOURNAMENT_STATUS[tournament.status].LABEL}</Tag>
+                  </div>
                 </div>
-                <h3>{tournament.name}</h3>
-                <div>{moment(tournament.startDate).format('ll')}</div>
-                <div><EnvironmentOutlined />{tournament.location}</div>
-                <div>
-                  {tournament.events.map(event => <Tag color='cyan' key={event._id}>{event.name}</Tag>)}
-                </div>
-                <div style={{ position: 'absolute', top: '5px', right: '5px' }}>
-                  <Tag color={MAP_TOURNAMENT_STATUS[tournament.status].COLOR}>{MAP_TOURNAMENT_STATUS[tournament.status].LABEL}</Tag>
-                </div>
-              </div>
-            </Link>
-          )
-        })}
+              </Link>
+            )
+          })
+          : <div style={{ textAlign: 'center' }}>ยังไม่มีรายการแข่งขัน</div>
+        }
       </div>
     </Layout >
   )

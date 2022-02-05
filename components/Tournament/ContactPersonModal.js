@@ -31,8 +31,11 @@ const ContactPerson = ({ player = {}, visible, setVisible, showContact }) => {
         }}>
           <Image objectFit='cover' src={player.photo || `/avatar.png`} alt='' width={50} height={50} layout='responsive' />
         </div>
-        <div style={{ marginTop: '20px' }}>{player.officialName}</div>
-        <div>{`(${player.club})`}</div>
+        <div style={{ display: 'flex', alignItems: 'center', marginTop: '20px', gap: '5px' }}>
+          <div >{player.officialName}</div>
+          {player?.displayName && <div>({player?.displayName})</div>}
+        </div>
+        <div>{`${player.club}`}</div>
 
         {
           showContact && <>

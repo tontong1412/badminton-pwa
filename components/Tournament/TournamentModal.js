@@ -78,8 +78,12 @@ const TournamentModal = ({ visible, setVisible, tournament, mutate }) => {
         })
       })
     } else if (info.file.status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-      message.error(JSON.stringify(info, null, 1));
+      // message.error(`${info.file.name} file upload failed.`);
+      // message.error(JSON.stringify(info, null, 1));
+    } else if (info.file.status === 'removed') {
+      form.setFieldsValue({
+        [field]: undefined
+      })
     }
   }
 

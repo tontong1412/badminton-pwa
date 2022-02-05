@@ -6,12 +6,14 @@ import { useEffect, useState } from 'react'
 import ParticipantsTable from '../../../components/TournamentManager/participants'
 import RegisterModal from '../../../components/Tournament/RegisterModal'
 import AddButton from '../../../components/addButton'
+import { useTournament } from '../../../utils'
 import { Modal } from 'antd'
 
 const Participants = (props) => {
   const dispatch = useDispatch()
   const router = useRouter()
   const { id } = router.query
+  const { tournament } = useTournament(id)
   const { user } = useSelector(state => state)
   const [registerModalVisible, setRegisterModalVisible] = useState(false)
   useEffect(() => {
@@ -21,7 +23,7 @@ const Participants = (props) => {
     <Layout>
       <h1>ตรวจสอบรายชื่อ</h1>
       <ParticipantsTable tournamentID={id} />
-      <AddButton onClick={() => {
+      {tournament?.registerOpen && <AddButton onClick={() => {
         if (user.id) setRegisterModalVisible(true)
         else {
           Modal.info({
@@ -29,7 +31,7 @@ const Participants = (props) => {
             onOk: () => router.push('/login')
           })
         }
-      }} />
+      }} />}
       <RegisterModal
         visible={registerModalVisible}
         setVisible={setRegisterModalVisible}

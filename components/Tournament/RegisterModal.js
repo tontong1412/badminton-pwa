@@ -32,14 +32,16 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
           officialName: values.player1Name,
           club: values.player1Club,
           birthDate: values.player1BirthDate,
-          gender: values.player1Gender
+          gender: values.player1Gender,
+          displayName: values.player1DisplayName
         },
         {
           _id: player2,
           officialName: values.player2Name,
           club: values.player2Club,
           birthDate: values.player2BirthDate,
-          gender: values.player2Gender
+          gender: values.player2Gender,
+          displayName: values.player2DisplayName
         }
       ],
       contact: {
@@ -112,6 +114,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
         [`${player}Gender`]: selectedPlayer.gender,
         [`${player}Club`]: selectedPlayer.club,
         [`${player}BirthDate`]: selectedPlayer.birthDate && moment(selectedPlayer.birthDate),
+        [`${player}DisplayName`]: selectedPlayer.displayName,
       })
     }
   }
@@ -182,6 +185,13 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
             onChange={() => onChange('player1')}
           />
         </Form.Item>
+
+        <Form.Item
+          label='ชื่อเล่น'
+          name='player1DisplayName'
+        >
+          <Input />
+        </Form.Item>
         <Form.Item
           label='ทีม'
           name='player1Club'
@@ -230,6 +240,14 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
             onChange={() => onChange('player2')}
           />
         </Form.Item>
+
+        <Form.Item
+          label='ชื่อเล่น'
+          name='player2DisplayName'
+        >
+          <Input />
+        </Form.Item>
+
         <Form.Item
           label='ทีม'
           name='player2Club'

@@ -180,6 +180,7 @@ const RoundUp = (props) => {
   return (
     <Tabs defaultActiveKey="1" >
       {tournament?.events.map(event => {
+        if (event.order.knockOut.length <= 0) return null
         return (
           <Tabs.TabPane tab={event.name} key={`tab-${event._id}`} >
             {event.step === 'group'

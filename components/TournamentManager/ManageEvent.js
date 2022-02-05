@@ -5,6 +5,7 @@ import AddButton from '../../components/addButton'
 import request from "../../utils/request"
 import axios from "axios"
 import { API_ENDPOINT } from "../../config"
+import { MAP_FORMAT } from "../../constant"
 
 const ManageEvent = ({ tournamentID }) => {
   const { tournament, isError, isLoading, mutate } = useTournament(tournamentID)
@@ -23,7 +24,7 @@ const ManageEvent = ({ tournamentID }) => {
         limit: event.limit,
         fee: event.fee,
         prize: event.prize,
-        format: event.format,
+        format: MAP_FORMAT[event.format],
         registered: event.teams.length,
         action: <div onClick={() => {
           setMode('edit')

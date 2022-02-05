@@ -39,6 +39,8 @@ const Manage = () => {
       setCurrentStep(4)
     } else if (tournament?.status === 'knockOut') {
       setCurrentStep(6)
+    } else if (tournament?.status === 'register') {
+      setCurrentStep(1)
     } else {
       setCurrentStep(0)
     }
