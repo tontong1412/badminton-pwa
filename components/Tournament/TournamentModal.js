@@ -8,13 +8,13 @@ import { beforeUpload, getBase64 } from "../../utils/image"
 import { API_ENDPOINT } from "../../config"
 const TournamentModal = ({ visible, setVisible, tournament, mutate }) => {
   const [form] = Form.useForm()
-  const [contactPerson, setContactPerson] = useState(tournament.contact._id);
+  const [contactPerson, setContactPerson] = useState(tournament?.contact?._id);
   const [options, setOptions] = useState([])
   const { players, mutate: mutatePlayer } = usePlayers()
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setContactPerson(tournament.contact._id)
+    setContactPerson(tournament?.contact?._id)
   }, [tournament])
 
   const onFinish = (values) => {

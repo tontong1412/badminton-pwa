@@ -29,7 +29,7 @@ const TournamentManagerID = () => {
   }, [])
 
   useEffect(() => {
-    if (user && tournament && (user.playerID === tournament.creator || tournament.managers.map(e => e._id).includes(user.playerID))) {
+    if (user && tournament && (user.playerID === tournament.creator || tournament?.managers?.map(e => e._id).includes(user.playerID))) {
       setIsManager(true)
     } else {
       setIsManager(false)
