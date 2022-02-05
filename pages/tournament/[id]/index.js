@@ -11,8 +11,10 @@ import { useState } from 'react'
 import RegisterModal from '../../../components/Tournament/RegisterModal'
 import Image from 'next/image'
 import moment from 'moment'
-import { EnvironmentOutlined } from '@ant-design/icons'
+import { EnvironmentOutlined, CopyOutlined } from '@ant-design/icons'
 import TournamentModal from '../../../components/Tournament/TournamentModal'
+import copy from 'copy-to-clipboard'
+
 
 const TournamentManagerID = () => {
   const router = useRouter()
@@ -80,13 +82,18 @@ const TournamentManagerID = () => {
         <div>
           <div style={{ textAlign: 'center' }}>{tournament?.contact?.displayName || tournament?.contact?.officialName}</div>
           <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
-            <div style={{ width: '100px', textAlign: 'right' }}>เบอร์โทรศัพท์:</div>
+            <div style={{ width: '110px', textAlign: 'right' }}>เบอร์โทรศัพท์:</div>
             <div><a href={`tel:${tournament?.contact?.tel}`}>{tournament?.contact?.tel}</a></div>
+            <div onClick={() => copy(tournament?.contact?.tel)} style={{ color: COLOR.MINOR_THEME }}><CopyOutlined /></div>
           </div>
-          <div style={{ display: 'flex', gap: '10px', width: '200px' }}>
-            <div style={{ width: '100px', textAlign: 'right' }}>Line ID:</div>
-            <div>{tournament?.contact?.lineID}</div>
-          </div>
+          {
+            tournament?.contact?.lineID &&
+            <div style={{ display: 'flex', gap: '10px', width: '200px' }}>
+              <div style={{ width: '110px', textAlign: 'right' }}>Line ID:</div>
+              <div>{tournament?.contact?.lineID}</div>
+              <div onClick={() => copy(tournament?.contact?.lineID)} style={{ color: COLOR.MINOR_THEME }}><CopyOutlined /></div>
+            </div>
+          }
         </div>
         <Button style={{ width: '80%' }} type='primary' onClick={() => {
           if (user.id) setRegisterModal(true)
