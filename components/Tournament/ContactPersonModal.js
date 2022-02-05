@@ -1,6 +1,9 @@
-import { Modal } from "antd"
+import { Modal, message } from "antd"
 import Image from "next/image"
 import moment from 'moment'
+import { CopyOutlined } from "@ant-design/icons"
+import { COLOR } from "../../constant"
+import copy from "copy-to-clipboard"
 const ContactPerson = ({ player = {}, visible, setVisible, showContact }) => {
   return (
     <Modal
@@ -16,6 +19,7 @@ const ContactPerson = ({ player = {}, visible, setVisible, showContact }) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        textAlign: 'center'
       }}>
         <div style={{
           width: '80px',
@@ -32,13 +36,21 @@ const ContactPerson = ({ player = {}, visible, setVisible, showContact }) => {
 
         {
           showContact && <>
-            <div style={{ display: 'flex', gap: '10px', width: '200px' }}>
+            <div style={{ display: 'flex', gap: '10px', width: '220px' }}>
               <div style={{ width: '100px', textAlign: 'right' }}>เบอร์โทรศัพท์:</div>
-              <div><a href={`tel:${player.tel}`}>{player.tel}</a></div>
+              <div><a href={`tel:${player?.tel}`}>{player?.tel}</a></div>
+              <div onClick={() => {
+                copy(player.tel)
+                message.success('copied')
+              }} style={{ color: COLOR.MINOR_THEME }}><CopyOutlined /></div>
             </div>
-            <div style={{ display: 'flex', gap: '10px', width: '200px' }}>
+            <div style={{ display: 'flex', gap: '10px', width: '220px' }}>
               <div style={{ width: '100px', textAlign: 'right' }}>Line ID:</div>
-              <div>{player.lineID}</div>
+              <div>{player?.lineID}</div>
+              <div onClick={() => {
+                copy(player?.lineID)
+                message.success('copied')
+              }} style={{ color: COLOR.MINOR_THEME }}><CopyOutlined /></div>
             </div>
           </>
         }

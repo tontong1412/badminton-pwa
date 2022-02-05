@@ -1,5 +1,5 @@
 import Layout from '../../../components/Layout/tournamentManager'
-import { Modal, Divider } from 'antd'
+import { Modal, Divider, message } from 'antd'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { useTournament } from '../../../utils'
@@ -86,14 +86,24 @@ const TournamentManagerID = () => {
               <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
                 <div style={{ width: '110px', textAlign: 'right' }}>เบอร์โทรศัพท์:</div>
                 <div><a href={`tel:${tournament?.contact?.tel}`}>{tournament?.contact?.tel}</a></div>
-                <div onClick={() => copy(tournament?.contact?.tel)} style={{ color: COLOR.MINOR_THEME }}><CopyOutlined /></div>
+                <div onClick={() => {
+                  copy(tournament?.contact?.tel)
+                  message.success('copied')
+                }} style={{ color: COLOR.MINOR_THEME }}><CopyOutlined /></div>
               </div>
               {
                 tournament?.contact?.lineID &&
                 <div style={{ display: 'flex', gap: '10px', width: '200px' }}>
                   <div style={{ width: '110px', textAlign: 'right' }}>Line ID:</div>
                   <div>{tournament?.contact?.lineID}</div>
-                  <div onClick={() => copy(tournament?.contact?.lineID)} style={{ color: COLOR.MINOR_THEME }}><CopyOutlined /></div>
+                  <div
+                    onClick={() => {
+                      copy(tournament?.contact?.lineID)
+                      message.success('copied')
+                    }}
+                    style={{ color: COLOR.MINOR_THEME }}>
+                    <CopyOutlined />
+                  </div>
                 </div>
               }
             </div>
@@ -132,22 +142,24 @@ const TournamentManagerID = () => {
         mutate={mutate}
       />
 
-      {tournament?.poster && <Modal
-        visible={posterVisible}
-        onCancel={() => setPosterVisible(false)}
-        footer={null}
-        centered
-        modalRender={() => <div style={{ width: '100%' }}>
-          <Image alt='logo'
-            src={tournament?.poster || '/icon/logo.png'}
-            width={434}
-            height={614}
-            objectFit='cover'
-            fill='responsive'
-          />
-        </div>}
-      >
-      </Modal>}
+      {
+        tournament?.poster && <Modal
+          visible={posterVisible}
+          onCancel={() => setPosterVisible(false)}
+          footer={null}
+          centered
+          modalRender={() => <div style={{ width: '100%' }}>
+            <Image alt='logo'
+              src={tournament?.poster || '/icon/logo.png'}
+              width={434}
+              height={614}
+              objectFit='cover'
+              fill='responsive'
+            />
+          </div>}
+        >
+        </Modal>
+      }
     </Layout >
   )
 }
