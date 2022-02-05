@@ -17,7 +17,7 @@ import TournamentModal from '../../../components/Tournament/TournamentModal'
 const TournamentManagerID = () => {
   const router = useRouter()
   const { id } = router.query
-  const { tournament, isLoading, isError } = useTournament(id)
+  const { tournament, isLoading, isError, mutate } = useTournament(id)
   const [registerModal, setRegisterModal] = useState(false)
   const dispatch = useDispatch()
   const { user } = useSelector(state => state)
@@ -29,7 +29,7 @@ const TournamentManagerID = () => {
   }, [])
 
   useEffect(() => {
-    if (user && tournament && (user.playerID === tournament.creator || tournament.managers.includes(user.playerID))) {
+    if (user && tournament && (user.playerID === tournament.creator || tournament.managers.map(e => e._id).includes(user.playerID))) {
       setIsManager(true)
     } else {
       setIsManager(false)
@@ -106,7 +106,9 @@ const TournamentManagerID = () => {
       <TournamentModal
         visible={tournamentModal}
         setVisible={setTournamentModal}
-        tournament={tournament} />
+        tournament={tournament}
+        mutate={mutate}
+      />
 
       {tournament?.poster && <Modal
         visible={posterVisible}

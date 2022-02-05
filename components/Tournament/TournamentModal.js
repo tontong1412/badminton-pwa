@@ -1,10 +1,12 @@
-import { Modal, Form, DatePicker, Input, AutoComplete, Divider } from "antd"
+import { Modal, Form, DatePicker, Input, AutoComplete, Divider, Upload, Button } from "antd"
 import { useState } from "react"
+import { UploadOutlined } from "@ant-design/icons"
 import { usePlayers } from '../../utils'
 import request from "../../utils/request"
 import moment from 'moment'
-
-const TournamentModal = ({ visible, setVisible, tournament }) => {
+import { beforeUpload, getBase64 } from "../../utils/image"
+import { API_ENDPOINT } from "../../config"
+const TournamentModal = ({ visible, setVisible, tournament, mutate }) => {
   const [form] = Form.useForm()
   const [contactPerson, setContactPerson] = useState(tournament.contact.name);
   const [options, setOptions] = useState([])
@@ -24,6 +26,7 @@ const TournamentModal = ({ visible, setVisible, tournament }) => {
       }
     }).then(() => {
       mutatePlayer()
+      mutate()
     })
 
     setVisible(false)
@@ -60,6 +63,19 @@ const TournamentModal = ({ visible, setVisible, tournament }) => {
       tel: selectedPlayer.tel
     })
 
+  }
+
+  const onChangeImage = (info, field) => {
+    if (info.file.status === 'done') {
+      getBase64(info.file.originFileObj, image => {
+        form.setFieldsValue({
+          [field]: image,
+        })
+      })
+    } else if (info.file.status === 'error') {
+      message.error(`${info.file.name} file upload failed.`);
+      message.error(JSON.stringify(info, null, 1));
+    }
   }
 
   return (
@@ -102,6 +118,24 @@ const TournamentModal = ({ visible, setVisible, tournament }) => {
         </Form.Item>
 
         <Form.Item
+          name="logo"
+          label="Logo"
+        >
+          <Upload
+            name="logo"
+            listType="picture"
+            key='logo'
+            action={`${API_ENDPOINT}/mock`}
+            onChange={(info) => onChangeImage(info, 'logo')}
+            maxCount={1}
+            beforeUpload={beforeUpload}
+            showUploadList={true}
+          >
+            <Button icon={<UploadOutlined />}>Click to upload</Button>
+          </Upload>
+        </Form.Item>
+
+        <Form.Item
           label='สถานที่'
           name='location'
           rules={[
@@ -129,6 +163,24 @@ const TournamentModal = ({ visible, setVisible, tournament }) => {
           ]}
         >
           <DatePicker />
+        </Form.Item>
+
+        <Form.Item
+          name="poster"
+          label="Poster"
+        >
+          <Upload
+            name="poster"
+            listType="picture"
+            key='poster'
+            action={`${API_ENDPOINT}/mock`}
+            onChange={(info) => onChangeImage(info, 'poster')}
+            maxCount={1}
+            beforeUpload={beforeUpload}
+            showUploadList={true}
+          >
+            <Button icon={<UploadOutlined />}>Click to upload</Button>
+          </Upload>
         </Form.Item>
 
         <Divider plain>ผู้จัด</Divider>

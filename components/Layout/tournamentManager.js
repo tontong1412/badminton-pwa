@@ -37,7 +37,7 @@ const TournamentManagerLayout = (props) => {
       alias: TAB_OPTIONS.TOURNAMENT_MANAGER.MATCHES
     },
   ]
-  if (user.playerID === tournament?.creator) {
+  if (user.playerID === tournament?.creator || tournament?.managers.map(e => e._id).includes(user.playerID)) {
     tabOptions = [
       {
         name: 'ข้อมูล',
