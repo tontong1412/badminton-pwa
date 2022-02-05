@@ -241,7 +241,7 @@ const Matches = (props) => {
     if (matches) {
       let processedMatches = [...matches]
       if (props.step) processedMatches = matches.filter(match => match.step === props.step)
-      const data = processedMatches?.map(match => ({
+      const data = processedMatches?.sort((a, b) => a.matchNumber - b.matchNumber).map(match => ({
         key: match.matchNumber,
         match: match.matchNumber,
         event: match.eventName,
