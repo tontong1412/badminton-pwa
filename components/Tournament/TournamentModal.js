@@ -1,5 +1,5 @@
 import { Modal, Form, DatePicker, Input, AutoComplete, Divider, Upload, Button } from "antd"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { UploadOutlined } from "@ant-design/icons"
 import { usePlayers } from '../../utils'
 import request from "../../utils/request"
@@ -8,10 +8,14 @@ import { beforeUpload, getBase64 } from "../../utils/image"
 import { API_ENDPOINT } from "../../config"
 const TournamentModal = ({ visible, setVisible, tournament, mutate }) => {
   const [form] = Form.useForm()
-  const [contactPerson, setContactPerson] = useState(tournament.contact.name);
+  const [contactPerson, setContactPerson] = useState(tournament.contact._id);
   const [options, setOptions] = useState([])
   const { players, mutate: mutatePlayer } = usePlayers()
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setContactPerson(tournament.contact._id)
+  }, [tournament])
 
   const onFinish = (values) => {
     request.put(`/tournament/${tournament?._id}`, {
