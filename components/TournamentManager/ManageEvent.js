@@ -36,8 +36,6 @@ const ManageEvent = ({ tournamentID }) => {
   }, [tournament])
 
   const onFinish = (value) => {
-    console.log(value)
-    console.log(mode)
     setLoading(true)
     if (mode === 'create') {
       request.post('/event', { ...value, tournamentID })
@@ -150,6 +148,33 @@ const ManageEvent = ({ tournamentID }) => {
     },
 
   ]
+  const footer = () => {
+    let base = []
+    if (mode === 'edit') {
+      base.push(<Popconfirm
+        key='remove'
+        title="คุณแน่ใจที่จะลบรายการนี้?"
+        onConfirm={onRemoveEvent}
+        okText="yes"
+        cancelText="No"
+      >
+        <Button type='danger'>ลบรายการนี้</Button>
+      </Popconfirm>)
+    }
+    base = [
+      ...base,
+      <Button key='cancle' onClick={() => {
+        setSelectedEvent()
+        setModalVisible(false)
+        form.resetFields()
+      }}>ยกเลิก</Button>,
+      <Button
+        onClick={() => form.submit()}
+        key='ok'
+        type='primary'>ตกลง</Button>
+    ]
+    return base
+  }
   return (
     <div>
       <Table dataSource={data} columns={columns} size='small' pagination={false} scroll={{ x: 1000 }} />
@@ -166,25 +191,7 @@ const ManageEvent = ({ tournamentID }) => {
           form.resetFields()
         }}
         onOk={() => form.submit()}
-        footer={[
-          <Popconfirm
-            key='remove'
-            title="คุณแน่ใจที่จะลบรายการนี้?"
-            onConfirm={onRemoveEvent}
-            okText="yes"
-            cancelText="No"
-          ><Button type='danger'>ลบรายการนี้</Button></Popconfirm>,
-          <Button key='cancle' onClick={() => {
-            setSelectedEvent()
-            setModalVisible(false)
-            form.resetFields()
-          }}>ยกเลิก</Button>,
-          <Button
-            onClick={() => form.submit()}
-            key='ok'
-            type='primary'>ตกลง</Button>
-
-        ]}
+        footer={footer()}
         destroyOnClose
       >
         <div>

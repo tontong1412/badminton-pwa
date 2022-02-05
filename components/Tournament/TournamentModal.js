@@ -11,7 +11,7 @@ const TournamentModal = ({ visible, setVisible, tournament, mutate }) => {
   const [contactPerson, setContactPerson] = useState(tournament?.contact?._id);
   const [options, setOptions] = useState([])
   const { players, mutate: mutatePlayer } = usePlayers()
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     setContactPerson(tournament?.contact?._id)
@@ -35,6 +35,7 @@ const TournamentModal = ({ visible, setVisible, tournament, mutate }) => {
 
     setVisible(false)
     setLoading(false)
+    form.resetFields()
   }
 
   const onSearch = (searchText) => {
@@ -86,7 +87,10 @@ const TournamentModal = ({ visible, setVisible, tournament, mutate }) => {
     <Modal
       visible={visible}
       onOk={() => form.submit()}
-      onCancel={() => setVisible(false)}
+      onCancel={() => {
+        setVisible(false)
+        form.resetFields()
+      }}
       centered
       title='สร้าง/แก้ไขรายการแข่ง'
       confirmLoading={loading}

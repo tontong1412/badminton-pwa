@@ -79,9 +79,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
 
   const onSearch = (searchText) => {
     const searchTextLower = searchText.toLowerCase()
-    const searchOptions = players.filter(player =>
-      player.displayName?.toLowerCase().includes(searchTextLower)
-      || player.officialName?.toLowerCase().includes(searchTextLower)
+    const searchOptions = players.filter(player => player.officialName?.toLowerCase().includes(searchTextLower)
     ).map(player => {
       return {
         key: player._id,
