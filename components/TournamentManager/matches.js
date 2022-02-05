@@ -38,21 +38,15 @@ const Matches = (props) => {
         width: '8%'
       },
       {
-        title: 'วันที่',
-        dataIndex: 'date',
-        align: 'center',
-        width: '8%'
-      },
-      {
         title: 'เวลา',
         dataIndex: 'schedule',
         align: 'center',
-        width: '8%'
+        width: '10%'
       },
       {
         title: 'ผู้เข้าแข่งขัน',
         dataIndex: 'competitor1',
-        width: '22%',
+        width: '25%',
         align: 'center'
       },
       {
@@ -63,7 +57,7 @@ const Matches = (props) => {
       {
         title: 'ผู้เข้าแข่งขัน',
         dataIndex: 'competitor2',
-        width: '22%',
+        width: '25%',
         align: 'center'
       },
       {
@@ -248,7 +242,10 @@ const Matches = (props) => {
         competitor1: match.teamA?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
         competitor2: match.teamB?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
         date: moment(match.date).format('ll'),
-        schedule: moment(match.date).format('LT'),
+        schedule: <div>
+          <div>{moment(match.date).format('l')}</div>
+          <div>{moment(match.date).format('LT')}</div>
+        </div>,
         status: { text: MATCH.STATUS[match.status], court: match.status === 'playing' ? match.court : null },
         result: match.scoreLabel.map((set, index) => <div key={`set-${index + 1}`}>{set}</div>),
         action: renderAction(match.status, match)

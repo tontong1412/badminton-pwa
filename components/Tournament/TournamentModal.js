@@ -6,7 +6,7 @@ import moment from 'moment'
 
 const TournamentModal = ({ visible, setVisible, tournament }) => {
   const [form] = Form.useForm()
-  const [contactPerson, setContactPerson] = useState();
+  const [contactPerson, setContactPerson] = useState(tournament.contact.name);
   const [options, setOptions] = useState([])
   const { players, mutate: mutatePlayer } = usePlayers()
   const [loading, setLoading] = useState(false);

@@ -23,19 +23,22 @@ const MyTournament = (props, ref) => {
         display: 'flex',
         marginLeft: '5px'
       }}>
-        {tournaments?.length > 0 && tournaments?.map(tournament => {
-          if (props.homePage) {
-            return <MyTournamentCardHomePage
+        {tournaments?.length > 0 && tournaments
+          .filter(e => e.status !== 'finish')
+          .sort((a, b) => b.startDate > a.startDate ? -1 : 1)
+          ?.map(tournament => {
+            if (props.homePage) {
+              return <MyTournamentCardHomePage
+                key={`mygang-card-${tournament._id}`}
+                tournament={tournament}
+                style={{ float: 'right' }}
+                mutate={mutate} />
+            }
+            return <MyTournamentCard
               key={`mygang-card-${tournament._id}`}
               tournament={tournament}
-              style={{ float: 'right' }}
-              mutate={mutate} />
-          }
-          return <MyTournamentCard
-            key={`mygang-card-${tournament._id}`}
-            tournament={tournament}
-            style={{ float: 'right' }} />
-        })
+              style={{ float: 'right' }} />
+          })
         }
       </div>
       {props.bottomLine && <Divider />}

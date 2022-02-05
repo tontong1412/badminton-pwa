@@ -47,12 +47,10 @@ const RoundUpEvent = ({ event, matches }) => {
 
     const winner = score.map(group => {
       group.sort((a, b) => {
-        if (a.score > b.score) return -1
-        else if (a.scoreSet < b.scoreSet) return 1
-
-        if (a.diff > b.diff) return -1
-        else return 1
+        if (a.score === b.score) return a.diff - b.diff
+        else return b.score - a.score
       })
+      console.log(group);
       // group.length = numberOfWinner
       return group
     })
@@ -87,7 +85,7 @@ const RoundUpEvent = ({ event, matches }) => {
     }
 
     const data = winner.reduce((prev, group) => {
-      group.forEach(team => {
+      group.forEach((team, index) => {
         prev.push({
           key: team.team._id,
           team: <div>

@@ -107,7 +107,7 @@ const MAP_TOURNAMENT_STATUS = {
     LABEL: 'กำลังแข่งขัน',
     COLOR: 'blue'
   },
-  'finish:': {
+  'finish': {
     LABEL: 'แข่งเสร็จแล้ว',
     COLOR: 'green'
   },
