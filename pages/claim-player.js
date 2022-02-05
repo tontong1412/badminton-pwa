@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from "react-redux"
-import { Form, Input, Button, Modal } from 'antd'
+import { Form, Input, Button, Modal, Select, DatePicker } from 'antd'
 import Layout from '../components/Layout/noFooter'
 import { useRouter } from "next/router"
 import { useState } from "react"
 import request from "../utils/request"
 import ServiceErrorModal from "../components/ServiceErrorModal"
+import CreatePlayerForm from "../components/Form/createPlayer"
 
 
 const ClaimPlayer = () => {
@@ -77,38 +78,7 @@ const ClaimPlayer = () => {
   return (
     <>
       <div style={{ margin: '10px' }}>
-        <Form
-          name='basic'
-          onFinish={onFinish}
-          style={{ maxWidth: '320px', margin: 'auto' }}
-        >
-          <div>อีกนิดเดียว!</div>
-          <Form.Item
-            label='ชื่อ-นามสกุล'
-            name='officialName'
-            rules={[
-              {
-                required: true,
-                message: 'Please input your username!',
-              },
-            ]}
-            help='ชื่อจริง-นามสกุล เพื่อใช้ในการระบุตัวตน'
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label='ชื่อเล่น'
-            name='displayName'
-            help='ชื่อที่ใช้แสดงบนแอพ จะเป็นชื่อเล่น หรือชื่อที่คนอื่นๆในวงการใช้เรียกคุณก็ได้'
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item style={{ textAlign: "center", marginTop: '20px' }}>
-            <Button type='primary' htmlType='submit' loading={loading}>
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
+        <CreatePlayerForm onFinish={onFinish} loading={loading} />
       </div>
       <Modal
         title="พบผู้เล่นที่อาจเป็นคุณ"

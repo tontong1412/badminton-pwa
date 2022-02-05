@@ -24,8 +24,8 @@ class MyDocument extends Document {
           <meta name="apple-mobile-web-app-capable" content="yes"></meta>
 
           {/* social meta */}
-          <meta property="og:title" content="Badminstar - แอพจัดก๊วนแบดมินตัน" />
-          <meta property="og:description" content="การจัดการก๊วนจะไม่ปวดหัวอีกต่อไป Badminstar ช่วยคุณคำนวณค่าสนามและค่าลูกขนไก่และสร้างบิลเพื่อเก็บเงินได้อย่างง่ายดาย" />
+          <meta property="og:title" content="Badminstar - โปรแกรมจัดก๊วน จัดแข่ง แบดมินตัน" />
+          <meta property="og:description" content="การจัดการก๊วน หรือ จัดแข่ง จะไม่ปวดหัวอีกต่อไปด้วย Badminstar" />
           <meta property="og:image" content="/social.png" />
           <meta property="og:url" content="https://badminstar.com" />
         </Head>

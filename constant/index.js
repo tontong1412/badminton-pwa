@@ -13,6 +13,32 @@ const TRANSACTION = {
   notpaid: {
     LABEL: 'ยังไม่จ่าย',
     COLOR: 'red'
+  },
+  idle: {
+    LABEL: 'ยังไม่จ่าย',
+    COLOR: 'red'
+  }
+}
+
+const EVENT = {
+  FORMAT: {
+    ROUND_ROBIN: 'roundRobin',
+    SINGLE_ELIMINATION: 'singleElim',
+    DOUBLE_ELIMINATION: 'doubleElim',
+  },
+  TEAM_STATUS: {
+    'idle': {
+      COLOR: 'orange',
+      LABEL: 'รอประเมิน'
+    },
+    'approved': {
+      COLOR: 'green',
+      LABEL: 'ผ่าน'
+    },
+    'rejected': {
+      COLOR: 'red',
+      LABEL: 'ไม่ผ่าน'
+    },
   }
 }
 
@@ -26,11 +52,82 @@ const TAB_OPTIONS = {
     SETTING: 'setting'
   },
   NOTI: 'noti',
-  ACCOUNT: 'account'
+  ACCOUNT: 'account',
+  TOURNAMENT: 'tournament',
+  TOURNAMENT_MANAGER: {
+    INDEX: 'tounamentManager',
+    DETAIL: 'detail',
+    PARTICIPANTS: 'participants',
+    MANAGE: 'manage',
+    DRAWS: 'draws',
+    MATCHES: 'matces',
+    SETTING: 'setting'
+  }
+}
+
+const MATCH = {
+  TYPE: {
+    SINGLE: 'single',
+    DOUBLE: 'double'
+  },
+  STATUS: {
+    finished: {
+      LABEL: 'finished',
+      COLOR: 'green'
+    },
+    playing: {
+      LABEL: 'playing',
+      COLOR: 'cyan'
+    },
+    waiting: {
+      LABEL: 'waiting',
+      COLOR: 'orange'
+    }
+  }
+}
+
+const MAP_TOURNAMENT_STATUS = {
+  'prepare': {
+    LABEL: 'เตรียมการ',
+    COLOR: 'purple'
+  },
+  'register': {
+    LABEL: 'เปิดรับสมัคร',
+    COLOR: 'geekblue'
+  },
+  'draw': {
+    LABEL: 'จับฉลากสาย',
+    COLOR: 'purple'
+  },
+  'arrange': {
+    LABEL: 'จัดตารางแข่ง',
+    COLOR: 'purple'
+  },
+  'ongoing': {
+    LABEL: 'กำลังแข่งขัน',
+    COLOR: 'blue'
+  },
+  'finish': {
+    LABEL: 'แข่งเสร็จแล้ว',
+    COLOR: 'green'
+  },
+  knockOut: {
+    LABEL: 'กำลังแข่งขัน',
+    COLOR: 'blue'
+  },
+}
+
+const MAP_GENDER = {
+  male: 'ชาย',
+  female: 'หญิง'
 }
 export {
   GANG,
   TAB_OPTIONS,
   COLOR,
-  TRANSACTION
+  TRANSACTION,
+  EVENT,
+  MATCH,
+  MAP_GENDER,
+  MAP_TOURNAMENT_STATUS
 }
