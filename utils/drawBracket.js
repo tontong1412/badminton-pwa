@@ -20,7 +20,7 @@ const drawBracket = (order = {}, blockWidth = 250) => {
                 alignItems: 'flex-end',
                 gap: '10px'
               }}>
-              <div style={{ marginRight: '15px' }}>{i + 1}</div>
+              <div style={{ marginRight: '5px', width: '20px' }}>{i + 1}</div>
               <div>{team}</div>
             </div>
           </>
