@@ -8,6 +8,8 @@ const RoundUpEvent = ({ event, matches }) => {
   const [order, setOrder] = useState(event.order.knockOut)
   const [groupMatches, setGroupMatches] = useState([])
   const [showOrder, setShowOrder] = useState(event.order.knockOut)
+  const [data, setData] = useState([]);
+
 
   useEffect(() => {
     if (matches) {
@@ -21,17 +23,57 @@ const RoundUpEvent = ({ event, matches }) => {
     setShowOrder(event.order.knockOut)
   }, [event.order.knockOut])
 
+  useEffect(() => {
+    const result = prepareData(event)
+    setData(result.data)
+    setShowOrder(result.showOrder)
+    setOrder(result.order)
+  }, []);
+
+
+
+
+  const onChangeOrder = async (orderValue, team) => {
+    // setOrder(prepareData(event))
+    if (orderValue) {
+      const tempOrderShow = [...showOrder]
+      tempOrderShow[orderValue - 1] = <div>
+        {team.team.players.map(player =>
+          <div
+            key={player._id}
+            style={{ display: 'flex', gap: '10px' }}>
+            <div style={{ width: '120px' }}>{player.officialName}</div>
+            <div>{`${player.club}`}</div>
+          </div>)}
+      </div>
+      const tempOrder = [...order]
+      tempOrder[orderValue - 1] = team.team
+      setShowOrder(tempOrderShow)
+      setOrder(tempOrder)
+    } else {
+      const index = order.findIndex(elm => elm._id === team.team._id)
+      const tempOrder = [...order]
+      tempOrder[index] = event.order.knockOut[index]
+
+      const tempOrderShow = [...showOrder]
+      tempOrderShow[index] = event.order.knockOut[index]
+
+      setOrder(tempOrder)
+      setShowOrder(tempOrderShow)
+    }
+  }
+
   const prepareData = (event) => {
     const score = event.order.group.map((group, index) => {
       return group.map(team => {
         let score = 0
         let diff = 0
-        groupMatches?.filter(e => e.teamA.team._id === team._id).forEach((elm) => {
+        groupMatches?.filter(e => e.teamA.team._id === team._id && e.eventID === event._id).forEach((elm) => {
           score += elm.teamA.scoreSet
           diff += elm.teamA.scoreDiff
         })
 
-        groupMatches.filter(e => e.teamB.team._id === team._id).forEach((elm) => {
+        groupMatches.filter(e => e.teamB.team._id === team._id && e.eventID === event._id).forEach((elm) => {
           score += elm.teamB.scoreSet
           diff += elm.teamB.scoreDiff
         })
@@ -50,42 +92,27 @@ const RoundUpEvent = ({ event, matches }) => {
         if (a.score === b.score) return a.diff - b.diff
         else return b.score - a.score
       })
-      console.log(group);
       // group.length = numberOfWinner
       return group
     })
 
-    const onChangeOrder = async (orderValue, team) => {
-      if (orderValue) {
-        const tempOrderShow = [...showOrder]
-        tempOrderShow[orderValue - 1] = <div>
-          {team.team.players.map(player =>
-            <div
-              key={player._id}
-              style={{ display: 'flex', gap: '10px' }}>
-              <div style={{ width: '120px' }}>{player.officialName}</div>
-              <div>{`${player.club}`}</div>
-            </div>)}
-        </div>
-        const tempOrder = [...order]
-        tempOrder[orderValue - 1] = team.team
-        setShowOrder(tempOrderShow)
-        setOrder(tempOrder)
-      } else {
-        const index = order.findIndex(elm => elm._id === team.team._id)
-        const tempOrder = [...order]
-        tempOrder[index] = event.order.knockOut[index]
-
-        const tempOrderShow = [...showOrder]
-        tempOrderShow[index] = event.order.knockOut[index]
-
-        setOrder(tempOrder)
-        setShowOrder(tempOrderShow)
-      }
-    }
-
+    const showOrderTemp = [...showOrder]
+    const orderTemp = [...order]
     const data = winner.reduce((prev, group) => {
-      group.forEach((team, index) => {
+      group.forEach(async (team, index) => {
+        const defaultOrder = event.order.knockOut.findIndex((e) => e === `ที่ ${index + 1} กลุ่ม ${team.group}`)
+        if (defaultOrder >= 0) {
+          showOrderTemp[defaultOrder] = <div>
+            {team.team.players.map(player =>
+              <div
+                key={player._id}
+                style={{ display: 'flex', gap: '10px' }}>
+                <div style={{ width: '120px' }}>{player.officialName}</div>
+                <div>{`${player.club}`}</div>
+              </div>)}
+          </div>
+          orderTemp[defaultOrder] = team.team
+        }
         prev.push({
           key: team.team._id,
           team: <div>
@@ -99,6 +126,7 @@ const RoundUpEvent = ({ event, matches }) => {
           diff: team.diff,
           group: team.group,
           draw: <InputNumber
+            defaultValue={defaultOrder >= 0 && defaultOrder + 1}
             onBlur={(e) => onChangeOrder(e.target.value, team)}
             max={event.order.knockOut.length}
             min={1} />
@@ -106,8 +134,11 @@ const RoundUpEvent = ({ event, matches }) => {
       })
       return prev
     }, [])
-
-    return data
+    return {
+      data,
+      order: orderTemp,
+      showOrder: showOrderTemp
+    }
   }
 
   const onRoundUp = () => {
@@ -159,7 +190,7 @@ const RoundUpEvent = ({ event, matches }) => {
     <div style={{ display: 'flex' }}>
       <Table
         columns={columns}
-        dataSource={prepareData(event)}
+        dataSource={prepareData(event).data}
         pagination={false}
         style={{ width: '50%' }}
         scroll={{ y: (typeof window !== "undefined") ? window.innerHeight - 350 : 400 }}
