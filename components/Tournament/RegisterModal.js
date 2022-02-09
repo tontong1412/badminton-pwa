@@ -204,9 +204,9 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
         <Form.Item
           label='เพศ'
           name='player1Gender'
-          rules={[
-            { required: true, message: 'กรุณาระบุเพศ' },
-          ]}
+        // rules={[
+        //   { required: true, message: 'กรุณาระบุเพศ' },
+        // ]}
         >
           <Select
             placeholder='กรุณาเลือก'
@@ -219,9 +219,9 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
         <Form.Item
           label='วันเกิด'
           name='player1BirthDate'
-          rules={[
-            { required: true, message: 'กรุณาระบุวันเกิด' },
-          ]}
+        // rules={[
+        //   { required: true, message: 'กรุณาระบุวันเกิด' },
+        // ]}
         >
           <DatePicker />
         </Form.Item>
