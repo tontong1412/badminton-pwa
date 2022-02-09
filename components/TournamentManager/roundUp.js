@@ -34,7 +34,6 @@ const RoundUpEvent = ({ event, matches }) => {
 
 
   const onChangeOrder = async (orderValue, team) => {
-    // setOrder(prepareData(event))
     if (orderValue) {
       const tempOrderShow = [...showOrder]
       tempOrderShow[orderValue - 1] = <div>
@@ -134,6 +133,7 @@ const RoundUpEvent = ({ event, matches }) => {
       })
       return prev
     }, [])
+    console.log(data);
     return {
       data,
       order: orderTemp,
