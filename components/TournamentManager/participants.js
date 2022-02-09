@@ -8,6 +8,9 @@ import request from '../../utils/request'
 import PlayerDisplay from '../PlayerDisplay'
 import ContactPersonModal from '../Tournament/ContactPersonModal'
 import SlipModal from '../Tournament/SlipModal'
+import AddButton from '../addButton'
+import RegisterModal from '../Tournament/RegisterModal'
+import { useSelector } from 'react-redux'
 
 const Participants = (props) => {
   const { tournament, isLoading, isError, mutate } = useTournament(props.tournamentID)
@@ -18,6 +21,8 @@ const Participants = (props) => {
   const [selectedTeam, setSelectedTeam] = useState()
   const [slipModalVisible, setSlipModalVisible] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState();
+  const [registerModalVisible, setRegisterModalVisible] = useState(false)
+  const { user } = useSelector(state => state)
 
   const menu = (event, team) => (
     <Menu>
@@ -256,6 +261,19 @@ const Participants = (props) => {
         scroll={{ y: (typeof window !== "undefined") ? window.innerHeight - 350 : 400, x: 1000 }}
         pagination={false}
         onChange={(pagination, filters, sorter, extra) => setTotalTeam(extra.currentDataSource.length)} />
+      {tournament?.registerOpen && <AddButton onClick={() => {
+        if (user.id) setRegisterModalVisible(true)
+        else {
+          Modal.info({
+            title: 'กรุณา Log in ก่อนสมัครแข่งขัน',
+            onOk: () => router.push('/login')
+          })
+        }
+      }} />}
+      <RegisterModal
+        visible={registerModalVisible}
+        setVisible={setRegisterModalVisible}
+        tournamentID={props.tournamentID} />
       <ContactPersonModal
         visible={contactPersonVisible}
         setVisible={setContactPersonVisible}
