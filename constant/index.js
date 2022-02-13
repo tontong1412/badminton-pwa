@@ -117,6 +117,11 @@ const MAP_TOURNAMENT_STATUS = {
   },
 }
 
+const MAP_FORMAT = {
+  roundRobin: 'แบ่งกลุ่ม/แพ้คัดออก',
+  knockOut: 'แพ้คัดออก'
+}
+
 const MAP_GENDER = {
   male: 'ชาย',
   female: 'หญิง'
@@ -129,5 +134,6 @@ export {
   EVENT,
   MATCH,
   MAP_GENDER,
-  MAP_TOURNAMENT_STATUS
+  MAP_TOURNAMENT_STATUS,
+  MAP_FORMAT
 }

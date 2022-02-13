@@ -87,23 +87,24 @@ const SlipModal = ({ event, team = {}, visible, setVisible, mutate, isManager })
     >
       <div style={{ marginBottom: '20px' }}>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <div style={{ fontWeight: 'bold', width: '80px' }}>รายการ:</div>
+          <div style={{ fontWeight: 'bold', width: '90px' }}>รายการ:</div>
           <div>{event?.name}</div>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <div style={{ fontWeight: 'bold', width: '80px' }}>ผู้เล่น 1:</div>
+          <div style={{ fontWeight: 'bold', width: '90px' }}>ผู้เล่น 1:</div>
           <div>{team?.team?.players[0]?.officialName}</div>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <div style={{ fontWeight: 'bold', width: '80px' }}>ผู้เล่น 2:</div>
+          <div style={{ fontWeight: 'bold', width: '90px' }}>ผู้เล่น 2:</div>
           <div>{team?.team?.players[1]?.officialName}</div>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <div style={{ fontWeight: 'bold', width: '80px' }}>ผู้จัดการทีม:</div>
+          <div style={{ fontWeight: 'bold', width: '90px' }}>ผู้จัดการทีม:</div>
           <div>{team?.contact?.officialName}</div>
+          {team?.contact?.displayName && <div>({team?.contact?.displayName})</div>}
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <div style={{ fontWeight: 'bold', width: '80px' }}>ค่าสมัคร:</div>
+          <div style={{ fontWeight: 'bold', width: '90px' }}>ค่าสมัคร:</div>
           <div>{event?.fee}</div>
           <div>บาท</div>
         </div>

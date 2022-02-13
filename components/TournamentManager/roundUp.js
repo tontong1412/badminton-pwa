@@ -1,13 +1,17 @@
-import { Tabs, Button, Table, InputNumber, message } from 'antd'
+import { Tabs, Button, Table, InputNumber, message, Popconfirm } from 'antd'
 import { useTournament, useMatches } from '../../utils'
 import { useState, useEffect } from 'react'
 import drawBracket from '../../utils/drawBracket'
 import request from '../../utils/request'
+import ServiceErrorModal from '../ServiceErrorModal'
 
 const RoundUpEvent = ({ event, matches }) => {
   const [order, setOrder] = useState(event.order.knockOut)
   const [groupMatches, setGroupMatches] = useState([])
   const [showOrder, setShowOrder] = useState(event.order.knockOut)
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false)
+
 
   useEffect(() => {
     if (matches) {
@@ -21,17 +25,56 @@ const RoundUpEvent = ({ event, matches }) => {
     setShowOrder(event.order.knockOut)
   }, [event.order.knockOut])
 
+  useEffect(() => {
+    const result = prepareData(event)
+    setData(result.data)
+    setShowOrder(result.showOrder)
+    setOrder(result.order)
+  }, []);
+
+
+
+
+  const onChangeOrder = async (orderValue, team) => {
+    if (orderValue) {
+      const tempOrderShow = [...showOrder]
+      tempOrderShow[orderValue - 1] = <div>
+        {team.team.players.map(player =>
+          <div
+            key={player._id}
+            style={{ display: 'flex', gap: '10px' }}>
+            <div style={{ width: '120px' }}>{player.officialName}</div>
+            <div>{`${player.club}`}</div>
+          </div>)}
+      </div>
+      const tempOrder = [...order]
+      tempOrder[orderValue - 1] = team.team
+      setShowOrder(tempOrderShow)
+      setOrder(tempOrder)
+    } else {
+      const index = order.findIndex(elm => elm._id === team.team._id)
+      const tempOrder = [...order]
+      tempOrder[index] = event.order.knockOut[index]
+
+      const tempOrderShow = [...showOrder]
+      tempOrderShow[index] = event.order.knockOut[index]
+
+      setOrder(tempOrder)
+      setShowOrder(tempOrderShow)
+    }
+  }
+
   const prepareData = (event) => {
     const score = event.order.group.map((group, index) => {
       return group.map(team => {
         let score = 0
         let diff = 0
-        groupMatches?.filter(e => e.teamA.team._id === team._id).forEach((elm) => {
+        groupMatches?.filter(e => e.teamA.team._id === team._id && e.eventID === event._id).forEach((elm) => {
           score += elm.teamA.scoreSet
           diff += elm.teamA.scoreDiff
         })
 
-        groupMatches.filter(e => e.teamB.team._id === team._id).forEach((elm) => {
+        groupMatches.filter(e => e.teamB.team._id === team._id && e.eventID === event._id).forEach((elm) => {
           score += elm.teamB.scoreSet
           diff += elm.teamB.scoreDiff
         })
@@ -50,42 +93,27 @@ const RoundUpEvent = ({ event, matches }) => {
         if (a.score === b.score) return a.diff - b.diff
         else return b.score - a.score
       })
-      console.log(group);
       // group.length = numberOfWinner
       return group
     })
 
-    const onChangeOrder = async (orderValue, team) => {
-      if (orderValue) {
-        const tempOrderShow = [...showOrder]
-        tempOrderShow[orderValue - 1] = <div>
-          {team.team.players.map(player =>
-            <div
-              key={player._id}
-              style={{ display: 'flex', gap: '10px' }}>
-              <div style={{ width: '120px' }}>{player.officialName}</div>
-              <div>{`${player.club}`}</div>
-            </div>)}
-        </div>
-        const tempOrder = [...order]
-        tempOrder[orderValue - 1] = team.team
-        setShowOrder(tempOrderShow)
-        setOrder(tempOrder)
-      } else {
-        const index = order.findIndex(elm => elm._id === team.team._id)
-        const tempOrder = [...order]
-        tempOrder[index] = event.order.knockOut[index]
-
-        const tempOrderShow = [...showOrder]
-        tempOrderShow[index] = event.order.knockOut[index]
-
-        setOrder(tempOrder)
-        setShowOrder(tempOrderShow)
-      }
-    }
-
+    const showOrderTemp = [...showOrder]
+    const orderTemp = [...order]
     const data = winner.reduce((prev, group) => {
-      group.forEach((team, index) => {
+      group.forEach(async (team, index) => {
+        const defaultOrder = event.order.knockOut.findIndex((e) => e === `ที่ ${index + 1} กลุ่ม ${team.group}`)
+        if (defaultOrder >= 0) {
+          showOrderTemp[defaultOrder] = <div>
+            {team.team.players.map(player =>
+              <div
+                key={player._id}
+                style={{ display: 'flex', gap: '10px' }}>
+                <div style={{ width: '140px' }}>{player.officialName}</div>
+                <div>{`${player.club}`}</div>
+              </div>)}
+          </div>
+          orderTemp[defaultOrder] = team.team
+        }
         prev.push({
           key: team.team._id,
           team: <div>
@@ -99,6 +127,7 @@ const RoundUpEvent = ({ event, matches }) => {
           diff: team.diff,
           group: team.group,
           draw: <InputNumber
+            defaultValue={defaultOrder >= 0 && defaultOrder + 1}
             onBlur={(e) => onChangeOrder(e.target.value, team)}
             max={event.order.knockOut.length}
             min={1} />
@@ -106,15 +135,26 @@ const RoundUpEvent = ({ event, matches }) => {
       })
       return prev
     }, [])
-
-    return data
+    return {
+      data,
+      order: orderTemp,
+      showOrder: showOrderTemp
+    }
   }
 
   const onRoundUp = () => {
+    setLoading(true)
     request.post('/event/round-up', {
       eventID: event._id,
       order: order.map(elm => elm._id)
-    }).then(() => message.success('สำเร็จ'))
+    }).then(() => {
+      message.success('สำเร็จ')
+      setLoading(false)
+    })
+      .catch(() => {
+        setLoading(false)
+        ServiceErrorModal()
+      })
   }
 
   const columns = [
@@ -156,19 +196,24 @@ const RoundUpEvent = ({ event, matches }) => {
   ]
 
   return (
-    <div style={{ display: 'flex' }}>
-      <Table
-        columns={columns}
-        dataSource={prepareData(event)}
-        pagination={false}
-        style={{ width: '50%' }}
-        scroll={{ y: (typeof window !== "undefined") ? window.innerHeight - 350 : 400 }}
-        size='small'
-      />
-      <div style={{ marginLeft: '40px' }}>
-        {drawBracket(showOrder, 300)}
-        <Button onClick={onRoundUp} type='primary'>บันทึก</Button>
+    <div style={{ position: 'relative' }}>
+      <div style={{ display: 'flex' }}>
+        <Table
+          columns={columns}
+          dataSource={prepareData(event).data}
+          pagination={false}
+          style={{ width: '50%' }}
+          scroll={{ y: (typeof window !== "undefined") ? window.innerHeight - 340 : 400 }}
+          size='small'
+        />
+        <div style={{ overflow: 'scroll', marginLeft: '40px', height: (typeof window !== "undefined") ? window.innerHeight - 300 : 400 }}>
+          {drawBracket(showOrder, 350)}
+        </div>
+
       </div>
+      <Popconfirm placement="top" title={'แน่ใจที่จะบันทึกหรือไม่'} onConfirm={onRoundUp} okText="Yes" cancelText="No">
+        <Button type='primary' style={{ position: 'absolute', top: '20px', right: '20px', width: '150px' }}>บันทึก</Button>
+      </Popconfirm>
     </div>
   )
 }
@@ -180,12 +225,14 @@ const RoundUp = (props) => {
   return (
     <Tabs defaultActiveKey="1" >
       {tournament?.events.map(event => {
+        if (event.order.knockOut.length <= 0) return null
         return (
           <Tabs.TabPane tab={event.name} key={`tab-${event._id}`} >
-            {event.step === 'group'
+            <RoundUpEvent event={event} matches={matches} />
+            {/* {event.step === 'group'
               ? <RoundUpEvent event={event} matches={matches} />
               : <div style={{ width: '100%', textAlign: 'center' }}>สรุปทีมเข้ารอบแล้ว</div>
-            }
+            } */}
 
           </Tabs.TabPane>
         )

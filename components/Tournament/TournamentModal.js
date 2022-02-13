@@ -8,13 +8,13 @@ import { beforeUpload, getBase64 } from "../../utils/image"
 import { API_ENDPOINT } from "../../config"
 const TournamentModal = ({ visible, setVisible, tournament, mutate }) => {
   const [form] = Form.useForm()
-  const [contactPerson, setContactPerson] = useState(tournament.contact._id);
+  const [contactPerson, setContactPerson] = useState(tournament?.contact?._id);
   const [options, setOptions] = useState([])
   const { players, mutate: mutatePlayer } = usePlayers()
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    setContactPerson(tournament.contact._id)
+    setContactPerson(tournament?.contact?._id)
   }, [tournament])
 
   const onFinish = (values) => {
@@ -35,6 +35,7 @@ const TournamentModal = ({ visible, setVisible, tournament, mutate }) => {
 
     setVisible(false)
     setLoading(false)
+    form.resetFields()
   }
 
   const onSearch = (searchText) => {
@@ -77,8 +78,12 @@ const TournamentModal = ({ visible, setVisible, tournament, mutate }) => {
         })
       })
     } else if (info.file.status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-      message.error(JSON.stringify(info, null, 1));
+      // message.error(`${info.file.name} file upload failed.`);
+      // message.error(JSON.stringify(info, null, 1));
+    } else if (info.file.status === 'removed') {
+      form.setFieldsValue({
+        [field]: undefined
+      })
     }
   }
 
@@ -86,7 +91,10 @@ const TournamentModal = ({ visible, setVisible, tournament, mutate }) => {
     <Modal
       visible={visible}
       onOk={() => form.submit()}
-      onCancel={() => setVisible(false)}
+      onCancel={() => {
+        setVisible(false)
+        form.resetFields()
+      }}
       centered
       title='สร้าง/แก้ไขรายการแข่ง'
       confirmLoading={loading}

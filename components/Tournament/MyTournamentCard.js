@@ -16,7 +16,7 @@ const MyTournamentCard = ({ tournament }) => {
         }}>
         <div style={{ width: '80px', height: '80px', border: '1px solid #eee', borderRadius: '40px', overflow: 'hidden' }}>
           <Image
-            src='/icon/logo.png'
+            src={tournament?.logo || '/icon/logo.png'}
             alt=''
             width={80}
             height={80}

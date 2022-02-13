@@ -1,5 +1,5 @@
 import Layout from '../../../components/Layout/tournamentManager'
-import { Modal, Divider } from 'antd'
+import { Modal, Divider, message } from 'antd'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { useTournament } from '../../../utils'
@@ -11,8 +11,10 @@ import { useState } from 'react'
 import RegisterModal from '../../../components/Tournament/RegisterModal'
 import Image from 'next/image'
 import moment from 'moment'
-import { EnvironmentOutlined } from '@ant-design/icons'
+import { EnvironmentOutlined, CopyOutlined } from '@ant-design/icons'
 import TournamentModal from '../../../components/Tournament/TournamentModal'
+import copy from 'copy-to-clipboard'
+
 
 const TournamentManagerID = () => {
   const router = useRouter()
@@ -29,7 +31,7 @@ const TournamentManagerID = () => {
   }, [])
 
   useEffect(() => {
-    if (user && tournament && (user.playerID === tournament.creator || tournament.managers.map(e => e._id).includes(user.playerID))) {
+    if (user && tournament && (user.playerID === tournament.creator || tournament?.managers?.map(e => e._id).includes(user.playerID))) {
       setIsManager(true)
     } else {
       setIsManager(false)
@@ -76,7 +78,37 @@ const TournamentManagerID = () => {
           })}
         </div>
         {tournament?.poster && <div style={{ color: COLOR.MINOR_THEME }} onClick={() => setPosterVisible(true)}>ดูรายละเอียดเพิ่มเติม</div>}
-        <Button style={{ width: '80%' }} type='primary' onClick={() => {
+        {tournament?.contact?.officialName &&
+          <>
+            <Divider>ผู้จัด</Divider>
+            <div>
+              <div style={{ textAlign: 'center' }}>{tournament?.contact?.displayName || tournament?.contact?.officialName}</div>
+              <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
+                <div style={{ width: '110px', textAlign: 'right' }}>เบอร์โทรศัพท์:</div>
+                <div><a href={`tel:${tournament?.contact?.tel}`}>{tournament?.contact?.tel}</a></div>
+                <div onClick={() => {
+                  copy(tournament?.contact?.tel)
+                  message.success('copied')
+                }} style={{ color: COLOR.MINOR_THEME }}><CopyOutlined /></div>
+              </div>
+              {
+                tournament?.contact?.lineID &&
+                <div style={{ display: 'flex', gap: '10px', width: '200px' }}>
+                  <div style={{ width: '110px', textAlign: 'right' }}>Line ID:</div>
+                  <div>{tournament?.contact?.lineID}</div>
+                  <div
+                    onClick={() => {
+                      copy(tournament?.contact?.lineID)
+                      message.success('copied')
+                    }}
+                    style={{ color: COLOR.MINOR_THEME }}>
+                    <CopyOutlined />
+                  </div>
+                </div>
+              }
+            </div>
+          </>}
+        {tournament.registerOpen && <Button style={{ width: '80%' }} type='primary' onClick={() => {
           if (user.id) setRegisterModal(true)
           else {
             Modal.info({
@@ -87,7 +119,7 @@ const TournamentManagerID = () => {
 
         }}>
           สมัครแข่งขัน
-        </Button>
+        </Button>}
         {
           isManager && <Button style={{ width: '80%', marginBottom: '10px' }} type='primary' onClick={() => {
             setTournamentModal(true)
@@ -110,22 +142,24 @@ const TournamentManagerID = () => {
         mutate={mutate}
       />
 
-      {tournament?.poster && <Modal
-        visible={posterVisible}
-        onCancel={() => setPosterVisible(false)}
-        footer={null}
-        centered
-        modalRender={() => <div style={{ width: '100%' }}>
-          <Image alt='logo'
-            src={tournament?.poster || '/icon/logo.png'}
-            width={434}
-            height={614}
-            objectFit='cover'
-            fill='responsive'
-          />
-        </div>}
-      >
-      </Modal>}
+      {
+        tournament?.poster && <Modal
+          visible={posterVisible}
+          onCancel={() => setPosterVisible(false)}
+          footer={null}
+          centered
+          modalRender={() => <div style={{ width: '100%' }}>
+            <Image alt='logo'
+              src={tournament?.poster || '/icon/logo.png'}
+              width={434}
+              height={614}
+              objectFit='cover'
+              fill='responsive'
+            />
+          </div>}
+        >
+        </Modal>
+      }
     </Layout >
   )
 }

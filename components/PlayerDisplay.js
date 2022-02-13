@@ -21,8 +21,11 @@ const PlayerDisplay = ({ player, showContact }) => {
       }}>
         <Image objectFit='cover' src={player.photo || `/avatar.png`} alt='' width={50} height={50} layout='responsive' />
       </div>
-      <div style={{ marginTop: '20px' }}>{player.officialName}</div>
-      <div>{`(${player.club})`}</div>
+      <div style={{ display: 'flex', marginTop: '20px', gap: '5px' }}>
+        <div >{player.officialName}</div>
+        {player.displayName && <div>{`(${player.displayName})`}</div>}
+      </div>
+      <div>{`${player.club}`}</div>
 
       <div style={{ display: 'flex', gap: '10px', width: '200px' }}>
         <div style={{ width: '100px', textAlign: 'right' }}>อายุ:</div>
