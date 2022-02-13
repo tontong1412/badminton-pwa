@@ -7,7 +7,10 @@ import { useMatches } from '../../utils'
 import Loading from '../../components/loading'
 import request from '../../utils/request'
 import ServiceErrorModal from '../ServiceErrorModal'
+import { useSocket } from '../../utils'
+import { useRouter } from 'next/router'
 const Matches = (props) => {
+  const router = useRouter()
   const [filteredInfo, setFilteredInfo] = useState()
   const [formattedData, setFormattedData] = useState([])
   const [assignMatchModal, setAssignMatchModal] = useState(false)
@@ -17,11 +20,21 @@ const Matches = (props) => {
   const [selectedMatch, setSelectedMatch] = useState()
   const [selectedCourt, setSelectedCourt] = useState()
   const [score, setScore] = useState([])
+  const socket = useSocket()
   const { matches, isError, isLoading, mutate } = useMatches(props.tournamentID)
 
   const handleChange = (pagination, filters, sorter) => {
     setFilteredInfo(filters)
   }
+
+  useEffect(() => {
+    const handleEvent = (payload) => {
+      console.log(payload)
+    }
+    if (socket) {
+      socket.on('update-score', handleEvent)
+    }
+  }, [socket])
 
   const columns = () => {
     const base = [
@@ -224,7 +237,8 @@ const Matches = (props) => {
       case MATCH.STATUS.waiting.LABEL:
         return <a onClick={() => handleAssignMatchAction(match)}>ลงทำการแข่งขัน</a>
       case MATCH.STATUS.playing.LABEL:
-        return <a onClick={() => handleSetScoreAction(match)}>สรุปผลการแข่งขัน</a>
+        // return <a onClick={() => handleSetScoreAction(match)}>สรุปผลการแข่งขัน</a>
+        return <a onClick={() => router.push(`/match/${match._id}`)}>ดูการแข่งขัน</a>
       case MATCH.STATUS.finished.LABEL:
         return <a onClick={() => handleSetScoreAction(match)}>แก้ไขผล</a>
       default:
@@ -236,7 +250,7 @@ const Matches = (props) => {
       let processedMatches = [...matches]
       if (props.step) processedMatches = matches.filter(match => match.step === props.step)
       const data = processedMatches?.sort((a, b) => a.matchNumber - b.matchNumber).map(match => ({
-        key: match.matchNumber,
+        key: match._id,
         match: match.matchNumber,
         event: match.eventName,
         competitor1: match.teamA?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
@@ -270,6 +284,11 @@ const Matches = (props) => {
         onChange={handleChange}
         rowKey='key'
         size='small'
+      // onRow={(record, rowIndex) => {
+      //   return {
+      //     onClick: event => { router.push(`/match/${record.key}`) },
+      //   };
+      // }}
       />
       {renderAssignMatchModal()}
       {renderSetScoreModal()}
