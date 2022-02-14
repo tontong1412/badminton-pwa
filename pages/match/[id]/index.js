@@ -8,8 +8,7 @@ import { COLOR, TAB_OPTIONS } from '../../../constant'
 import { useState } from 'react'
 import Image from 'next/image'
 import request from '../../../utils/request'
-import { SwapOutlined } from '@ant-design/icons'
-import { Modal } from 'antd'
+import { Button, Modal } from 'antd'
 
 
 const Match = () => {
@@ -21,6 +20,7 @@ const Match = () => {
   const socket = useSocket()
   const [isUmpire, setIsUmpire] = useState(false)
   const [side, setSide] = useState(true)
+  const [undo, setUndo] = useState([])
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT_MANAGER.DETAIL })
   }, [])
@@ -45,6 +45,19 @@ const Match = () => {
 
 
   const updateScore = (team) => {
+    const keepForUndo = [
+      ...undo,
+      {
+        'teamA.score': match.teamA.score,
+        'teamA.serving': match.teamA.serving,
+        'teamA.receiving': match.teamA.receiving,
+        'teamA.isServing': match.teamA.isServing,
+        'teamB.score': match.teamB.score,
+        'teamB.serving': match.teamB.serving,
+        'teamB.receiving': match.teamB.receiving,
+        'teamB.isServing': match.teamB.isServing,
+      }]
+    setUndo(keepForUndo)
     let payload
     if (team === 'A') {
       const currentScore = match.teamA.score
@@ -104,9 +117,17 @@ const Match = () => {
       'teamA.score': 0,
       'teamB.score': 0,
       'teamA.isServing': match.teamA.score > match.teamB.score,
-      'teamB.isServing': match.teamB.score > match.teamA.score
+      'teamB.isServing': match.teamB.score > match.teamA.score,
+      'teamA.serving': match.teamA.score > match.teamB.score ? 0 : null,
+      'teamB.serving': match.teamB.score > match.teamA.score ? 0 : null,
+      'teamB.receiving': 0,
+      'teamB.receiving': 0,
     })
+    setUndo([])
     setSide(!side)
+  }
+  const onUndo = async () => {
+    await request.put(`/match/${id}`, undo.pop())
   }
 
 
@@ -128,6 +149,7 @@ const Match = () => {
 
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: side ? 'row-reverse' : 'row' }}>
+
           <div style={{ width: '35%' }}>
             {match?.teamA.team.players.map((player, index) => {
               return (
@@ -138,7 +160,7 @@ const Match = () => {
                     alignItems: 'center',
                     gap: '10px',
                     marginBottom: '5px',
-                    fontSize: '24px',
+                    fontSize: '20px',
                     flexDirection: side ? 'row-reverse' : 'row'
                   }}>
                   <div style={{ width: '40px', height: '40px', borderRadius: '20px', overflow: 'hidden', objectFit: 'contain' }}>
@@ -146,23 +168,46 @@ const Match = () => {
                   </div>
                   <div>{player.displayName || player.officialName}</div>
                   {match.teamA.serving === index && match.teamA.isServing && <div style={{ padding: '2px 5px', backgroundColor: COLOR.MAIN_THEME, borderRadius: '5px' }}>S</div>}
-                  {match.teamA.receiving === index && <div style={{ padding: '2px 5px', backgroundColor: COLOR.MAIN_THEME, borderRadius: '5px' }}>R</div>}
+                  {match.teamA.receiving === index && !match.teamA.isServing && <div style={{ padding: '2px 5px', backgroundColor: COLOR.MAIN_THEME, borderRadius: '5px' }}>R</div>}
                 </div>
               )
             })}
+
           </div>
+
+
           <div style={{
             width: '20%',
             textAlign: 'center',
-            fontSize: '50px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            flexDirection: side ? 'row-reverse' : 'row'
           }}>
-            <div style={{ width: 65 }}>{match.teamA.score}</div>
-            <div style={{ width: 20 }}>-</div>
-            <div style={{ width: 65 }}>{match.teamB.score}</div>
+            <div >
+              {
+                match.scoreLabel.map((set, i) => {
+                  const setElm = set.split('-')
+                  setElm.splice(1, 0, '-')
+                  return (
+                    <div key={i + 1} style={{ display: 'flex', flexDirection: side ? 'row-reverse' : 'row', gap: '5px', justifyContent: 'center' }}>
+                      {setElm.map((elm, j) => <div key={j + 1}>{elm}</div>)}
+                    </div>
+                  )
+
+                })
+              }
+            </div>
+
+            {match.status != 'finished' && <div style={{
+              justifyContent: 'space-between',
+              flexDirection: side ? 'row-reverse' : 'row',
+              fontSize: '40px',
+              display: 'flex',
+            }}>
+              <div style={{ width: 65 }}>{match.teamA.score}</div>
+              <div style={{ width: 20 }}>-</div>
+              <div style={{ width: 65 }}>{match.teamB.score}</div>
+            </div>}
           </div>
+
+
           <div style={{ width: '35%' }}>
             {match?.teamB.team.players.map((player, index) => {
               return (
@@ -174,7 +219,7 @@ const Match = () => {
                     alignItems: 'center',
                     gap: '10px',
                     marginBottom: '5px',
-                    fontSize: '24px'
+                    fontSize: '20px'
                   }}
                 >
                   <div style={{ width: '40px', height: '40px', borderRadius: '20px', overflow: 'hidden', objectFit: 'contain' }}>
@@ -182,12 +227,14 @@ const Match = () => {
                   </div>
                   <div className='info' style={{ marginRight: '5px', marginLeft: 0, textAlign: 'right' }}>{player.displayName || player.officialName}</div>
                   {match.teamB.serving === index && match.teamB.isServing && <div style={{ padding: '2px 5px', backgroundColor: COLOR.MAIN_THEME, borderRadius: '5px' }}>S</div>}
-                  {match.teamB.receiving === index && <div style={{ padding: '2px 5px', backgroundColor: COLOR.MAIN_THEME, borderRadius: '5px' }}>R</div>}
+                  {match.teamB.receiving === index && !match.teamB.isServing && < div style={{ padding: '2px 5px', backgroundColor: COLOR.MAIN_THEME, borderRadius: '5px' }}>R</div>}
                 </div>
               )
             })}
           </div>
         </div>
+
+
 
         {match.scoreLabel.length < (match.step === 'group' ? 2 : 3) && <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexDirection: side ? 'row-reverse' : 'row' }}>
           <div style={{
@@ -205,10 +252,10 @@ const Match = () => {
           >
             +
           </div>
-          <div style={{ textAlign: 'center' }}>
-            <div onClick={() => setSide(!side)}>สลับข้าง</div>
-            <div onClick={() => endGame()}>จบเกม</div>
-            <div>undo</div>
+          <div style={{ textAlign: 'center', display: 'flex', gap: '10px' }}>
+            <Button onClick={() => setSide(!side)}>สลับข้าง</Button>
+            <Button type='danger' onClick={() => endGame()}>จบเกม</Button>
+            <Button disabled={undo.length <= 0} onClick={() => onUndo()}>undo</Button>
           </div>
           <div style={{
             width: 100,
