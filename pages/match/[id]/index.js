@@ -237,41 +237,41 @@ const Match = () => {
 
 
         {match.scoreLabel.length < (match.step === 'group' ? 2 : 3) && <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexDirection: side ? 'row-reverse' : 'row' }}>
-          <div style={{
-            width: 100,
-            height: 50,
-            backgroundColor: COLOR.MINOR_THEME,
-            borderRadius: 10,
-            color: 'whitesmoke',
-            fontSize: '50px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
+          <Button
+            type='primary'
+            style={{
+              width: 100,
+              height: 50,
+              borderRadius: 10,
+              fontSize: '50px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
             onClick={() => updateScore('A')}
           >
             +
-          </div>
+          </Button>
           <div style={{ textAlign: 'center', display: 'flex', gap: '10px' }}>
             <Button onClick={() => setSide(!side)}>สลับข้าง</Button>
             <Button type='danger' onClick={() => endGame()}>จบเกม</Button>
             <Button disabled={undo.length <= 0} onClick={() => onUndo()}>undo</Button>
           </div>
-          <div style={{
-            width: 100,
-            height: 50,
-            backgroundColor: COLOR.MINOR_THEME,
-            borderRadius: 10,
-            color: 'whitesmoke',
-            fontSize: '50px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
+          <Button
+            type='primary'
+            style={{
+              width: 100,
+              height: 50,
+              borderRadius: 10,
+              fontSize: '50px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
             onClick={() => updateScore('B')}
           >
             +
-          </div>
+          </Button>
         </div>}
 
 
