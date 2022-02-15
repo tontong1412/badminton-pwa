@@ -137,7 +137,7 @@ const Match = () => {
 
 
   return (
-    <Layout>
+    <Layout previous>
       <div style={{
         padding: '20px',
         height: (typeof window !== "undefined") ? window.innerHeight - 60 : 400,

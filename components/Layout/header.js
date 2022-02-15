@@ -57,7 +57,7 @@ const Header = (props) => {
   return (
     <>
       <Head>
-        <title>Badminstar - ก๊วนแบดมินตัน</title>
+        <title>Badminstar - โปรแกรมจัดก๊วน จัดแข่งแบดมินตัน</title>
         <meta name="description" content={props.description} />
       </Head>
       <div className='header'>

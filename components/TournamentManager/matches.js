@@ -29,10 +29,11 @@ const Matches = (props) => {
 
   useEffect(() => {
     const handleEvent = (payload) => {
-      console.log(payload)
+      mutate()
     }
     if (socket) {
       socket.on('update-score', handleEvent)
+      socket.on('update-match', handleEvent)
     }
   }, [socket])
 
@@ -261,7 +262,10 @@ const Matches = (props) => {
           <div>{moment(match.date).format('LT')}</div>
         </div>,
         status: { text: MATCH.STATUS[match.status], court: match.status === 'playing' ? match.court : null },
-        result: match.scoreLabel.map((set, index) => <div key={`set-${index + 1}`}>{set}</div>),
+        result: <div>
+          {match.scoreLabel.map((set, index) => <div key={`set-${index + 1}`}>{set}</div>)}
+          {match.status === 'playing' && <div>{`${match.teamA.score}-${match.teamB.score}`}</div>}
+        </div>,
         action: renderAction(match.status, match)
       }))
       setFormattedData(data)
@@ -284,11 +288,11 @@ const Matches = (props) => {
         onChange={handleChange}
         rowKey='key'
         size='small'
-      // onRow={(record, rowIndex) => {
-      //   return {
-      //     onClick: event => { router.push(`/match/${record.key}`) },
-      //   };
-      // }}
+        onRow={props.isManager ? null : (record, rowIndex) => {
+          return {
+            onClick: event => { router.push(`/match/${record.key}`) },
+          };
+        }}
       />
       {renderAssignMatchModal()}
       {renderSetScoreModal()}
