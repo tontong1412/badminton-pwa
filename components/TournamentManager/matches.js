@@ -1,9 +1,9 @@
 import { MATCH } from '../../constant'
 import { useEffect, useState } from 'react'
-import { Table, Tag, Modal, Input } from 'antd'
+import { Table, Tag, Modal, Input, Select, Form } from 'antd'
 import moment from 'moment'
 import 'moment/locale/th'
-import { useMatches } from '../../utils'
+import { useMatches, useTournament } from '../../utils'
 import Loading from '../../components/loading'
 import request from '../../utils/request'
 import ServiceErrorModal from '../ServiceErrorModal'
@@ -11,6 +11,7 @@ import { useSocket } from '../../utils'
 import { useRouter } from 'next/router'
 const Matches = (props) => {
   const router = useRouter()
+  const [form] = Form.useForm()
   const [filteredInfo, setFilteredInfo] = useState()
   const [formattedData, setFormattedData] = useState([])
   const [assignMatchModal, setAssignMatchModal] = useState(false)
@@ -22,6 +23,7 @@ const Matches = (props) => {
   const [score, setScore] = useState([])
   const socket = useSocket()
   const { matches, isError, isLoading, mutate } = useMatches(props.tournamentID)
+  const { tournament } = useTournament(props.tournamentID)
 
   const handleChange = (pagination, filters, sorter) => {
     setFilteredInfo(filters)
@@ -113,6 +115,7 @@ const Matches = (props) => {
   }
 
   const handleOk = (modal) => {
+    console.log('---------------1')
     if (modal === 'assignLoading') {
       setAssignLoading(true)
       request.put(`/match/${selectedMatch._id}`, {
@@ -143,6 +146,25 @@ const Matches = (props) => {
       })
     }
 
+  }
+
+  const onAssignMatch = (values) => {
+    console.log('--------------2')
+    setAssignLoading(true)
+    console.log(values)
+    request.put(`/match/${selectedMatch._id}`, {
+      status: 'playing',
+      court: values.court,
+      umpire: values.umpire
+    }).then(() => {
+      setAssignLoading(false)
+      setAssignMatchModal(false)
+      // setSelectedCourt()
+      mutate()
+    }).catch(() => {
+      ServiceErrorModal()
+      setSetScoreLoading(false)
+    })
   }
 
   const handleAssignMatchAction = (match) => {
@@ -208,26 +230,34 @@ const Matches = (props) => {
       <Modal
         title="ลงทำการแข่งขัน"
         visible={assignMatchModal}
-        onOk={() => handleOk('assignLoading')}
+        onOk={form.submit}
         confirmLoading={assignLoading}
         onCancel={() => setAssignMatchModal(false)}
-        destroyOnClose={true}
+        destroyOnClose
       >
-        <>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <div >คอร์ด: </div>
+        <Form
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          onFinish={onAssignMatch}
+          form={form}
+        >
+          <Form.Item
+            label="คอร์ด"
+            name="court"
+            rules={[{ required: true, message: 'Please input court number' }]}
+          >
             <Input placeholder="เลือกคอร์ด" style={{ width: 120 }} onChange={e => setSelectedCourt(e.target.value)} />
-          </div>
-          {/* <div >
-            <div >กรรมการ: </div>
-            <Select placeholder="เลือกกรรมการ" style={{ width: 200 }} onChange={this.handleSelectUmpire}>
-              <Option value="1">Jack</Option>
-              <Option value="2">John</Option>
-              <Option value="3">Jim</Option>
-              <Option value="4">Johnson</Option>
+          </Form.Item>
+          <Form.Item
+            label="กรรมการ"
+            name="umpire"
+            rules={[{ required: true, message: 'Please input umpire' }]}
+          >
+            <Select placeholder="เลือกกรรมการ" style={{ width: 200 }} onChange={(val) => console.log(val)}>
+              {tournament?.umpires.map((elm) => <Select.Option key={elm._id} value={elm._id}>{elm.officialName}</Select.Option>)}
             </Select>
-          </div> */}
-        </>
+          </Form.Item>
+        </Form>
 
       </Modal>
     )

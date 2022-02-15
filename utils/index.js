@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import axios from 'axios'
 import { API_ENDPOINT } from '../config'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useLayoutEffect } from 'react'
 import io from 'socket.io-client'
 
 
@@ -194,4 +194,17 @@ export const useSocket = (url = API_ENDPOINT) => {
   }, [])
 
   return socket
+}
+
+export const useWindowSize = () => {
+  const [size, setSize] = useState([0, 0]);
+  useLayoutEffect(() => {
+    function updateSize() {
+      setSize([window.innerWidth, window.innerHeight]);
+    }
+    window.addEventListener('resize', updateSize);
+    updateSize();
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+  return size;
 }

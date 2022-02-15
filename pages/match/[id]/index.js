@@ -1,18 +1,17 @@
 import Layout from '../../../components/Layout/noFooter'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-import { useMatch, useTournament, useSocket } from '../../../utils'
+import { useEffect, useState } from 'react'
+import { useMatch, useSocket, useWindowSize } from '../../../utils'
 import Loading from '../../../components/loading'
 import { useDispatch, useSelector } from 'react-redux'
 import { COLOR, TAB_OPTIONS } from '../../../constant'
-import { useState } from 'react'
 import Image from 'next/image'
 import request from '../../../utils/request'
-import { Button, Modal } from 'antd'
-
+import { Button, Divider, Form, Modal, Select } from 'antd'
 
 const Match = () => {
   const router = useRouter()
+  const [form] = Form.useForm()
   const { id } = router.query
   const { match, isLoading, isError, mutate } = useMatch(id)
   const dispatch = useDispatch()
@@ -21,17 +20,20 @@ const Match = () => {
   const [isUmpire, setIsUmpire] = useState(false)
   const [side, setSide] = useState(true)
   const [undo, setUndo] = useState([])
+  const [settingVisible, setSettingVisible] = useState(false)
+  const [width, height] = useWindowSize()
+
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT_MANAGER.DETAIL })
   }, [])
 
+
   useEffect(() => {
-    if (user && match && (user.playerID === match.umpire)) {
+    if (user && match && (user.playerID === match.umpire?._id)) {
       setIsUmpire(true)
     } else {
       setIsUmpire(false)
     }
-    console.log(match)
   }, [user, match])
 
   useEffect(() => {
@@ -42,6 +44,26 @@ const Match = () => {
       socket.on('update-match', handleEvent)
     }
   }, [socket])
+
+  const onFinish = async (values) => {
+    console.log('Success:', values)
+    const { server, receiver } = values
+    const [serverTeam, serverIndex] = server.split('-')
+    const [receiverTeam, receiverIndex] = receiver.split('-')
+
+
+    const payload = {
+      [`team${serverTeam}.isServing`]: true,
+      [`team${serverTeam}.serving`]: serverIndex,
+      [`team${serverTeam}.receiving`]: serverIndex,
+      [`team${receiverTeam}.receiving`]: receiverIndex,
+      [`team${receiverTeam}.serving`]: receiverIndex,
+      [`team${receiverTeam}.isServing`]: false,
+    }
+    await request.put(`/match/${id}`, payload)
+    setSettingVisible(false)
+
+  }
 
 
   const updateScore = (team) => {
@@ -130,8 +152,6 @@ const Match = () => {
     await request.put(`/match/${id}`, undo.pop())
   }
 
-
-
   if (isLoading) return <Loading />
   if (isError) return <p>error</p>
 
@@ -140,7 +160,7 @@ const Match = () => {
     <Layout previous>
       <div style={{
         padding: '20px',
-        height: (typeof window !== "undefined") ? window.innerHeight - 60 : 400,
+        height: height - 60,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-around',
@@ -148,7 +168,14 @@ const Match = () => {
         margin: 'auto'
 
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: side ? 'row-reverse' : 'row' }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexDirection: side ? 'row-reverse' : 'row'
+
+        }}
+        >
 
           <div style={{ width: '35%' }}>
             {match?.teamA.team.players.map((player, index) => {
@@ -233,10 +260,11 @@ const Match = () => {
             })}
           </div>
         </div>
+        {match.umpire && <div style={{ textAlign: 'center', fontSize: '20px' }}>ผู้ตัดสิน: {match.umpire?.officialName}</div>}
 
 
 
-        {match.scoreLabel.length < (match.step === 'group' ? 2 : 3) && <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexDirection: side ? 'row-reverse' : 'row' }}>
+        {isUmpire && match.scoreLabel.length < (match.step === 'group' ? 2 : 3) && <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexDirection: side ? 'row-reverse' : 'row' }}>
           <Button
             type='primary'
             style={{
@@ -252,10 +280,14 @@ const Match = () => {
           >
             +
           </Button>
-          <div style={{ textAlign: 'center', display: 'flex', gap: '10px' }}>
-            <Button onClick={() => setSide(!side)}>สลับข้าง</Button>
-            <Button type='danger' onClick={() => endGame()}>จบเกม</Button>
-            <Button disabled={undo.length <= 0} onClick={() => onUndo()}>undo</Button>
+          <div>
+            <div style={{ textAlign: 'center', display: 'flex', gap: '10px' }}>
+              <Button onClick={() => setSide(!side)}>สลับข้าง</Button>
+              {match.teamA.score === 0 && match.teamB.score === 0 && <Button onClick={() => setSettingVisible(true)}>เลือกคนรับ/เสิร์ฟ</Button>}
+              <Button type='danger' onClick={() => endGame()}>จบเกม</Button>
+              <Button disabled={undo.length <= 0} onClick={() => onUndo()}>undo</Button>
+            </div>
+
           </div>
           <Button
             type='primary'
@@ -273,9 +305,61 @@ const Match = () => {
             +
           </Button>
         </div>}
-
-
       </div>
+      <Modal
+        visible={settingVisible}
+        title='เลือกคนเสิร์ฟ/รับ'
+        onOk={form.submit}
+        onCancel={() => setSettingVisible(false)}
+        destroyOnClose
+      >
+        <Form
+          form={form}
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          onFinish={onFinish}
+        >
+          <Form.Item
+            label="คนเสิร์ฟ"
+            name="server"
+            rules={[{ required: true }]}
+          >
+            <Select style={{ width: '200px' }}>
+              {match.teamA.team.players.map((player, index) => <Select.Option
+                key={`A-${index}`}
+                value={`A-${index}`}
+              >
+                {player.officialName}
+              </Select.Option>)}
+              {match.teamB.team.players.map((player, index) => <Select.Option
+                key={`B-${index}`}
+                value={`B-${index}`}
+              >
+                {player.officialName}
+              </Select.Option>)}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="คนรับ"
+            name="receiver"
+            rules={[{ required: true }]}
+          >
+            <Select style={{ width: '200px' }}>
+              {match.teamA.team.players.map((player, index) => <Select.Option
+                key={`A-${index}`}
+                value={`A-${index}`}
+              >
+                {player.officialName}
+              </Select.Option>)}
+              {match.teamB.team.players.map((player, index) => <Select.Option
+                key={`B-${index}`}
+                value={`B-${index}`}>
+                {player.officialName}
+              </Select.Option>)}
+            </Select>
+          </Form.Item>
+        </Form>
+      </Modal>
     </Layout >
   )
 }
