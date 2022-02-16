@@ -116,22 +116,7 @@ const Matches = (props) => {
   }
 
   const handleOk = (modal) => {
-    if (modal === 'assignLoading') {
-      setAssignLoading(true)
-      request.put(`/match/${selectedMatch._id}`, {
-        status: 'playing',
-        court: selectedCourt,
-        // umpire: selectedUmpire
-      }).then(() => {
-        setAssignLoading(false)
-        setAssignMatchModal(false)
-        setSelectedCourt()
-        mutate()
-      }).catch(() => {
-        ServiceErrorModal()
-        setSetScoreLoading(false)
-      })
-    } else if (modal === 'setScoreLoading') {
+    if (modal === 'setScoreLoading') {
       setSetScoreLoading(true)
       request.post('/match/set-score', {
         matchID: selectedMatch._id,
