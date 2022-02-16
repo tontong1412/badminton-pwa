@@ -116,7 +116,6 @@ const Matches = (props) => {
   }
 
   const handleOk = (modal) => {
-    console.log('---------------1')
     if (modal === 'assignLoading') {
       setAssignLoading(true)
       request.put(`/match/${selectedMatch._id}`, {
@@ -150,9 +149,7 @@ const Matches = (props) => {
   }
 
   const onAssignMatch = (values) => {
-    console.log('--------------2')
     setAssignLoading(true)
-    console.log(values)
     request.put(`/match/${selectedMatch._id}`, {
       status: 'playing',
       court: values.court,
@@ -254,7 +251,7 @@ const Matches = (props) => {
             name="umpire"
             rules={[{ required: true, message: 'Please input umpire' }]}
           >
-            <Select placeholder="เลือกกรรมการ" style={{ width: 200 }} onChange={(val) => console.log(val)}>
+            <Select placeholder="เลือกกรรมการ" style={{ width: 200 }} >
               {tournament?.umpires.map((elm) => <Select.Option key={elm._id} value={elm._id}>{elm.officialName}</Select.Option>)}
             </Select>
           </Form.Item>

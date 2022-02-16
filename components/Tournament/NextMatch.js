@@ -3,26 +3,32 @@ import { COLOR } from "../../constant"
 import { useNextMatch, useTournament } from "../../utils"
 import Loading from '../../components/loading'
 import { Divider } from "antd"
+import moment from 'moment'
 const NextMatch = ({ event, tournamentID }) => {
   const { user } = useSelector(state => state)
-  const { matches } = useNextMatch(user.token, event._id, tournamentID)
+  const { matches, isLoading } = useNextMatch(user.token, event._id, tournamentID)
   const { tournament } = useTournament(tournamentID)
-  if (!matches) return <Loading />
+  if (isLoading) return <Loading />
 
   if (matches.nextMatch.length > 0) {
     return (
       <div>
         <Divider>{event.name}</Divider>
         <div style={{ padding: '0 20px 10px 20px' }}>
-          {
-            (matches?.nextMatch[0].matchNumber || 0) - (matches?.latestMatch[0]?.matchNumber || 0) - 1 <= 0
-              ? <div style={{ fontSize: '40px', color: COLOR.MINOR_THEME }}>คู่ต่อไป</div>
-              : <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div>อีก</div>
-                <div style={{ fontSize: '40px', color: COLOR.MINOR_THEME }}>{(matches?.nextMatch[0]?.matchNumber || 0) - (matches?.latestMatch[0]?.matchNumber || 0) - 1}</div>
-                <div>คู่จะถึงคุณ</div>
-              </div>
-          }
+          <div>
+            {matches?.latestMatch ?
+              (matches?.nextMatch[0].matchNumber || 0) - (matches?.latestMatch?.matchNumber || 0) - 1 <= 0
+                ? <div style={{ fontSize: '40px', color: COLOR.MINOR_THEME }}>คู่ต่อไป</div>
+                : <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div>อีก</div>
+                  <div style={{ fontSize: '40px', color: COLOR.MINOR_THEME }}>{(matches?.nextMatch[0]?.matchNumber || 0) - (matches?.latestMatch.matchNumber || 0) - 1}</div>
+                  <div>คู่จะถึงคุณ</div>
+                </div>
+              : null
+            }
+            <div>{moment(matches?.nextMatch[0].date).format('lll')}</div>
+          </div>
+
 
           <div style={{ color: '#aaa' }}>แมตช์ที่ {matches.nextMatch[0].matchNumber} พบกับ</div>
           {
@@ -62,7 +68,7 @@ const NextMatch = ({ event, tournamentID }) => {
         </div >
       </div>
     )
-  } else if (tournament?.status === 'knockOut') {
+  } else if (tournament?.status === 'knockOut' && matches.myMatch?.length > 0) {
     return (
       <div>
         <Divider>{event.name}</Divider>
