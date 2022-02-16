@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { COLOR, EVENT, TAB_OPTIONS, TRANSACTION } from '../../constant'
 import { useEffect, useState } from 'react'
-import { useTournament } from '../../utils'
+import { useTournament, useWindowSize } from '../../utils'
 import { Table, Button, Tag, Menu, Dropdown, Input, Modal } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import request from '../../utils/request'
@@ -23,6 +23,7 @@ const Participants = (props) => {
   const [selectedEvent, setSelectedEvent] = useState();
   const [registerModalVisible, setRegisterModalVisible] = useState(false)
   const { user } = useSelector(state => state)
+  const [width, height] = useWindowSize()
 
   const menu = (event, team) => (
     <Menu>
@@ -258,7 +259,7 @@ const Participants = (props) => {
         columns={columns()}
         sticky
         size='small'
-        scroll={{ y: (typeof window !== "undefined") ? window.innerHeight - 350 : 400, x: 1000 }}
+        scroll={{ y: height - 350, x: 1000 }}
         pagination={false}
         onChange={(pagination, filters, sorter, extra) => setTotalTeam(extra.currentDataSource.length)} />
       {tournament?.registerOpen && <AddButton onClick={() => {

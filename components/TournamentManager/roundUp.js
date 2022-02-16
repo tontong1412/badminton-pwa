@@ -1,5 +1,5 @@
 import { Tabs, Button, Table, InputNumber, message, Popconfirm } from 'antd'
-import { useTournament, useMatches } from '../../utils'
+import { useTournament, useMatches, useWindowSize } from '../../utils'
 import { useState, useEffect } from 'react'
 import drawBracket from '../../utils/drawBracket'
 import request from '../../utils/request'
@@ -11,6 +11,7 @@ const RoundUpEvent = ({ event, matches }) => {
   const [showOrder, setShowOrder] = useState(event.order.knockOut)
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false)
+  const [width, height] = useWindowSize()
 
 
   useEffect(() => {
@@ -26,11 +27,13 @@ const RoundUpEvent = ({ event, matches }) => {
   }, [event.order.knockOut])
 
   useEffect(() => {
-    const result = prepareData(event)
-    setData(result.data)
-    setShowOrder(result.showOrder)
-    setOrder(result.order)
-  }, []);
+    if (groupMatches.length > 0) {
+      const result = prepareData(event)
+      setData(result.data)
+      setShowOrder(result.showOrder)
+      setOrder(result.order)
+    }
+  }, [groupMatches])
 
 
 
@@ -70,6 +73,7 @@ const RoundUpEvent = ({ event, matches }) => {
         let score = 0
         let diff = 0
         groupMatches?.filter(e => e.teamA.team._id === team._id && e.eventID === event._id).forEach((elm) => {
+          console.log('elm', elm)
           score += elm.teamA.scoreSet
           diff += elm.teamA.scoreDiff
         })
@@ -78,6 +82,7 @@ const RoundUpEvent = ({ event, matches }) => {
           score += elm.teamB.scoreSet
           diff += elm.teamB.scoreDiff
         })
+
 
         return {
           score,
@@ -90,8 +95,11 @@ const RoundUpEvent = ({ event, matches }) => {
 
     const winner = score.map(group => {
       group.sort((a, b) => {
-        if (a.score === b.score) return a.diff - b.diff
-        else return b.score - a.score
+        if (a.score === b.score) {
+          return a.diff - b.diff
+        } else {
+          return b.score - a.score
+        }
       })
       // group.length = numberOfWinner
       return group
@@ -100,8 +108,9 @@ const RoundUpEvent = ({ event, matches }) => {
     const showOrderTemp = [...showOrder]
     const orderTemp = [...order]
     const data = winner.reduce((prev, group) => {
-      group.forEach(async (team, index) => {
+      group.forEach((team, index) => {
         const defaultOrder = event.order.knockOut.findIndex((e) => e === `ที่ ${index + 1} กลุ่ม ${team.group}`)
+
         if (defaultOrder >= 0) {
           showOrderTemp[defaultOrder] = <div>
             {team.team.players.map(player =>
@@ -118,7 +127,7 @@ const RoundUpEvent = ({ event, matches }) => {
           key: team.team._id,
           team: <div>
             {team.team.players.map((player, i) =>
-              <div key={`${i + 1}`} style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+              <div key={player._id} style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                 <div>{player.officialName}</div>
                 <div>{`(${player.club})`}</div>
               </div>)}
@@ -127,6 +136,7 @@ const RoundUpEvent = ({ event, matches }) => {
           diff: team.diff,
           group: team.group,
           draw: <InputNumber
+            key={team.team._id}
             defaultValue={defaultOrder >= 0 && defaultOrder + 1}
             onBlur={(e) => onChangeOrder(e.target.value, team)}
             max={event.order.knockOut.length}
@@ -194,19 +204,18 @@ const RoundUpEvent = ({ event, matches }) => {
       width: '15%'
     },
   ]
-
   return (
     <div style={{ position: 'relative' }}>
       <div style={{ display: 'flex' }}>
         <Table
           columns={columns}
-          dataSource={prepareData(event).data}
+          dataSource={groupMatches.length > 0 ? prepareData(event).data : []}
           pagination={false}
           style={{ width: '50%' }}
-          scroll={{ y: (typeof window !== "undefined") ? window.innerHeight - 340 : 400 }}
+          scroll={{ y: height - 340 }}
           size='small'
         />
-        <div style={{ overflow: 'scroll', marginLeft: '40px', height: (typeof window !== "undefined") ? window.innerHeight - 300 : 400 }}>
+        <div style={{ overflow: 'scroll', marginLeft: '40px', height: height - 300 }}>
           {drawBracket(showOrder, 350)}
         </div>
 

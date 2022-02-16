@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Table, Tag, Modal, Input, Select, Form } from 'antd'
 import moment from 'moment'
 import 'moment/locale/th'
-import { useMatches, useTournament } from '../../utils'
+import { useMatches, useTournament, useWindowSize } from '../../utils'
 import Loading from '../../components/loading'
 import request from '../../utils/request'
 import ServiceErrorModal from '../ServiceErrorModal'
@@ -24,6 +24,7 @@ const Matches = (props) => {
   const socket = useSocket()
   const { matches, isError, isLoading, mutate } = useMatches(props.tournamentID)
   const { tournament } = useTournament(props.tournamentID)
+  const [width, height] = useWindowSize()
 
   const handleChange = (pagination, filters, sorter) => {
     setFilteredInfo(filters)
@@ -314,7 +315,7 @@ const Matches = (props) => {
         columns={columns()}
         dataSource={formattedData}
         pagination={false}
-        scroll={{ y: (typeof window !== "undefined") ? window.innerHeight - 280 : 400, x: 1000 }}
+        scroll={{ y: height - 280, x: 1000 }}
         onChange={handleChange}
         rowKey='key'
         size='small'

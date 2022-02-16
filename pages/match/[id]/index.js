@@ -264,7 +264,7 @@ const Match = () => {
 
 
 
-        {isUmpire && match.scoreLabel.length < (match.step === 'group' ? 2 : 3) && <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexDirection: side ? 'row-reverse' : 'row' }}>
+        {isUmpire && match.scoreLabel.length < (match.step === 'group' ? 2 : 3) && match.status === 'playing' && <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexDirection: side ? 'row-reverse' : 'row' }}>
           <Button
             type='primary'
             style={{
@@ -286,6 +286,7 @@ const Match = () => {
               {match.teamA.score === 0 && match.teamB.score === 0 && <Button onClick={() => setSettingVisible(true)}>เลือกคนรับ/เสิร์ฟ</Button>}
               <Button type='danger' onClick={() => endGame()}>จบเกม</Button>
               <Button disabled={undo.length <= 0} onClick={() => onUndo()}>undo</Button>
+
             </div>
 
           </div>
