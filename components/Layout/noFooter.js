@@ -5,7 +5,10 @@ const AppLayout = (props) => {
     <>
       <Header  {...props} />
       <main>
-        <div className='content'>
+        <div
+          className='content'
+          style={{ paddingBottom: 0 }}
+        >
           {props.children}
         </div>
       </main>

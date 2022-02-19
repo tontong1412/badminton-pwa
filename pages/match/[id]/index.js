@@ -46,7 +46,6 @@ const Match = () => {
   }, [socket])
 
   const onFinish = async (values) => {
-    console.log('Success:', values)
     const { server, receiver } = values
     const [serverTeam, serverIndex] = server.split('-')
     const [receiverTeam, receiverIndex] = receiver.split('-')
@@ -165,7 +164,8 @@ const Match = () => {
         flexDirection: 'column',
         justifyContent: 'space-around',
         maxWidth: '1000px',
-        margin: 'auto'
+        margin: 'auto',
+        overflow: 'scroll'
 
       }}>
         <div style={{
