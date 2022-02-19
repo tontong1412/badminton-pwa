@@ -252,7 +252,10 @@ const Matches = (props) => {
         return <a onClick={() => handleAssignMatchAction(match)}>ลงทำการแข่งขัน</a>
       case MATCH.STATUS.playing.LABEL:
         // return <a onClick={() => handleSetScoreAction(match)}>สรุปผลการแข่งขัน</a>
-        return <a onClick={() => router.push(`/match/${match._id}`)}>ดูการแข่งขัน</a>
+        return <div>
+          <div><a onClick={() => router.push(`/match/${match._id}`)}>ดูการแข่งขัน</a></div>
+          <div><a onClick={() => handleSetScoreAction(match)}>ลงผลการแข่งขัน</a></div>
+        </div>
       case MATCH.STATUS.finished.LABEL:
         return <a onClick={() => handleSetScoreAction(match)}>แก้ไขผล</a>
       default:
