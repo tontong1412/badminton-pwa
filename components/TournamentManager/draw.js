@@ -238,12 +238,10 @@ const Draw = (props) => {
                                 min={1}
                                 value={value[team.team._id]}
                                 onChange={(order) => {
-                                  console.log(value)
                                   const newValue = {
                                     ...value,
-                                    [team.team._id]: order
+                                    [team?.team?._id]: order
                                   }
-                                  console.log(newValue)
                                   setValue(newValue)
                                 }}
                               />
