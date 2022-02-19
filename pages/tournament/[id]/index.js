@@ -55,7 +55,7 @@ const TournamentManagerID = () => {
           display: 'flex',
           width: '100%',
           overflow: 'scroll',
-          flexWrap: 'nowrap'
+          flexWrap: 'nowrap',
         }}>
           {tournament.events.map((event, index) => {
             return (

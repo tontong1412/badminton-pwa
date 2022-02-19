@@ -1,6 +1,8 @@
 import useSWR from 'swr'
 import axios from 'axios'
 import { API_ENDPOINT } from '../config'
+import { useState, useEffect, useLayoutEffect } from 'react'
+import io from 'socket.io-client'
 
 
 const fetcher = (url, token, params) => axios.get(url, {
@@ -162,4 +164,47 @@ export const useNextMatch = (token, eventID, tournamentID) => {
     isError: error,
     mutate
   }
+}
+
+export const useMatch = (id) => {
+  const { data, error, mutate } = useSWR(
+    [`${API_ENDPOINT}/match/${id}`, id],
+    (url) => fetcher(url)
+  )
+
+  return {
+    match: data,
+    isLoading: !error && !data,
+    isError: error,
+    mutate
+  }
+}
+
+export const useSocket = (url = API_ENDPOINT) => {
+  const [socket, setSocket] = useState(null)
+
+  useEffect(() => {
+    const socketIo = io(url)
+    setSocket(socketIo)
+
+    const cleanup = () => {
+      socketIo.disconnect()
+    }
+    return cleanup
+  }, [])
+
+  return socket
+}
+
+export const useWindowSize = () => {
+  const [size, setSize] = useState([0, 0]);
+  useLayoutEffect(() => {
+    function updateSize() {
+      setSize([window.innerWidth, window.innerHeight]);
+    }
+    window.addEventListener('resize', updateSize);
+    updateSize();
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+  return size;
 }

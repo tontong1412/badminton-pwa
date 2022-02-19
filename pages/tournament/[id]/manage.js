@@ -34,7 +34,6 @@ const Manage = () => {
   }, [user, tournament])
 
   useEffect(() => {
-    console.log(tournament?.status);
     if (tournament?.status === 'ongoing') {
       setCurrentStep(4)
     } else if (tournament?.status === 'knockOut') {
@@ -70,7 +69,7 @@ const Manage = () => {
   }
 
 
-  if (!isManager) return <div>permission denied</div>
+  if (!isManager) return <Layout><div>permission denied</div></Layout>
   return (
     <Layout>
       <h1>Manage</h1>
