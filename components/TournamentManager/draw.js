@@ -33,11 +33,11 @@ const Draw = (props) => {
   ]
 
   const teamData = (teams) => {
-    const returnData = teams.map((team, index) => {
+    const returnData = teams?.map((team, index) => {
       return ({
         key: `team-${index}`,
         group: <div key={`team-${index}`}>
-          {team.players.map((player) =>
+          {team.players?.map((player) =>
             <div key={`${player._id}`} style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
               <div>{player.officialName}</div>
               <div>{`(${player.club})`}</div>
@@ -128,11 +128,11 @@ const Draw = (props) => {
       setGroupOrder(tempGroupOrder)
     } else {
       const tempGroupOrderShow = [...groupOrderShow]
-      const newGroupOrderShow = tempGroupOrderShow.map(group => {
+      const newGroupOrderShow = tempGroupOrderShow?.map(group => {
         return group?.filter(elm => elm._id !== team.team._id)
       })
       const tempGroupOrder = [...groupOrder]
-      const newGroupOrder = tempGroupOrder.map(group => {
+      const newGroupOrder = tempGroupOrder?.map(group => {
         return group?.filter(elm => elm !== team.team._id)
       })
       setGroupOrder(newGroupOrder)
@@ -142,7 +142,7 @@ const Draw = (props) => {
 
   return <div>
     <Tabs defaultActiveKey="1" >
-      {tournament?.events.map(event => {
+      {tournament?.events?.map(event => {
         return (
           <Tabs.TabPane tab={event.name} key={event._id}>
             {loading
@@ -224,9 +224,9 @@ const Draw = (props) => {
                         <div style={{ width: width / 2, height: height - 350, overflow: 'scroll' }}>
                           <Table
                             columns={columns}
-                            dataSource={event.teams.map((team, i) => ({
+                            dataSource={event.teams?.map((team, i) => ({
                               team: <div>
-                                {team.team.players.map((player, i) =>
+                                {team.team.players?.map((player, i) =>
                                   <div key={player._id} style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                                     <div>{player.officialName}</div>
                                     <div>{`(${player.club})`}</div>
@@ -256,7 +256,7 @@ const Draw = (props) => {
                         </div>
                         <div style={{ width: width / 2, height: height - 350, overflow: 'scroll', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                           {
-                            groupOrderShow.map((group, index) => (
+                            groupOrderShow?.map((group, index) => (
                               <div key={`group-${index + 1}`}>
                                 <Table
                                   dataSource={teamData(group)}
@@ -283,7 +283,7 @@ const Draw = (props) => {
                       mode === 'group'
                         ? <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
                           {
-                            event.order?.group.map((group, index) => {
+                            event.order?.group?.map((group, index) => {
                               return (
                                 <div key={`group-${index + 1}`}>
                                   <Table
