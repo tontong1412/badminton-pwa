@@ -191,7 +191,7 @@ const Matches = (props) => {
             </div>
             <div style={{ paddingBottom: '5px' }}>
               <Input
-                disabled={selectedMatch?.step !== 'knockOut'}
+                disabled={selectedMatch?.step === 'group'}
                 placeholder='เซ็ต 3'
                 style={{ width: 120 }}
                 onChange={(e) => onChangeFillScore(e.target.value, 2)}
@@ -265,26 +265,34 @@ const Matches = (props) => {
   useEffect(() => {
     if (matches) {
       let processedMatches = [...matches]
-      if (props.step) processedMatches = matches.filter(match => match.step === props.step)
-      const data = processedMatches?.sort((a, b) => a.matchNumber - b.matchNumber).map(match => ({
-        key: match._id,
-        match: match.matchNumber,
-        event: match.eventName,
-        competitor1: match.teamA?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
-        competitor2: match.teamB?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
-        date: moment(match.date).format('ll'),
-        schedule: <div>
-          <div>{moment(match.date).format('l')}</div>
-          <div>{moment(match.date).format('LT')}</div>
-        </div>,
-        status: { text: MATCH.STATUS[match.status], court: match.status === 'playing' ? match.court : null },
-        result: <div>
-          {match.scoreLabel.map((set, index) => <div key={`set-${index + 1}`}>{set}</div>)}
-          {match.status === 'playing' && <div>{`${match.teamA.score}-${match.teamB.score}`}</div>}
-        </div>,
-        action: renderAction(match.status, match)
-      }))
-      setFormattedData(data)
+      if (props.step) {
+        if (props.step === 'knockOut') {
+          processedMatches = matches.filter(match => match.step !== 'group')
+        } else {
+          processedMatches = matches.filter(match => match.step === props.step)
+        }
+
+
+        const data = processedMatches?.sort((a, b) => a.matchNumber - b.matchNumber).map(match => ({
+          key: match._id,
+          match: match.matchNumber,
+          event: match.eventName,
+          competitor1: match.teamA?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
+          competitor2: match.teamB?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
+          date: moment(match.date).format('ll'),
+          schedule: <div>
+            <div>{moment(match.date).format('l')}</div>
+            <div>{moment(match.date).format('LT')}</div>
+          </div>,
+          status: { text: MATCH.STATUS[match.status], court: match.status === 'playing' ? match.court : null },
+          result: <div>
+            {match.scoreLabel.map((set, index) => <div key={`set-${index + 1}`}>{set}</div>)}
+            {match.status === 'playing' && <div>{`${match.teamA.score}-${match.teamB.score}`}</div>}
+          </div>,
+          action: renderAction(match.status, match)
+        }))
+        setFormattedData(data)
+      }
     }
   }, [matches, props.step])
 
