@@ -42,7 +42,7 @@ const RoundUpEvent = ({ event, matches }) => {
     if (orderValue) {
       const tempOrderShow = [...showOrder]
       tempOrderShow[orderValue - 1] = <div>
-        {team.team.players.map(player =>
+        {team.team.players?.map(player =>
           <div
             key={player._id}
             style={{ display: 'flex', gap: '10px' }}>
@@ -68,8 +68,8 @@ const RoundUpEvent = ({ event, matches }) => {
   }
 
   const prepareData = (event) => {
-    const score = event.order.group.map((group, index) => {
-      return group.map(team => {
+    const score = event.order.group?.map((group, index) => {
+      return group?.map(team => {
         let score = 0
         let diff = 0
         groupMatches?.filter(e => e.teamA.team._id === team._id && e.eventID === event._id).forEach((elm) => {
@@ -93,7 +93,7 @@ const RoundUpEvent = ({ event, matches }) => {
       })
     })
 
-    const winner = score.map(group => {
+    const winner = score?.map(group => {
       group.sort((a, b) => {
         if (a.score === b.score) {
           return a.diff - b.diff
@@ -113,7 +113,7 @@ const RoundUpEvent = ({ event, matches }) => {
 
         if (defaultOrder >= 0) {
           showOrderTemp[defaultOrder] = <div>
-            {team.team.players.map(player =>
+            {team.team.players?.map(player =>
               <div
                 key={player._id}
                 style={{ display: 'flex', gap: '10px' }}>
@@ -126,7 +126,7 @@ const RoundUpEvent = ({ event, matches }) => {
         prev.push({
           key: team.team._id,
           team: <div>
-            {team.team.players.map((player, i) =>
+            {team.team.players?.map((player, i) =>
               <div key={player._id} style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                 <div>{player.officialName}</div>
                 <div>{`(${player.club})`}</div>
@@ -156,7 +156,7 @@ const RoundUpEvent = ({ event, matches }) => {
     setLoading(true)
     request.post('/event/round-up', {
       eventID: event._id,
-      order: order.map(elm => elm._id)
+      order: order?.map(elm => elm._id)
     }).then(() => {
       message.success('สำเร็จ')
       setLoading(false)
@@ -233,7 +233,7 @@ const RoundUp = (props) => {
 
   return (
     <Tabs defaultActiveKey="1" >
-      {tournament?.events.map(event => {
+      {tournament?.events?.map(event => {
         if (event.order.knockOut.length <= 0) return null
         return (
           <Tabs.TabPane tab={event.name} key={`tab-${event._id}`} >
