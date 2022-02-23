@@ -6,32 +6,59 @@ import request from "../../utils/request"
 import moment from 'moment'
 import { beforeUpload, getBase64 } from "../../utils/image"
 import { API_ENDPOINT } from "../../config"
-const TournamentModal = ({ visible, setVisible, tournament, mutate }) => {
+import { useSelector } from "react-redux"
+const TournamentModal = ({ visible, setVisible, tournament = {}, mutate, action = 'update' }) => {
   const [form] = Form.useForm()
   const [contactPerson, setContactPerson] = useState(tournament?.contact?._id);
   const [options, setOptions] = useState([])
   const { players, mutate: mutatePlayer } = usePlayers()
   const [loading, setLoading] = useState(false)
+  const user = useSelector(state => state.user)
 
   useEffect(() => {
-    setContactPerson(tournament?.contact?._id)
+    if (tournament?.contact?._id) {
+      setContactPerson(tournament?.contact?._id)
+    }
+
   }, [tournament])
 
   const onFinish = (values) => {
-    request.put(`/tournament/${tournament?._id}`, {
-      ...values,
-      startDate: values.date[0],
-      endDate: values.date[1],
-      contact: {
-        _id: contactPerson,
-        name: values.contactName,
-        tel: values.tel,
-        lineID: values.lineID
-      }
-    }).then(() => {
-      mutatePlayer()
-      mutate()
-    })
+    if (action === 'update') {
+      request.put(`/tournament/${tournament?._id}`, {
+        ...values,
+        startDate: values.date[0],
+        endDate: values.date[1],
+        contact: {
+          _id: contactPerson,
+          name: values.contactName,
+          tel: values.tel,
+          lineID: values.lineID
+        }
+      },
+        user.token
+      ).then(() => {
+        mutatePlayer()
+        mutate()
+      })
+    } else {
+      request.post(`/tournament`, {
+        ...values,
+        startDate: values.date[0],
+        endDate: values.date[1],
+        contact: {
+          _id: contactPerson,
+          name: values.contactName,
+          tel: values.tel,
+          lineID: values.lineID
+        }
+      },
+        user.token
+      ).then(() => {
+        mutatePlayer()
+        mutate()
+      })
+    }
+
 
     setVisible(false)
     setLoading(false)

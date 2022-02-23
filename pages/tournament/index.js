@@ -1,5 +1,5 @@
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { analytics, logEvent } from '../../utils/firebase'
 import { useSelector, useDispatch } from 'react-redux'
 import Layout from '../../components/Layout'
@@ -11,10 +11,13 @@ import moment from 'moment'
 import { EnvironmentOutlined } from '@ant-design/icons'
 import { Tag } from 'antd'
 import MyTournament from '../../components/Tournament/MyTournament'
+import AddButton from '../../components/addButton'
+import TournamentModal from '../../components/Tournament/TournamentModal'
 
 const Tournament = () => {
   const dispatch = useDispatch()
-  const { tournaments } = useTournaments()
+  const { tournaments, mutate } = useTournaments()
+  const [createModalVisible, setCreateModalVisible] = useState(false)
   useEffect(() => {
     logEvent(analytics, 'tournament')
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT })
@@ -22,10 +25,9 @@ const Tournament = () => {
   return (
     <Layout >
       <MyTournament bottomLine />
-      <div style={{ padding: '5px' }}>
+      <div style={{ padding: '5px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
         {tournaments?.filter(e => e.status !== 'prepare').length > 0 ?
           tournaments?.filter(e => e.status !== 'prepare').map(tournament => {
-            console.log(tournament);
             return (
               <Link
                 href={`/tournament/${tournament._id}`}
@@ -74,6 +76,13 @@ const Tournament = () => {
           : <div style={{ textAlign: 'center' }}>ยังไม่มีรายการแข่งขัน</div>
         }
       </div>
+      <AddButton onClick={() => setCreateModalVisible(true)} />
+      <TournamentModal
+        visible={createModalVisible}
+        setVisible={setCreateModalVisible}
+        mutate={mutate}
+        action='create'
+      />
     </Layout >
   )
 }
