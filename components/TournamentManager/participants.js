@@ -81,8 +81,8 @@ const Participants = (props) => {
           prev.push({
             key: team._id,
             date: team.createdAt,
-            player1: <PlayerDisplay player={team.team.players[0]} />,
-            player2: <PlayerDisplay player={team.team.players[1]} />,
+            player1: team?.team.players.map(player => <div key={player._id} ><PlayerDisplay player={player} /></div>),
+            // player2: <PlayerDisplay player={team.team.players[1]} />,
             event: event.name,
             allow: { event, team },
             payment: team.paymentStatus,
@@ -143,11 +143,11 @@ const Participants = (props) => {
         }))
       },
       {
-        title: 'ผู้เล่น 1',
+        title: 'ผู้สมัคร',
         dataIndex: 'player1',
         key: 'player1',
         align: 'center',
-        width: '22%',
+        width: '30%',
         filterIcon: filtered => <SearchOutlined style={{ color: searchText ? COLOR.MINOR_THEME : undefined }} />,
 
         filterDropdown: ({ confirm }) => <div style={{ padding: '8px', display: 'flex', gap: '5px' }}>
@@ -162,13 +162,13 @@ const Participants = (props) => {
           }}>Reset</Button>
         </div>,
       },
-      {
-        title: 'ผู้เล่น 2',
-        dataIndex: 'player2',
-        key: 'player2',
-        align: 'center',
-        width: '22%'
-      },
+      // {
+      //   title: 'ผู้เล่น 2',
+      //   dataIndex: 'player2',
+      //   key: 'player2',
+      //   align: 'center',
+      //   width: '22%'
+      // },
       {
         title: 'ประเมินมือ',
         dataIndex: 'allow',
