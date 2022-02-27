@@ -248,20 +248,12 @@ const ManageEvent = ({ tournamentID }) => {
               rules={[{ required: true, message: 'กรุณาใส่ชื่อรายการ' }]}
             >
               <Select
-              // value={value.currency || currency}
-              // style={{ width: 80, margin: '0 8px' }}
-              // onChange={onCurrencyChange}
               >
                 <Select.Option value="roundRobin">แบ่งกลุ่ม/แพ้คัดออก</Select.Option>
-                <Select.Option value="singleElim">แพ้คัดออก</Select.Option>
+                <Select.Option value="roundRobinConsolation">แบ่งกลุ่ม/แพ้คัดออก/สายล่าง</Select.Option>
+                {/* <Select.Option value="singleElim">แพ้คัดออก</Select.Option> */}
               </Select>
             </Form.Item>
-
-            {/* <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-              <Button type="primary" htmlType="submit" loading={loading}>
-                Submit
-              </Button>
-            </Form.Item> */}
           </Form>
         </div>
       </Modal>

@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import Loading from '../../../components/loading'
 import { Tabs, Radio } from 'antd'
 import RoundRobin from '../../../components/RoundRobin'
+import BracketConsolation from '../../../components/Bracket/Consolation'
 const { TabPane } = Tabs
 const Draws = () => {
   const dispatch = useDispatch()
@@ -15,28 +16,45 @@ const Draws = () => {
   const { id } = router.query
   const { tournament, isLoading, isError, mutate } = useTournament(id)
   const [mode, setMode] = useState('group')
+  const [tab, setTab] = useState(tournament?.events[0]._id)
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT_MANAGER.DRAWS })
   }, [])
+
+  const renderDraws = (event) => {
+    if (mode === 'knockOut') {
+      return <Bracket key={event._id} event={event} />
+    } else if (mode === 'group') {
+      return <RoundRobin key={event._id} event={event} />
+    } else if (mode === 'consolation') {
+      return <BracketConsolation key={event._id} event={event} />
+    }
+    return null
+  }
+
 
   if (isLoading) return <Loading />
   if (isError) return <div>Error</div>
   return (
     <Layout>
       <h1>สายการแข่งขัน</h1>
-      <Tabs defaultActiveKey="1" >
+      <Tabs
+        defaultActiveKey={tab}
+        activeKey={tab}
+        onChange={(key) => {
+          setTab(key)
+          setMode('group')
+        }}
+      >
         {tournament?.events?.map(event => {
           return (
             <TabPane tab={event.name} key={event._id}>
               <Radio.Group onChange={e => setMode(e.target.value)} value={mode} style={{ marginBottom: 8 }}>
                 <Radio.Button value="group">รอบแบ่งกลุ่ม</Radio.Button>
                 <Radio.Button value="knockOut">รอบ Knock Out</Radio.Button>
+                {event?.format === 'roundRobinConsolation' && <Radio.Button value="consolation">สายล่าง</Radio.Button>}
               </Radio.Group>
-              {
-                mode === 'knockOut'
-                  ? <Bracket key={event._id} event={event} />
-                  : <RoundRobin key={event._id} event={event} />
-              }
+              {renderDraws(event)}
             </TabPane>
           )
         })}

@@ -119,6 +119,7 @@ const MAP_TOURNAMENT_STATUS = {
 
 const MAP_FORMAT = {
   roundRobin: 'แบ่งกลุ่ม/แพ้คัดออก',
+  roundRobinConsolation: 'แบ่งกลุ่ม/แพ้คัดออก/สายล่าง',
   knockOut: 'แพ้คัดออก'
 }
 

@@ -22,6 +22,7 @@ const Draw = (props) => {
   const [qualifiedModalVisible, setQualifiedModalVisible] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState()
   const [value, setValue] = useState({})
+  const [tab, setTab] = useState(tournament?.events[0]._id)
   // Todo: default mode ตาม event.step
 
   const groupColumn = (group) => [
@@ -33,11 +34,11 @@ const Draw = (props) => {
   ]
 
   const teamData = (teams) => {
-    const returnData = teams.map((team, index) => {
+    const returnData = teams?.map((team, index) => {
       return ({
         key: `team-${index}`,
         group: <div key={`team-${index}`}>
-          {team.players.map((player) =>
+          {team.players?.map((player) =>
             <div key={`${player._id}`} style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
               <div>{player.officialName}</div>
               <div>{`(${player.club})`}</div>
@@ -55,7 +56,8 @@ const Draw = (props) => {
     request.post('/event/random-order', {
       eventID: event._id,
       groupCount: values.groupCount,
-      qualifiedPerGroup: values.qualifiedPerGroup
+      qualifiedPerGroup: values.qualifiedPerGroup,
+      consolationQualified: values.qualifiedConsolation
     }).then(async () => {
       await mutate()
       setLoading(false)
@@ -71,7 +73,8 @@ const Draw = (props) => {
     request.post(`/event/random-order`, {
       eventID: selectedEvent._id,
       groupOrder,
-      qualifiedPerGroup: values.qualified
+      qualifiedPerGroup: values.qualified,
+      consolationQualified: values.qualifiedConsolation
     }).then(async () => {
       await mutate()
       setLoading(false)
@@ -128,11 +131,11 @@ const Draw = (props) => {
       setGroupOrder(tempGroupOrder)
     } else {
       const tempGroupOrderShow = [...groupOrderShow]
-      const newGroupOrderShow = tempGroupOrderShow.map(group => {
+      const newGroupOrderShow = tempGroupOrderShow?.map(group => {
         return group?.filter(elm => elm._id !== team.team._id)
       })
       const tempGroupOrder = [...groupOrder]
-      const newGroupOrder = tempGroupOrder.map(group => {
+      const newGroupOrder = tempGroupOrder?.map(group => {
         return group?.filter(elm => elm !== team.team._id)
       })
       setGroupOrder(newGroupOrder)
@@ -141,8 +144,15 @@ const Draw = (props) => {
   }
 
   return <div>
-    <Tabs defaultActiveKey="1" >
-      {tournament?.events.map(event => {
+    <Tabs
+      defaultActiveKey={tab}
+      activeKey={tab}
+      onChange={(key) => {
+        setTab(key)
+        setMode('group')
+      }}
+    >
+      {tournament?.events?.map(event => {
         return (
           <Tabs.TabPane tab={event.name} key={event._id}>
             {loading
@@ -201,6 +211,16 @@ const Draw = (props) => {
                         >
                           <InputNumber />
                         </Form.Item>
+
+                        {event?.format === 'roundRobinConsolation' &&
+                          <Form.Item
+                            label="จำนวนคู่ในสายล่าง"
+                            name="qualifiedConsolation"
+                            rules={[{ required: true, message: 'กรุณาระบุจำนวนคู่ที่เข้ารอบสายล่าง' }]}
+                          >
+                            <InputNumber />
+                          </Form.Item>
+                        }
                         <Form.Item wrapperCol={{ span: 24 }}>
                           <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
                             < Button
@@ -224,9 +244,9 @@ const Draw = (props) => {
                         <div style={{ width: width / 2, height: height - 350, overflow: 'scroll' }}>
                           <Table
                             columns={columns}
-                            dataSource={event.teams.map((team, i) => ({
+                            dataSource={event.teams?.map((team, i) => ({
                               team: <div>
-                                {team.team.players.map((player, i) =>
+                                {team.team.players?.map((player, i) =>
                                   <div key={player._id} style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                                     <div>{player.officialName}</div>
                                     <div>{`(${player.club})`}</div>
@@ -238,12 +258,10 @@ const Draw = (props) => {
                                 min={1}
                                 value={value[team.team._id]}
                                 onChange={(order) => {
-                                  console.log(value)
                                   const newValue = {
                                     ...value,
-                                    [team.team._id]: order
+                                    [team?.team?._id]: order
                                   }
-                                  console.log(newValue)
                                   setValue(newValue)
                                 }}
                               />
@@ -256,7 +274,7 @@ const Draw = (props) => {
                         </div>
                         <div style={{ width: width / 2, height: height - 350, overflow: 'scroll', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                           {
-                            groupOrderShow.map((group, index) => (
+                            groupOrderShow?.map((group, index) => (
                               <div key={`group-${index + 1}`}>
                                 <Table
                                   dataSource={teamData(group)}
@@ -278,12 +296,13 @@ const Draw = (props) => {
                     <Radio.Group onChange={e => setMode(e.target.value)} value={mode} style={{ marginBottom: 8 }}>
                       <Radio.Button value="group">รอบแบ่งกลุ่ม</Radio.Button>
                       <Radio.Button value="knockOut">รอบ Knock Out</Radio.Button>
+                      {event.format === 'roundRobinConsolation' && <Radio.Button value="roundRobinConsolation">สายล่าง</Radio.Button>}
                     </Radio.Group>
                     {
                       mode === 'group'
                         ? <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
                           {
-                            event.order?.group.map((group, index) => {
+                            event.order?.group?.map((group, index) => {
                               return (
                                 <div key={`group-${index + 1}`}>
                                   <Table
@@ -298,7 +317,9 @@ const Draw = (props) => {
                             })
                           }
                         </div>
-                        : event.order?.knockOut.length > 0 && drawBracket(event.order?.knockOut)
+                        : mode === 'knockOut' ?
+                          event.order?.knockOut.length > 0 && drawBracket(event.order?.knockOut)
+                          : event.order?.consolation.length > 0 && drawBracket(event.order?.consolation)
                     }
                   </div>
                 }
@@ -326,6 +347,13 @@ const Draw = (props) => {
         >
           <InputNumber />
         </Form.Item>
+
+        {selectedEvent?.format === 'roundRobinConsolation' && <Form.Item
+          label='จำนวนทีมสายล่าง'
+          name='qualifiedConsolation'
+        >
+          <InputNumber />
+        </Form.Item>}
       </Form>
     </Modal>
   </div >

@@ -14,6 +14,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
   const [options, setOptions] = useState([])
   const { players, mutate: mutatePlayer } = usePlayers()
   const { user } = useSelector(state => state)
+  const [type, setType] = useState('single')
 
   const onFinish = (values) => {
     if (player1 && player2 && player1 === player2) {
@@ -24,26 +25,30 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
       return
     }
     setLoading(true)
+    const composePlayer = [
+      {
+        _id: player1,
+        officialName: values.player1Name,
+        club: values.player1Club,
+        birthDate: values.player1BirthDate,
+        gender: values.player1Gender,
+        displayName: values.player1DisplayName
+      },
+    ]
+    if (values.player2Name) {
+      composePlayer.push({
+        _id: player2,
+        officialName: values.player2Name,
+        club: values.player2Club,
+        birthDate: values.player2BirthDate,
+        gender: values.player2Gender,
+        displayName: values.player2DisplayName
+      }
+      )
+    }
     request.post('/event/register', {
       eventID: values.eventID,
-      players: [
-        {
-          _id: player1,
-          officialName: values.player1Name,
-          club: values.player1Club,
-          birthDate: values.player1BirthDate,
-          gender: values.player1Gender,
-          displayName: values.player1DisplayName
-        },
-        {
-          _id: player2,
-          officialName: values.player2Name,
-          club: values.player2Club,
-          birthDate: values.player2BirthDate,
-          gender: values.player2Gender,
-          displayName: values.player2DisplayName
-        }
-      ],
+      players: composePlayer,
       contact: {
         _id: contactPerson,
         officialName: values.contactName,
@@ -147,6 +152,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         scrollToFirstError
+        onValuesChange={({ eventID }) => { if (eventID) setType(tournament.events.find(elm => elm._id === eventID).type) }}
       >
         <Form.Item
           label='ประเภท'
@@ -225,62 +231,64 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
         >
           <DatePicker />
         </Form.Item>
-        <Divider plain>ผู้เล่นคนที่ 2</Divider>
-        <Form.Item
-          label='ชื่อ'
-          name='player2Name'
-          rules={[
-            { required: true, message: 'กรุณาระบุชื่อ-นามสกุล' },
-          ]}
-        >
-          <AutoComplete
-            options={options}
-            onSelect={(data, options) => onSelect(data, options, 'player2')}
-            onSearch={onSearch}
-            onChange={() => onChange('player2')}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label='ชื่อเล่น'
-          name='player2DisplayName'
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label='ทีม'
-          name='player2Club'
-          rules={[
-            { required: true, message: 'กรุณาระบุชื่อทีม' },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label='เพศ'
-          name='player2Gender'
-        // rules={[
-        //   { required: true, message: 'กรุณาระบุเพศ' },
-        // ]}
-        >
-          <Select
-            placeholder='กรุณาเลือก'
-            allowClear
+        {type === 'double' && <div>
+          <Divider plain>ผู้เล่นคนที่ 2</Divider>
+          <Form.Item
+            label='ชื่อ'
+            name='player2Name'
+            rules={[
+              { required: true, message: 'กรุณาระบุชื่อ-นามสกุล' },
+            ]}
           >
-            <Select.Option value='male'>ชาย</Select.Option>
-            <Select.Option value='female'>หญิง</Select.Option>
-          </Select>
-        </Form.Item>
-        <Form.Item
-          label='วันเกิด'
-          name='player2BirthDate'
-        // rules={[
-        //   { required: true, message: 'กรุณาระบุวันเกิด' },
-        // ]}
-        >
-          <DatePicker />
-        </Form.Item>
+            <AutoComplete
+              options={options}
+              onSelect={(data, options) => onSelect(data, options, 'player2')}
+              onSearch={onSearch}
+              onChange={() => onChange('player2')}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label='ชื่อเล่น'
+            name='player2DisplayName'
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label='ทีม'
+            name='player2Club'
+            rules={[
+              { required: true, message: 'กรุณาระบุชื่อทีม' },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label='เพศ'
+            name='player2Gender'
+          // rules={[
+          //   { required: true, message: 'กรุณาระบุเพศ' },
+          // ]}
+          >
+            <Select
+              placeholder='กรุณาเลือก'
+              allowClear
+            >
+              <Select.Option value='male'>ชาย</Select.Option>
+              <Select.Option value='female'>หญิง</Select.Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label='วันเกิด'
+            name='player2BirthDate'
+          // rules={[
+          //   { required: true, message: 'กรุณาระบุวันเกิด' },
+          // ]}
+          >
+            <DatePicker />
+          </Form.Item>
+        </div>}
         <Divider plain>หัวหน้าทีม/ผู้จัดการทีม</Divider>
         <Form.Item
           label='ชื่อ'

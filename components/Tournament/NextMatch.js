@@ -59,7 +59,7 @@ const NextMatch = ({ event, tournamentID }) => {
 
     )
   }
-  else if (tournament?.status === 'ongoing') {
+  else if (tournament?.status === 'ongoing' && matches.myMatch?.length > 0) {
     return (
       <div>
         <Divider>{event.name}</Divider>

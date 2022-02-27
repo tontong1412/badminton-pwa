@@ -191,7 +191,7 @@ const Matches = (props) => {
             </div>
             <div style={{ paddingBottom: '5px' }}>
               <Input
-                disabled={selectedMatch?.step !== 'knockOut'}
+                disabled={selectedMatch?.step === 'group'}
                 placeholder='เซ็ต 3'
                 style={{ width: 120 }}
                 onChange={(e) => onChangeFillScore(e.target.value, 2)}
@@ -265,7 +265,13 @@ const Matches = (props) => {
   useEffect(() => {
     if (matches) {
       let processedMatches = [...matches]
-      if (props.step) processedMatches = matches.filter(match => match.step === props.step)
+      if (props.step) {
+        if (props.step === 'knockOut') {
+          processedMatches = matches.filter(match => match.step !== 'group')
+        } else {
+          processedMatches = matches.filter(match => match.step === props.step)
+        }
+      }
       const data = processedMatches?.sort((a, b) => a.matchNumber - b.matchNumber).map(match => ({
         key: match._id,
         match: match.matchNumber,
