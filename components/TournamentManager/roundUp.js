@@ -232,26 +232,29 @@ const RoundUp = (props) => {
   const { matches } = useMatches(props.tournamentID)
   const { tournament } = useTournament(props.tournamentID)
   const [mode, setMode] = useState('knockOut')
+  const [tab, setTab] = useState(tournament.events[0]._id)
   return (
-    <Tabs defaultActiveKey="1" >
-      {tournament?.events?.map(event => {
+    <Tabs
+      defaultActiveKey={tab}
+      activeKey={tab}
+      onChange={(key) => {
+        setTab(key)
+        setMode('knockOut')
+      }}
+    >
+      {tournament?.events?.map((event, i) => {
         if (event.order.knockOut.length <= 0) return null
         return (
-          <Tabs.TabPane tab={event.name} key={`tab-${event._id}`} >
+          <Tabs.TabPane tab={event.name} key={event._id} >
             <Radio.Group onChange={e => setMode(e.target.value)} value={mode} style={{ marginBottom: 8 }}>
               <Radio.Button value="knockOut">รอบ Knock Out</Radio.Button>
-              {event.format === 'roundRobinConsolation' && <Radio.Button value="roundRobinConsolation">สายล่าง</Radio.Button>}
+              {event.format === 'roundRobinConsolation' && <Radio.Button value="consolation">สายล่าง</Radio.Button>}
             </Radio.Group>
             {
-              mode === 'knockOut'
+              (mode === 'knockOut')
                 ? <RoundUpEvent event={event} matches={matches} />
-                : <RoundUpEvent event={event} matches={matches} step='consolation' />
+                : <RoundUpEvent event={event} matches={matches} step={mode} />
             }
-
-            {/* {event.step === 'group'
-              ? <RoundUpEvent event={event} matches={matches} />
-              : <div style={{ width: '100%', textAlign: 'center' }}>สรุปทีมเข้ารอบแล้ว</div>
-            } */}
 
           </Tabs.TabPane>
         )

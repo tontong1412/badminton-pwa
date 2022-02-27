@@ -22,6 +22,7 @@ const Draw = (props) => {
   const [qualifiedModalVisible, setQualifiedModalVisible] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState()
   const [value, setValue] = useState({})
+  const [tab, setTab] = useState(tournament?.events[0]._id)
   // Todo: default mode ตาม event.step
 
   const groupColumn = (group) => [
@@ -143,7 +144,14 @@ const Draw = (props) => {
   }
 
   return <div>
-    <Tabs defaultActiveKey="1" >
+    <Tabs
+      defaultActiveKey={tab}
+      activeKey={tab}
+      onChange={(key) => {
+        setTab(key)
+        setMode('group')
+      }}
+    >
       {tournament?.events?.map(event => {
         return (
           <Tabs.TabPane tab={event.name} key={event._id}>
