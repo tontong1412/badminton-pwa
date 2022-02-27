@@ -98,7 +98,7 @@ const MyTournamentCardHomePage = ({ tournament, mutate }) => {
           if (tournament.status === 'ongoing' || tournament.status === 'knockOut') {
             return <NextMatch key={event._id} event={event} tournamentID={tournament._id} />
           } else {
-            const teams = event.teams.filter(elm => elm.team.players[0]._id === user.playerID || elm.team.players[1]._id === user.playerID)
+            const teams = event.teams.filter(elm => elm.team.players[0]._id === user.playerID || elm.team.players[1]?._id === user.playerID)
             if (teams && teams.length > 0) {
               return (
                 <div key={event._id}>

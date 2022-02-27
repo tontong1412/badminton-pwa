@@ -9,6 +9,7 @@ const ArrangeMatch = ({ tournamentID, setStep }) => {
     request.post('/match/arrange', {
       tournamentID,
       numberOfCourt: values.numberOfCourt,
+      numberOfCourtKnockOut: values.numberOfCourtKnockOut,
       startTime: {
         group: values.groupStartTime,
         knockOut: values.knockOutStartTime
@@ -49,11 +50,18 @@ const ArrangeMatch = ({ tournamentID, setStep }) => {
           name="groupStartTime"
           rules={[{ required: true, message: 'กรุณาระบุ' }]}
         >
-          <DatePicker showTime format="DD-MMM-YYYY HH:mm" />
+          <DatePicker showTime format="DD-MMM-YYYY HH:mm" minuteStep={5} />
         </Form.Item>
         <Form.Item
           label="เวลาที่ใช้ต่อคู่"
           name="groupDuration"
+          rules={[{ required: true, message: 'กรุณาระบุ' }]}
+        >
+          <InputNumber />
+        </Form.Item>
+        <Form.Item
+          label="จำนวนคอร์ด"
+          name="numberOfCourt"
           rules={[{ required: true, message: 'กรุณาระบุ' }]}
         >
           <InputNumber />
@@ -65,7 +73,7 @@ const ArrangeMatch = ({ tournamentID, setStep }) => {
           name="knockOutStartTime"
         // rules={[{ required: true, message: 'กรุณาระบุ' }]}
         >
-          <DatePicker showTime format="DD-MMM-YYYY HH:mm" />
+          <DatePicker showTime format="DD-MMM-YYYY HH:mm" minuteStep={5} />
         </Form.Item>
         <Form.Item
           label="เวลาที่ใช้ต่อคู่"
@@ -74,16 +82,15 @@ const ArrangeMatch = ({ tournamentID, setStep }) => {
         >
           <InputNumber />
         </Form.Item>
-
-        <Divider />
-
         <Form.Item
           label="จำนวนคอร์ด"
-          name="numberOfCourt"
+          name="numberOfCourtKnockOut"
           rules={[{ required: true, message: 'กรุณาระบุ' }]}
         >
           <InputNumber />
         </Form.Item>
+
+
 
         <Form.Item wrapperCol={{ span: 24 }}>
           <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>

@@ -22,6 +22,7 @@ const Draw = (props) => {
   const [qualifiedModalVisible, setQualifiedModalVisible] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState()
   const [value, setValue] = useState({})
+  const [tab, setTab] = useState(tournament?.events[0]._id)
   // Todo: default mode ตาม event.step
 
   const groupColumn = (group) => [
@@ -55,7 +56,8 @@ const Draw = (props) => {
     request.post('/event/random-order', {
       eventID: event._id,
       groupCount: values.groupCount,
-      qualifiedPerGroup: values.qualifiedPerGroup
+      qualifiedPerGroup: values.qualifiedPerGroup,
+      consolationQualified: values.qualifiedConsolation
     }).then(async () => {
       await mutate()
       setLoading(false)
@@ -71,7 +73,8 @@ const Draw = (props) => {
     request.post(`/event/random-order`, {
       eventID: selectedEvent._id,
       groupOrder,
-      qualifiedPerGroup: values.qualified
+      qualifiedPerGroup: values.qualified,
+      consolationQualified: values.qualifiedConsolation
     }).then(async () => {
       await mutate()
       setLoading(false)
@@ -141,7 +144,14 @@ const Draw = (props) => {
   }
 
   return <div>
-    <Tabs defaultActiveKey="1" >
+    <Tabs
+      defaultActiveKey={tab}
+      activeKey={tab}
+      onChange={(key) => {
+        setTab(key)
+        setMode('group')
+      }}
+    >
       {tournament?.events?.map(event => {
         return (
           <Tabs.TabPane tab={event.name} key={event._id}>
@@ -201,6 +211,16 @@ const Draw = (props) => {
                         >
                           <InputNumber />
                         </Form.Item>
+
+                        {event?.format === 'roundRobinConsolation' &&
+                          <Form.Item
+                            label="จำนวนคู่ในสายล่าง"
+                            name="qualifiedConsolation"
+                            rules={[{ required: true, message: 'กรุณาระบุจำนวนคู่ที่เข้ารอบสายล่าง' }]}
+                          >
+                            <InputNumber />
+                          </Form.Item>
+                        }
                         <Form.Item wrapperCol={{ span: 24 }}>
                           <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
                             < Button
@@ -276,6 +296,7 @@ const Draw = (props) => {
                     <Radio.Group onChange={e => setMode(e.target.value)} value={mode} style={{ marginBottom: 8 }}>
                       <Radio.Button value="group">รอบแบ่งกลุ่ม</Radio.Button>
                       <Radio.Button value="knockOut">รอบ Knock Out</Radio.Button>
+                      {event.format === 'roundRobinConsolation' && <Radio.Button value="roundRobinConsolation">สายล่าง</Radio.Button>}
                     </Radio.Group>
                     {
                       mode === 'group'
@@ -296,7 +317,9 @@ const Draw = (props) => {
                             })
                           }
                         </div>
-                        : event.order?.knockOut.length > 0 && drawBracket(event.order?.knockOut)
+                        : mode === 'knockOut' ?
+                          event.order?.knockOut.length > 0 && drawBracket(event.order?.knockOut)
+                          : event.order?.consolation.length > 0 && drawBracket(event.order?.consolation)
                     }
                   </div>
                 }
@@ -324,6 +347,13 @@ const Draw = (props) => {
         >
           <InputNumber />
         </Form.Item>
+
+        {selectedEvent?.format === 'roundRobinConsolation' && <Form.Item
+          label='จำนวนทีมสายล่าง'
+          name='qualifiedConsolation'
+        >
+          <InputNumber />
+        </Form.Item>}
       </Form>
     </Modal>
   </div >

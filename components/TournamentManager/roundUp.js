@@ -1,17 +1,18 @@
-import { Tabs, Button, Table, InputNumber, message, Popconfirm } from 'antd'
+import { Tabs, Button, Table, InputNumber, message, Popconfirm, Radio } from 'antd'
 import { useTournament, useMatches, useWindowSize } from '../../utils'
 import { useState, useEffect } from 'react'
 import drawBracket from '../../utils/drawBracket'
 import request from '../../utils/request'
 import ServiceErrorModal from '../ServiceErrorModal'
 
-const RoundUpEvent = ({ event, matches }) => {
+const RoundUpEvent = ({ event, matches, step = 'knockOut' }) => {
   const [order, setOrder] = useState(event.order.knockOut)
   const [groupMatches, setGroupMatches] = useState([])
   const [showOrder, setShowOrder] = useState(event.order.knockOut)
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false)
   const [width, height] = useWindowSize()
+
 
 
   useEffect(() => {
@@ -22,9 +23,9 @@ const RoundUpEvent = ({ event, matches }) => {
   }, [matches])
 
   useEffect(() => {
-    setOrder(event.order.knockOut)
-    setShowOrder(event.order.knockOut)
-  }, [event.order.knockOut])
+    setOrder(event.order[step])
+    setShowOrder(event.order[step])
+  }, [event.order[step]])
 
   useEffect(() => {
     if (groupMatches.length > 0) {
@@ -57,10 +58,10 @@ const RoundUpEvent = ({ event, matches }) => {
     } else {
       const index = order.findIndex(elm => elm._id === team.team._id)
       const tempOrder = [...order]
-      tempOrder[index] = event.order.knockOut[index]
+      tempOrder[index] = event.order[step][index]
 
       const tempOrderShow = [...showOrder]
-      tempOrderShow[index] = event.order.knockOut[index]
+      tempOrderShow[index] = event.order[step][index]
 
       setOrder(tempOrder)
       setShowOrder(tempOrderShow)
@@ -73,7 +74,6 @@ const RoundUpEvent = ({ event, matches }) => {
         let score = 0
         let diff = 0
         groupMatches?.filter(e => e.teamA.team._id === team._id && e.eventID === event._id).forEach((elm) => {
-          console.log('elm', elm)
           score += elm.teamA.scoreSet
           diff += elm.teamA.scoreDiff
         })
@@ -109,7 +109,7 @@ const RoundUpEvent = ({ event, matches }) => {
     const orderTemp = [...order]
     const data = winner.reduce((prev, group) => {
       group.forEach((team, index) => {
-        const defaultOrder = event.order.knockOut.findIndex((e) => e === `ที่ ${index + 1} กลุ่ม ${team.group}`)
+        const defaultOrder = event.order[step].findIndex((e) => e === `ที่ ${index + 1} กลุ่ม ${team.group}`)
 
         if (defaultOrder >= 0) {
           showOrderTemp[defaultOrder] = <div>
@@ -139,7 +139,7 @@ const RoundUpEvent = ({ event, matches }) => {
             key={team.team._id}
             defaultValue={defaultOrder >= 0 && defaultOrder + 1}
             onBlur={(e) => onChangeOrder(e.target.value, team)}
-            max={event.order.knockOut.length}
+            max={event.order[step].length}
             min={1} />
         })
       })
@@ -156,7 +156,8 @@ const RoundUpEvent = ({ event, matches }) => {
     setLoading(true)
     request.post('/event/round-up', {
       eventID: event._id,
-      order: order?.map(elm => elm._id)
+      order: order.map(elm => elm._id),
+      step,
     }).then(() => {
       message.success('สำเร็จ')
       setLoading(false)
@@ -230,18 +231,30 @@ const RoundUpEvent = ({ event, matches }) => {
 const RoundUp = (props) => {
   const { matches } = useMatches(props.tournamentID)
   const { tournament } = useTournament(props.tournamentID)
-
+  const [mode, setMode] = useState('knockOut')
+  const [tab, setTab] = useState(tournament.events[0]._id)
   return (
-    <Tabs defaultActiveKey="1" >
-      {tournament?.events?.map(event => {
+    <Tabs
+      defaultActiveKey={tab}
+      activeKey={tab}
+      onChange={(key) => {
+        setTab(key)
+        setMode('knockOut')
+      }}
+    >
+      {tournament?.events?.map((event, i) => {
         if (event.order.knockOut.length <= 0) return null
         return (
-          <Tabs.TabPane tab={event.name} key={`tab-${event._id}`} >
-            <RoundUpEvent event={event} matches={matches} />
-            {/* {event.step === 'group'
-              ? <RoundUpEvent event={event} matches={matches} />
-              : <div style={{ width: '100%', textAlign: 'center' }}>สรุปทีมเข้ารอบแล้ว</div>
-            } */}
+          <Tabs.TabPane tab={event.name} key={event._id} >
+            <Radio.Group onChange={e => setMode(e.target.value)} value={mode} style={{ marginBottom: 8 }}>
+              <Radio.Button value="knockOut">รอบ Knock Out</Radio.Button>
+              {event.format === 'roundRobinConsolation' && <Radio.Button value="consolation">สายล่าง</Radio.Button>}
+            </Radio.Group>
+            {
+              (mode === 'knockOut')
+                ? <RoundUpEvent event={event} matches={matches} />
+                : <RoundUpEvent event={event} matches={matches} step={mode} />
+            }
 
           </Tabs.TabPane>
         )
