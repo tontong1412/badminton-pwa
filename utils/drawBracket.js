@@ -1,4 +1,4 @@
-const drawBracket = (order = {}, blockWidth = 250) => {
+const drawBracket = (order = {}, blockWidth = 350) => {
   const height = 50
   const lineWidth = 50
   const teamCount = order.length
@@ -28,7 +28,7 @@ const drawBracket = (order = {}, blockWidth = 250) => {
       </div>
 
       {
-        Array.apply(null, Array(Math.log2(teamCount || 1))).map((round, i) => (
+        Array.apply(null, Array(Math.ceil(Math.log2(teamCount || 1)))).map((round, i) => (
           <div key={`round-${i}`} style={{ paddingTop: `${(height / 2) + (i < 3 ? i : Math.pow(2, i - 1)) * height}px` }}>
             {Array.apply(null, Array(teamCount - (i < 3 ? i : Math.pow(2, i - 1)))).map((team, j) => {
               return <div

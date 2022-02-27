@@ -24,7 +24,7 @@ const Draw = (props) => {
   const [value, setValue] = useState({})
   const [tab, setTab] = useState(tournament?.events[0]._id)
   // Todo: default mode ตาม event.step
-
+  console.log(tournament)
   const groupColumn = (group) => [
     {
       title: `กลุ่ม ${group}`,
@@ -149,7 +149,7 @@ const Draw = (props) => {
       activeKey={tab}
       onChange={(key) => {
         setTab(key)
-        setMode('group')
+        setMode('knockOut')
       }}
     >
       {tournament?.events?.map(event => {
@@ -158,7 +158,7 @@ const Draw = (props) => {
             {loading
               ? <Loading />
               : <div style={{ display: 'flex' }}>
-                {event.order.group.length === 0 && event.order.knockOut.length === 0 ?
+                {event?.order?.group?.length === 0 && event.order?.knockOut?.length === 0 ?
                   <div style={{ margin: 'auto', width: '100%' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', margin: '0px 20px 20px 20px', }}>
                       <div />
@@ -294,7 +294,7 @@ const Draw = (props) => {
                   :
                   <div>
                     <Radio.Group onChange={e => setMode(e.target.value)} value={mode} style={{ marginBottom: 8 }}>
-                      <Radio.Button value="group">รอบแบ่งกลุ่ม</Radio.Button>
+                      {(event.format === 'group' || event.format === 'roundRoubinConsolation') && <Radio.Button value="group">รอบแบ่งกลุ่ม</Radio.Button>}
                       <Radio.Button value="knockOut">รอบ Knock Out</Radio.Button>
                       {event.format === 'roundRobinConsolation' && <Radio.Button value="roundRobinConsolation">สายล่าง</Radio.Button>}
                     </Radio.Group>
@@ -318,7 +318,11 @@ const Draw = (props) => {
                           }
                         </div>
                         : mode === 'knockOut' ?
-                          event.order?.knockOut.length > 0 && drawBracket(event.order?.knockOut)
+                          event.order?.knockOut.length > 0 && drawBracket(
+                            event.order?.knockOut.map((team, i) => <div key={i + 1}>
+                              {team ? team.players.map(player => <div key={player._id}>{player.officialName}</div>) : 'bye'}
+                            </div>)
+                          )
                           : event.order?.consolation.length > 0 && drawBracket(event.order?.consolation)
                     }
                   </div>

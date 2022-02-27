@@ -249,9 +249,9 @@ const ManageEvent = ({ tournamentID }) => {
             >
               <Select
               >
+                <Select.Option value="singleElim">แพ้คัดออก</Select.Option>
                 <Select.Option value="roundRobin">แบ่งกลุ่ม/แพ้คัดออก</Select.Option>
                 <Select.Option value="roundRobinConsolation">แบ่งกลุ่ม/แพ้คัดออก/สายล่าง</Select.Option>
-                {/* <Select.Option value="singleElim">แพ้คัดออก</Select.Option> */}
               </Select>
             </Form.Item>
           </Form>
