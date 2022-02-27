@@ -60,7 +60,7 @@ const MatchList = () => {
 
   useEffect(() => {
     setQueue(gang?.queue)
-    if (user && gang && (user.playerID === gang.creator._id || gang.managers.map(elm => elm._id).includes(user.playerID))) {
+    if (user.playerID && gang && (user.playerID === gang.creator?._id || gang.managers.map(elm => elm._id).includes(user.playerID))) {
       setCanManage(true)
       setAllowAddQueue(true)
     } else {
