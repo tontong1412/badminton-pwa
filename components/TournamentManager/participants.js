@@ -2,7 +2,7 @@ import moment from 'moment'
 import { COLOR, EVENT, TAB_OPTIONS, TRANSACTION } from '../../constant'
 import { useEffect, useState } from 'react'
 import { useTournament, useWindowSize } from '../../utils'
-import { Table, Button, Tag, Menu, Dropdown, Input, Modal } from 'antd'
+import { Table, Button, Tag, Menu, Dropdown, Input, Modal, Form } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import request from '../../utils/request'
 import PlayerDisplay from '../PlayerDisplay'
@@ -22,8 +22,10 @@ const Participants = (props) => {
   const [slipModalVisible, setSlipModalVisible] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState();
   const [registerModalVisible, setRegisterModalVisible] = useState(false)
+  const [noteModalVisible, setNoteModalVisible] = useState(false)
   const { user } = useSelector(state => state)
   const [width, height] = useWindowSize()
+  const [form] = Form.useForm()
 
   const menu = (event, team) => (
     <Menu>
@@ -59,6 +61,15 @@ const Participants = (props) => {
           เปลี่ยนเป็นตัวจริง
         </div>
       </Menu.Item>}
+      <Menu.Item key='note-event'>
+        <div onClick={() => {
+          setNoteModalVisible(true)
+          setSelectedTeam(team)
+          setSelectedEvent(event)
+        }}>
+          เพิ่มหมายเหตุ
+        </div>
+      </Menu.Item>
       <Menu.Item key='leave-event'>
         <div onClick={() => Modal.confirm({
           title: 'แน่ใจที่จะถอนคู่นี้หรือไม่',
@@ -288,6 +299,29 @@ const Participants = (props) => {
         mutate={mutate}
         isManager
       />
+      <Modal
+        visible={noteModalVisible}
+        title='เพิ่มหมายเหตุ'
+        destroyOnClose
+        onOk={form.submit}
+        onCancel={() => setNoteModalVisible(false)}
+      >
+        <Form
+          form={form}
+          onFinish={(values) => {
+            onUpdateTeam(selectedEvent._id, selectedTeam._id, 'note', values.note)
+            setNoteModalVisible(false)
+            form.resetFields()
+          }}
+        >
+          <Form.Item
+            name='note'
+          >
+            <Input.TextArea />
+          </Form.Item>
+        </Form>
+
+      </Modal>
     </div>
   )
 }
