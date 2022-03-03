@@ -165,7 +165,7 @@ const Match = () => {
         justifyContent: 'space-around',
         maxWidth: '1000px',
         margin: 'auto',
-        overflow: 'scroll'
+        // overflow: 'scroll'
 
       }}>
         <div style={{
