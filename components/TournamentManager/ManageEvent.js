@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useTournament } from "../../utils"
-import { Table, Modal, Form, Input, Checkbox, Button, InputNumber, Popconfirm, Select } from "antd"
+import { Table, Modal, Form, Input, Checkbox, Button, InputNumber, Popconfirm, Select, Radio } from "antd"
 import AddButton from '../../components/addButton'
 import request from "../../utils/request"
 import axios from "axios"
@@ -16,10 +16,18 @@ const ManageEvent = ({ tournamentID }) => {
   const [selectedEvent, setSelectedEvent] = useState()
   const [form] = Form.useForm()
   useEffect(() => {
+    if (selectedEvent) {
+      setModalVisible(true)
+    } else {
+      setModalVisible(false)
+    }
+  }, [selectedEvent])
+  useEffect(() => {
     const tempData = tournament?.events.map(event => {
       return {
         key: event._id,
         name: event.name,
+        type: event.type,
         description: event.description,
         limit: event.limit,
         fee: event.fee,
@@ -28,8 +36,9 @@ const ManageEvent = ({ tournamentID }) => {
         registered: event.teams.length,
         action: <div onClick={() => {
           setMode('edit')
+          form.resetFields()
           setSelectedEvent(event)
-          setModalVisible(true)
+          // setModalVisible(true)
         }}>แก้ไข</div>
       }
     })
@@ -43,32 +52,30 @@ const ManageEvent = ({ tournamentID }) => {
         .then(res => {
           mutate()
           setLoading(false)
-          setModalVisible(false)
+          // setModalVisible(false)
           form.resetFields()
           setSelectedEvent()
         }).catch((err) => {
           console.log(err)
           setLoading(false)
-          setModalVisible(false)
-          form.resetFields()
+          // setModalVisible(false)
           setSelectedEvent()
+          form.resetFields()
         })
     } else {
       request.put(`/event/${selectedEvent._id}`, { ...value, tournamentID })
         .then(res => {
           mutate()
           setLoading(false)
-          setModalVisible(false)
+          // setModalVisible(false)
           setSelectedEvent()
           form.resetFields()
-          setSelectedEvent()
         }).catch((err) => {
           console.log(err)
           setLoading(false)
-          setModalVisible(false)
+          // setModalVisible(false)
           setSelectedEvent()
           form.resetFields()
-          setSelectedEvent()
         })
     }
   }
@@ -77,13 +84,13 @@ const ManageEvent = ({ tournamentID }) => {
     axios.delete(`${API_ENDPOINT}/event/${selectedEvent._id}`)
       .then(() => {
         setSelectedEvent()
-        setModalVisible(false)
+        // setModalVisible(false)
         form.resetFields()
         mutate()
       })
       .catch((e) => {
         setSelectedEvent()
-        setModalVisible(false)
+        // setModalVisible(false)
         form.resetFields()
         console.log(e)
       })
@@ -97,6 +104,13 @@ const ManageEvent = ({ tournamentID }) => {
       align: 'center',
       width: 100,
       fixed: 'left'
+    },
+    {
+      title: 'ประเภท',
+      dataIndex: 'type',
+      key: 'type',
+      align: 'center',
+      width: 80
     },
     {
       title: 'คำอธิบาย',
@@ -166,7 +180,7 @@ const ManageEvent = ({ tournamentID }) => {
       ...base,
       <Button key='cancle' onClick={() => {
         setSelectedEvent()
-        setModalVisible(false)
+        // setModalVisible(false)
         form.resetFields()
       }}>ยกเลิก</Button>,
       <Button
@@ -188,8 +202,8 @@ const ManageEvent = ({ tournamentID }) => {
         title={mode === 'create' ? 'เพิ่มรายการแข่งขัน' : 'แก้ไขรายการแข่งขัน'}
         onCancel={() => {
           setSelectedEvent()
-          setModalVisible(false)
           form.resetFields()
+          // setModalVisible(false)
         }}
         onOk={() => form.submit()}
         footer={footer()}
@@ -213,6 +227,17 @@ const ManageEvent = ({ tournamentID }) => {
               rules={[{ required: true, message: 'กรุณาใส่ชื่อรายการ' }]}
             >
               <Input />
+            </Form.Item>
+
+            <Form.Item
+              label="ประเภท"
+              name="type"
+              rules={[{ required: true, message: 'กรุณาระบุประเภท' }]}
+            >
+              <Radio.Group >
+                <Radio value='double'>คู่</Radio>
+                <Radio value='single'>เดี่ยว</Radio>
+              </Radio.Group>
             </Form.Item>
 
             <Form.Item

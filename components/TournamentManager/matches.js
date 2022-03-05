@@ -275,7 +275,7 @@ const Matches = (props) => {
       const data = processedMatches?.sort((a, b) => a.matchNumber - b.matchNumber).map(match => ({
         key: match._id,
         match: match.matchNumber,
-        event: match.eventName,
+        event: <div><div>{match.eventName}</div>{match.step === 'consolation' && <div>สายล่าง</div>}</div>,
         competitor1: match.teamA?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
         competitor2: match.teamB?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
         date: moment(match.date).format('ll'),
