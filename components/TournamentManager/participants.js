@@ -273,7 +273,7 @@ const Participants = (props) => {
         scroll={{ y: height - 350, x: 1000 }}
         pagination={false}
         onChange={(pagination, filters, sorter, extra) => setTotalTeam(extra.currentDataSource.length)} />
-      {tournament?.registerOpen && <AddButton onClick={() => {
+      {(tournament?.registerOpen || props.isManager) && <AddButton onClick={() => {
         if (user.id) setRegisterModalVisible(true)
         else {
           Modal.info({

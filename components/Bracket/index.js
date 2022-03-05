@@ -10,27 +10,27 @@ const Connector = () => (
     <div className="line"></div>
   </div>
 )
-const Winner = (props) => {
+const Winner = ({ matches }) => {
   return (
     <div className="winners">
       <div className="matchups">
-        <MatchUp match={props.matches[0]} />
-        <MatchUp match={props.matches[1]} />
+        <MatchUp match={matches[0]} />
+        <MatchUp match={matches[1]} />
       </div>
       <Connector />
     </div>
   )
 }
-const Bracket = (props) => {
+const Bracket = ({ event, step = 'knockOut' }) => {
   const [bracket, setBracket] = useState()
-  const { matches, isLoading, isError } = useMatchDraws(props?.event?._id)
+  const { matches, isLoading, isError } = useMatchDraws(event?._id)
 
   useEffect(() => {
     if (matches) {
-      const bracketData = matches.filter(e => e.step === 'knockOut')
+      const bracketData = matches.filter(e => e.step === step)
       setBracket(processBracketData(bracketData))
     }
-  }, [matches])
+  }, [matches, step])
 
   const renderBracket = (roundArray, bracket) => {
     return (

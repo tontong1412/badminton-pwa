@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react'
 import Loading from '../../../components/loading'
 import { Tabs, Radio } from 'antd'
 import RoundRobin from '../../../components/RoundRobin'
-import BracketConsolation from '../../../components/Bracket/Consolation'
 const { TabPane } = Tabs
 const Draws = () => {
   const dispatch = useDispatch()
@@ -22,12 +21,15 @@ const Draws = () => {
   }, [])
 
   const renderDraws = (event) => {
+    if (event.format === 'singleElim') {
+      return <Bracket key={event._id} event={event} step='knockOut' />
+    }
     if (mode === 'knockOut') {
-      return <Bracket key={event._id} event={event} />
+      return <Bracket key={event._id} event={event} step='knockOut' />
     } else if (mode === 'group') {
       return <RoundRobin key={event._id} event={event} />
     } else if (mode === 'consolation') {
-      return <BracketConsolation key={event._id} event={event} />
+      return <Bracket key={event._id} event={event} step='consolation' />
     }
     return null
   }
@@ -49,11 +51,12 @@ const Draws = () => {
         {tournament?.events?.map(event => {
           return (
             <TabPane tab={event.name} key={event._id}>
-              <Radio.Group onChange={e => setMode(e.target.value)} value={mode} style={{ marginBottom: 8 }}>
-                <Radio.Button value="group">รอบแบ่งกลุ่ม</Radio.Button>
-                <Radio.Button value="knockOut">รอบ Knock Out</Radio.Button>
-                {event?.format === 'roundRobinConsolation' && <Radio.Button value="consolation">สายล่าง</Radio.Button>}
-              </Radio.Group>
+              {event.format !== 'singleElim' &&
+                <Radio.Group onChange={e => setMode(e.target.value)} value={mode} style={{ marginBottom: 8 }}>
+                  <Radio.Button value="group">รอบแบ่งกลุ่ม</Radio.Button>
+                  <Radio.Button value="knockOut">รอบ Knock Out</Radio.Button>
+                  {event?.format === 'roundRobinConsolation' && <Radio.Button value="consolation">สายล่าง</Radio.Button>}
+                </Radio.Group>}
               {renderDraws(event)}
             </TabPane>
           )

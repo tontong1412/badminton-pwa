@@ -5,7 +5,7 @@ import AddButton from '../../components/addButton'
 import request from "../../utils/request"
 import axios from "axios"
 import { API_ENDPOINT } from "../../config"
-import { MAP_FORMAT } from "../../constant"
+import { MAP_FORMAT, MAP_EVENT_TYPE } from "../../constant"
 
 const ManageEvent = ({ tournamentID }) => {
   const { tournament, isError, isLoading, mutate } = useTournament(tournamentID)
@@ -27,7 +27,7 @@ const ManageEvent = ({ tournamentID }) => {
       return {
         key: event._id,
         name: event.name,
-        type: event.type,
+        type: MAP_EVENT_TYPE[event.type],
         description: event.description,
         limit: event.limit,
         fee: event.fee,
@@ -38,7 +38,7 @@ const ManageEvent = ({ tournamentID }) => {
           setMode('edit')
           form.resetFields()
           setSelectedEvent(event)
-          // setModalVisible(true)
+          setModalVisible(true)
         }}>แก้ไข</div>
       }
     })
@@ -180,7 +180,7 @@ const ManageEvent = ({ tournamentID }) => {
       ...base,
       <Button key='cancle' onClick={() => {
         setSelectedEvent()
-        // setModalVisible(false)
+        setModalVisible(false)
         form.resetFields()
       }}>ยกเลิก</Button>,
       <Button
@@ -194,7 +194,9 @@ const ManageEvent = ({ tournamentID }) => {
     <div>
       <Table dataSource={data} columns={columns} size='small' pagination={false} scroll={{ x: 1000 }} />
       <AddButton onClick={() => {
+        setSelectedEvent({})
         setModalVisible(true)
+        form.resetFields()
         setMode('create')
       }} />
       <Modal
@@ -207,6 +209,7 @@ const ManageEvent = ({ tournamentID }) => {
         }}
         onOk={() => form.submit()}
         footer={footer()}
+        closable
         destroyOnClose
       >
         <div>
