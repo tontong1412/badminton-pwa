@@ -9,6 +9,7 @@ import request from "../../utils/request"
 import Loading from "../loading"
 import { useState } from "react"
 import drawBracket from "../../utils/drawBracket"
+import ManualDrawKnockOut from "../Tournament/ManualDrawKnockOut"
 
 const Draw = (props) => {
   const [form] = Form.useForm()
@@ -177,14 +178,69 @@ const Draw = (props) => {
       case 'consolation':
         return event.order?.consolation.length > 0 && drawBracket(event.order?.consolation)
       default:
-        return
+        return <div style={{ display: 'flex', gap: '10px' }}>
+          <div style={{ width: width / 2, height: height - 350, overflow: 'scroll' }}>
+            <Table
+              columns={columns}
+              dataSource={event.teams?.map((team, i) => ({
+                team: <div>
+                  {team.team.players?.map((player, i) =>
+                    <div key={player._id} style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                      <div>{player.officialName}</div>
+                      <div>{`(${player.club})`}</div>
+                    </div>)}
+                </div>,
+                draw: <InputNumber
+                  key={team.team._id}
+                  onBlur={(e) => onChangeOrder(e.target.value, team, i)}
+                  min={1}
+                  value={value[team.team._id]}
+                  onChange={(order) => {
+                    const newValue = {
+                      ...value,
+                      [team?.team?._id]: order
+                    }
+                    setValue(newValue)
+                  }}
+                />
+              }))}
+              pagination={false}
+              scroll={{ y: height - 340 }}
+              size='small'
+            />
+          </div>
+          <div style={{
+            width: width / 2,
+            height: height - 350,
+            overflow: 'scroll',
+            display: 'flex',
+            gap: '10px',
+            flexWrap: 'wrap'
+          }}>
+            {
+              groupOrderShow?.map((group, index) => (
+                <div key={`group-${index + 1}`}>
+                  <Table
+                    dataSource={teamData(group)}
+                    columns={groupColumn(index + 1)}
+                    style={{ width: '300px' }}
+                    size="small"
+                    pagination={false}
+                  />
+                </div>
+              ))
+            }
+          </div>
+        </div>
     }
 
   }
 
-  const renderRandomForm = (event) => {
-    switch (method) {
-      case 'manual':
+  const renderManualDraw = (event) => {
+    switch (event.format) {
+      case 'singleElim':
+        return <ManualDrawKnockOut playerList={event.teams} />
+      default:
         return (
           <div style={{ display: 'flex', gap: '10px' }}>
             <div style={{ width: width / 2, height: height - 350, overflow: 'scroll' }}>
@@ -241,6 +297,13 @@ const Draw = (props) => {
             </div>
           </div>
         )
+    }
+  }
+
+  const renderRandomForm = (event) => {
+    switch (method) {
+      case 'manual':
+        return renderManualDraw(event)
 
       case 'random':
         if (event.format === 'singleElim') {
