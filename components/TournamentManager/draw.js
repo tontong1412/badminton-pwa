@@ -239,7 +239,7 @@ const Draw = (props) => {
   const renderManualDraw = (event) => {
     switch (event.format) {
       case 'singleElim':
-        return <ManualDrawKnockOut playerList={event.teams} />
+        return <ManualDrawKnockOut mutate={mutate} eventID={event._id} playerList={event.teams} />
       default:
         return (
           <div style={{ display: 'flex', gap: '10px' }}>
@@ -383,8 +383,7 @@ const Draw = (props) => {
 
   const renderControlPanel = (event) => {
     return (
-      <div style={{ display: 'flex', justifyContent: 'space-between', margin: '0px 20px 20px 20px', }}>
-        {width > 400 && <div style={{ width: '150px' }} />}
+      <div style={{ display: 'flex', justifyContent: 'center', margin: '0px 20px 20px 20px', }}>
         <Radio.Group
           options={[
             { label: 'โปรแกรมสุ่ม', value: 'random' },
@@ -394,26 +393,6 @@ const Draw = (props) => {
           value={method}
           optionType="button"
         />
-        {method === 'manual' ?
-          <div style={{ display: 'flex', gap: '10px', width: '150px' }}>
-            <Button onClick={() => {
-              setGroupOrder([])
-              setGroupOrderShow([])
-              setValue({})
-            }} >
-              Reset
-            </Button>
-            <Button
-              onClick={() => {
-                setQualifiedModalVisible(true)
-                setSelectedEvent(event)
-              }}
-              type="primary">
-              บันทึก
-            </Button>
-          </div>
-          : <div style={{ width: '150px' }} />
-        }
       </div>
     )
   }
