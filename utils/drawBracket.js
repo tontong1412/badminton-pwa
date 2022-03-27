@@ -22,7 +22,7 @@ const drawBracket = (order = {}, blockWidth = 350) => {
                 gap: '10px'
               }}>
               <div style={{ marginRight: '5px', width: '20px' }}>{i + 1}</div>
-              <div>{team}</div>
+              <div>{team || 'bye'}</div>
               {/* <div><EditOutlined /></div> */}
             </div>
           </>

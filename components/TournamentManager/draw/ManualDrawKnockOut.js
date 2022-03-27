@@ -1,9 +1,9 @@
 import { Button, Table, Popconfirm, Select } from 'antd'
-import { useWindowSize } from '../../utils'
+import { useWindowSize } from '../../../utils'
 import { useState, } from 'react'
-import drawBracket from '../../utils/drawBracket'
-import request from '../../utils/request'
-import ServiceErrorModal from '../ServiceErrorModal'
+import drawBracket from '../../../utils/drawBracket'
+import request from '../../../utils/request'
+import ServiceErrorModal from '../../ServiceErrorModal'
 
 const DisplayTeam = ({ team }) => {
   return (
