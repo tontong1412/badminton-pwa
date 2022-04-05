@@ -12,16 +12,16 @@ const MatchUp = (props) => {
           <div className={`participant ${match.status === 'finished' ? match.teamA.scoreSet > match.teamB.scoreSet ? 'winner' : 'loser' : null}`}>
             {
               matchType === MATCH.TYPE.SINGLE
-                ? <span>{match.teamA?.team?.players[0]?.officialName || 'waiting'}</span>
+                ? <span>{match.teamA?.team?.players[0]?.officialName || (match.matchNumber ? 'waiting' : 'bye')}</span>
                 // <span>{match.teamA.team.players[0] ? match.teamA.team.players[0]/*.officialName*/ : 'bye'}</span> :
                 : <React.Fragment>
-                  <div>{match.teamA.team?.players[0]?.officialName || 'waiting'}</div>
-                  <div>{match.teamA.team?.players[1]?.officialName || 'waiting'}</div>
+                  <div>{match.teamA.team?.players[0]?.officialName || (match.matchNumber ? 'waiting' : 'bye')}</div>
+                  <div>{match.teamA.team?.players[1]?.officialName || (match.matchNumber ? 'waiting' : 'bye')}</div>
                 </React.Fragment>
             }
           </div>
           {
-            match.scoreLabel && match.scoreLabel.length > 0 ? (
+            !match.matchNumber || match.scoreLabel && match.scoreLabel.length > 0 ? (
               <React.Fragment>
                 {[0, 1, 2].map(index => <div className='detail-score' key={index}><p>{match.scoreLabel[index]?.split('-')[0]}</p></div>)}
               </React.Fragment>
@@ -36,15 +36,15 @@ const MatchUp = (props) => {
             {
               matchType === MATCH.TYPE.SINGLE
                 // <span>{match.teamB[0] ? match.teamB.team.players[0]/*.officialName*/ : 'bye'}</span> :
-                ? <span>{match.teamB?.team?.players[0]?.officialName || 'waiting'}</span>
+                ? <span>{match.teamB?.team?.players[0]?.officialName || (match.matchNumber ? 'waiting' : 'bye')}</span>
                 : <React.Fragment>
-                  <div>{match.teamB?.team?.players[0]?.officialName || 'waiting'} </div>
-                  <div>{match.teamB?.team?.players[1]?.officialName || 'waiting'} </div>
+                  <div>{match.teamB?.team?.players[0]?.officialName || (match.matchNumber ? 'waiting' : 'bye')} </div>
+                  <div>{match.teamB?.team?.players[1]?.officialName || (match.matchNumber ? 'waiting' : 'bye')} </div>
                 </React.Fragment>
             }
           </div>
           {
-            match.scoreLabel && match.scoreLabel.length > 0 ? (
+            !match.matchNumber || match.scoreLabel && match.scoreLabel.length > 0 ? (
               <React.Fragment>
                 {[0, 1, 2].map(index => <div key={index} className='detail-score'><p>{match.scoreLabel[index]?.split('-')[1]}</p></div>)}
               </React.Fragment>

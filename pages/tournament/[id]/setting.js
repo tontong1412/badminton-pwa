@@ -97,7 +97,7 @@ const Setting = () => {
         {isCreator && <div><Button onClick={finishTournament} type='primary' style={{ width: '200px', marginBottom: '10px' }}>สิ้นสุดการแข่งขัน</Button></div>}
         {isCreator && <div><Button onClick={() => router.push(`/tournament/${id}/umpire`)} type='primary' style={{ width: '200px', marginBottom: '10px' }}>กรรมการ</Button></div>}
         {isCreator && <div><Button onClick={() => router.push(`/tournament/${id}/manager`)} type='primary' style={{ width: '200px', marginBottom: '50px' }}>ผู้จัดการ</Button></div>}
-        {isCreator && <div><Button onClick={removeTournament} type='danger' style={{ width: '200px', marginBottom: '10px' }}>ลบรายการนี้</Button></div>}
+        {/* {isCreator && <div><Button onClick={removeTournament} type='danger' style={{ width: '200px', marginBottom: '10px' }}>ลบรายการนี้</Button></div>} */}
       </div>
     </Layout>
   )

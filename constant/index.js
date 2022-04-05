@@ -120,9 +120,13 @@ const MAP_TOURNAMENT_STATUS = {
 const MAP_FORMAT = {
   roundRobin: 'แบ่งกลุ่ม/แพ้คัดออก',
   roundRobinConsolation: 'แบ่งกลุ่ม/แพ้คัดออก/สายล่าง',
-  knockOut: 'แพ้คัดออก'
+  singleElim: 'แพ้คัดออก'
 }
 
+const MAP_EVENT_TYPE = {
+  double: 'คู่',
+  single: 'เดี่ยว'
+}
 const MAP_GENDER = {
   male: 'ชาย',
   female: 'หญิง'
@@ -136,5 +140,6 @@ export {
   MATCH,
   MAP_GENDER,
   MAP_TOURNAMENT_STATUS,
-  MAP_FORMAT
+  MAP_FORMAT,
+  MAP_EVENT_TYPE
 }
