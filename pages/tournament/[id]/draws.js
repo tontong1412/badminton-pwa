@@ -15,7 +15,7 @@ const Draws = () => {
   const { id } = router.query
   const { tournament, isLoading, isError, mutate } = useTournament(id)
   const [mode, setMode] = useState('group')
-  const [tab, setTab] = useState(tournament?.events[0]._id)
+  const [tab, setTab] = useState(tournament?.events[0]?._id)
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT_MANAGER.DRAWS })
   }, [])
