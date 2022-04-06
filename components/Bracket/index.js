@@ -21,7 +21,7 @@ const Winner = ({ matches }) => {
     </div>
   )
 }
-const Bracket = ({ event, step = 'knockOut' }) => {
+const Bracket = ({ event, isManager, step = 'knockOut' }) => {
   const [bracket, setBracket] = useState()
   const { matches, isLoading, isError } = useMatchDraws(event?._id)
 
@@ -48,7 +48,7 @@ const Bracket = ({ event, step = 'knockOut' }) => {
                       return (
                         <div key={index + 1} className="winners">
                           <div className="matchups">
-                            <MatchUp match={matches} />
+                            <MatchUp match={matches} isManager={isManager} />
                           </div>
                         </div>
                       )
