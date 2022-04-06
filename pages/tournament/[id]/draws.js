@@ -35,11 +35,11 @@ const Draws = () => {
       return <Bracket key={event._id} event={event} step='knockOut' />
     }
     if (mode === 'knockOut') {
-      return <Bracket key={event._id} event={event} step='knockOut' />
+      return <Bracket key={event._id} event={event} step='knockOut' isManager={isManager} />
     } else if (mode === 'group') {
       return <RoundRobin key={event._id} event={event} isManager={isManager} />
     } else if (mode === 'consolation') {
-      return <Bracket key={event._id} event={event} step='consolation' />
+      return <Bracket key={event._id} event={event} step='consolation' isManager={isManager} />
     }
     return null
   }

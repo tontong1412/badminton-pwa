@@ -1,22 +1,34 @@
 import React from 'react'
 import { MATCH } from '../../constant'
 import moment from 'moment'
+import { useState } from 'react'
+import { Modal, Form, InputNumber, DatePicker } from 'antd'
+import request from '../../utils/request'
 
-const MatchUp = (props) => {
-  const { match } = props
+const MatchUp = ({ match, isManager }) => {
   const matchType = match?.teamA?.team?.players?.length > 1 ? MATCH.TYPE.DOUBLE : MATCH.TYPE.SINGLE
+  const [modalVisible, setModalVisible] = useState(false)
+  const [form] = Form.useForm()
+  const onFinish = (values) => {
+    request.put(`/match/${match._id}`, values)
+      .then(async () => {
+        setModalVisible(false)
+      })
+      .catch((e) => console.log(e))
+  }
   return (
     <div className="matchup">
-      <div className="participants">
+      <div className="participants" >
+        {/* <div className="participants" onClick={() => setModalVisible(true)}> */}
         <div className='group'>
           <div className={`participant ${match.status === 'finished' ? match.teamA.scoreSet > match.teamB.scoreSet ? 'winner' : 'loser' : null}`}>
             {
               matchType === MATCH.TYPE.SINGLE
-                ? <span>{match.teamA?.team?.players[0]?.officialName || (match.matchNumber ? 'waiting' : 'bye')}</span>
+                ? <span>{match.teamA?.team?.players[0]?.officialName || ((match.matchNumber || match.teamA.scoreSet === 1) ? 'waiting' : 'bye')}</span>
                 // <span>{match.teamA.team.players[0] ? match.teamA.team.players[0]/*.officialName*/ : 'bye'}</span> :
                 : <React.Fragment>
-                  <div>{match.teamA.team?.players[0]?.officialName || (match.matchNumber ? 'waiting' : 'bye')}</div>
-                  <div>{match.teamA.team?.players[1]?.officialName || (match.matchNumber ? 'waiting' : 'bye')}</div>
+                  <div>{match.teamA.team?.players[0]?.officialName || ((match.matchNumber || match.teamA.scoreSet === 1) ? 'waiting' : 'bye')}</div>
+                  <div>{match.teamA.team?.players[1]?.officialName || ((match.matchNumber || match.teamA.scoreSet === 1) ? 'waiting' : 'bye')}</div>
                 </React.Fragment>
             }
           </div>
@@ -36,10 +48,10 @@ const MatchUp = (props) => {
             {
               matchType === MATCH.TYPE.SINGLE
                 // <span>{match.teamB[0] ? match.teamB.team.players[0]/*.officialName*/ : 'bye'}</span> :
-                ? <span>{match.teamB?.team?.players[0]?.officialName || (match.matchNumber ? 'waiting' : 'bye')}</span>
+                ? <span>{match.teamB?.team?.players[0]?.officialName || ((match.matchNumber || match.teamB.scoreSet === 1) ? 'waiting' : 'bye')}</span>
                 : <React.Fragment>
-                  <div>{match.teamB?.team?.players[0]?.officialName || (match.matchNumber ? 'waiting' : 'bye')} </div>
-                  <div>{match.teamB?.team?.players[1]?.officialName || (match.matchNumber ? 'waiting' : 'bye')} </div>
+                  <div>{match.teamB?.team?.players[0]?.officialName || ((match.matchNumber || match.teamB.scoreSet === 1) ? 'waiting' : 'bye')} </div>
+                  <div>{match.teamB?.team?.players[1]?.officialName || ((match.matchNumber || match.teamB.scoreSet === 1) ? 'waiting' : 'bye')} </div>
                 </React.Fragment>
             }
           </div>
@@ -53,7 +65,40 @@ const MatchUp = (props) => {
           }
         </div>
       </div>
-    </div>
+      <Modal
+        visible={modalVisible}
+        onOk={() => form.submit()}
+        onCancel={() => { setModalVisible(false) }}
+        title={match._id}
+      >
+        <Form
+          name='createPlayer'
+          form={form}
+          onFinish={onFinish}
+          style={{ maxWidth: '350px', margin: 'auto', overflow: 'scroll' }}
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          scrollToFirstError
+          initialValues={{ matchNumber: match.matchNumber, date: moment(match.date) }}
+          onValuesChange={({ matchNumber }) => form.setFieldsValue({
+            date: moment('2022-04-08T09:05:00.000Z').add(Math.floor((matchNumber - 205) / 12) * 30, 'minutes')
+          })}
+        >
+          <Form.Item
+            label='แมตช์ที่'
+            name='matchNumber'
+          >
+            <InputNumber />
+          </Form.Item>
+          <Form.Item
+            label='เวลา'
+            name='date'
+          >
+            <DatePicker showTime format="DD-MMM-YYYY HH:mm" minuteStep={5} />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </div >
   )
 }
 export default MatchUp
