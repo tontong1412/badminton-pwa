@@ -11,6 +11,8 @@ import RoundRobin from '../../../components/RoundRobin'
 const { TabPane } = Tabs
 const Draws = () => {
   const dispatch = useDispatch()
+  const { user } = useSelector(state => state)
+  const [isManager, setIsManager] = useState(false)
   const router = useRouter()
   const { id } = router.query
   const { tournament, isLoading, isError, mutate } = useTournament(id)
@@ -20,6 +22,14 @@ const Draws = () => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT_MANAGER.DRAWS })
   }, [])
 
+  useEffect(() => {
+    if (user && tournament && (user.playerID === tournament.creator || tournament?.managers?.map(e => e._id).includes(user.playerID))) {
+      setIsManager(true)
+    } else {
+      setIsManager(false)
+    }
+  }, [user, tournament])
+
   const renderDraws = (event) => {
     if (event.format === 'singleElim') {
       return <Bracket key={event._id} event={event} step='knockOut' />
@@ -27,7 +37,7 @@ const Draws = () => {
     if (mode === 'knockOut') {
       return <Bracket key={event._id} event={event} step='knockOut' />
     } else if (mode === 'group') {
-      return <RoundRobin key={event._id} event={event} />
+      return <RoundRobin key={event._id} event={event} isManager={isManager} />
     } else if (mode === 'consolation') {
       return <Bracket key={event._id} event={event} step='consolation' />
     }

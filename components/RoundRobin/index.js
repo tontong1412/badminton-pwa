@@ -6,7 +6,7 @@ import { useMatchDraws, useEvent } from '../../utils'
 
 const GroupTable = (props) => {
   const [groupMatches, setGroupMatches] = useState([])
-  const { matches } = useMatchDraws(props.event?._id)
+  const { matches, mutate } = useMatchDraws(props.event?._id)
   const { event } = useEvent(props.event?._id)
   const [columns, setColumns] = useState([])
   const [dataSource, setDataSource] = useState([])
@@ -86,7 +86,7 @@ const GroupTable = (props) => {
               result.diff += score[0] - score[1]
               return <div key={i + 1}>{set}</div>
             })
-            : <MatchDetail key={match._id} match={match} />
+            : <MatchDetail key={match._id} match={match} mutate={mutate} isManager={props.isManager} />
           result.score += match.teamA.scoreSet
         })
         return result
