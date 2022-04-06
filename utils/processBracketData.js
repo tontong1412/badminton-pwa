@@ -1,7 +1,7 @@
 const processBracketData = (data) => {
   data.sort((a, b) => {
     if (b.round === a.round) {
-      return a.matchNumber - b.matchNumber
+      return a.bracketOrder - b.bracketOrder
     }
     return b.round - a.round
   })
