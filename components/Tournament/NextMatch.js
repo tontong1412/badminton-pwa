@@ -40,7 +40,7 @@ const NextMatch = ({ event, tournamentID }) => {
                 </div>
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <div style={{ width: '150px', fontWeight: 'bold' }}>{matches.nextMatch[0]?.teamB?.team.players[1]?.officialName}</div>
-                  <div>{matches.nextMatch[0]?.teamB?.team?.players[1].club}</div>
+                  <div>{matches.nextMatch[0]?.teamB?.team?.players[1]?.club}</div>
                 </div>
               </div>
               : <div>
