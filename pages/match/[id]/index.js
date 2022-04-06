@@ -193,7 +193,7 @@ const Match = () => {
                   <div style={{ width: '40px', height: '40px', borderRadius: '20px', overflow: 'hidden', objectFit: 'contain' }}>
                     <Image src={player.photo || `/avatar.png`} alt='' width={40} height={40} objectFit='cover' />
                   </div>
-                  <div>{player.displayName || player.officialName}</div>
+                  <div>{player.officialName}</div>
                   {match.teamA.serving === index && match.teamA.isServing && <div style={{ padding: '2px 5px', backgroundColor: COLOR.MAIN_THEME, borderRadius: '5px' }}>S</div>}
                   {match.teamA.receiving === index && !match.teamA.isServing && <div style={{ padding: '2px 5px', backgroundColor: COLOR.MAIN_THEME, borderRadius: '5px' }}>R</div>}
                 </div>
@@ -252,7 +252,7 @@ const Match = () => {
                   <div style={{ width: '40px', height: '40px', borderRadius: '20px', overflow: 'hidden', objectFit: 'contain' }}>
                     <Image src={player.photo || `/avatar.png`} alt='' width={40} height={40} objectFit='cover' />
                   </div>
-                  <div className='info' style={{ marginRight: '5px', marginLeft: 0, textAlign: 'right' }}>{player.displayName || player.officialName}</div>
+                  <div className='info' style={{ marginRight: '5px', marginLeft: 0, textAlign: 'right' }}>{player.officialName}</div>
                   {match.teamB.serving === index && match.teamB.isServing && <div style={{ padding: '2px 5px', backgroundColor: COLOR.MAIN_THEME, borderRadius: '5px' }}>S</div>}
                   {match.teamB.receiving === index && !match.teamB.isServing && < div style={{ padding: '2px 5px', backgroundColor: COLOR.MAIN_THEME, borderRadius: '5px' }}>R</div>}
                 </div>

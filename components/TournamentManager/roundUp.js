@@ -1,19 +1,26 @@
 import { Tabs, Button, Table, InputNumber, message, Popconfirm, Radio } from 'antd'
-import { useTournament, useMatches, useWindowSize } from '../../utils'
+import { useTournament, useMatches, useWindowSize, useEvent } from '../../utils'
 import { useState, useEffect } from 'react'
 import drawBracket from '../../utils/drawBracket'
 import request from '../../utils/request'
 import ServiceErrorModal from '../ServiceErrorModal'
+import Loading from '../loading'
 
-const RoundUpEvent = ({ event, matches, step = 'knockOut' }) => {
-  const [order, setOrder] = useState(event.order.knockOut)
+const RoundUpEvent = ({ eventID, matches, step = 'knockOut' }) => {
+  const [order, setOrder] = useState()
   const [groupMatches, setGroupMatches] = useState([])
-  const [showOrder, setShowOrder] = useState(event.order.knockOut)
+  const [showOrder, setShowOrder] = useState()
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false)
   const [width, height] = useWindowSize()
+  const { event, isLoading, isError } = useEvent(eventID)
 
-
+  useEffect(() => {
+    if (event) {
+      setOrder(event.order.knockOut)
+      setShowOrder(event.order.knockOut)
+    }
+  }, [event])
 
   useEffect(() => {
     if (matches) {
@@ -23,9 +30,12 @@ const RoundUpEvent = ({ event, matches, step = 'knockOut' }) => {
   }, [matches])
 
   useEffect(() => {
-    setOrder(event.order[step])
-    setShowOrder(event.order[step])
-  }, [event.order[step]])
+    if (event) {
+      setOrder(event.order[step])
+      setShowOrder(event.order[step])
+    }
+
+  }, [step, event])
 
   useEffect(() => {
     if (groupMatches.length > 0) {
@@ -56,7 +66,7 @@ const RoundUpEvent = ({ event, matches, step = 'knockOut' }) => {
       setShowOrder(tempOrderShow)
       setOrder(tempOrder)
     } else {
-      const index = order.findIndex(elm => elm._id === team.team._id)
+      const index = order.findIndex(elm => elm?._id === team.team._id)
       const tempOrder = [...order]
       tempOrder[index] = event.order[step][index]
 
@@ -69,7 +79,7 @@ const RoundUpEvent = ({ event, matches, step = 'knockOut' }) => {
   }
 
   const prepareData = (event) => {
-    const score = event.order.group?.map((group, index) => {
+    const score = event?.order.group?.map((group, index) => {
       return group?.map(team => {
         let score = 0
         let diff = 0
@@ -155,8 +165,8 @@ const RoundUpEvent = ({ event, matches, step = 'knockOut' }) => {
   const onRoundUp = () => {
     setLoading(true)
     request.post('/event/round-up', {
-      eventID: event._id,
-      order: order.map(elm => elm._id),
+      eventID: eventID,
+      order: order.map(elm => elm?._id),
       step,
     }).then(() => {
       message.success('สำเร็จ')
@@ -205,6 +215,9 @@ const RoundUpEvent = ({ event, matches, step = 'knockOut' }) => {
       width: '15%'
     },
   ]
+
+  if (isLoading) return <Loading />
+  if (isError) return <div>error</div>
   return (
     <div style={{ position: 'relative' }}>
       <div style={{ display: 'flex' }}>
@@ -252,8 +265,8 @@ const RoundUp = (props) => {
             </Radio.Group>
             {
               (mode === 'knockOut')
-                ? <RoundUpEvent event={event} matches={matches} />
-                : <RoundUpEvent event={event} matches={matches} step={mode} />
+                ? <RoundUpEvent eventID={event._id} matches={matches} />
+                : <RoundUpEvent eventID={event._id} matches={matches} step={mode} />
             }
 
           </Tabs.TabPane>

@@ -1,5 +1,5 @@
 import { EditOutlined } from "@ant-design/icons/lib/icons"
-const drawBracket = (order = {}, blockWidth = 350) => {
+const drawBracket = (order = [], blockWidth = 350) => {
   const height = 50
   const lineWidth = 50
   const teamCount = order.length

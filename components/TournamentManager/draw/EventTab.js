@@ -6,6 +6,7 @@ import Loading from '../../loading'
 import drawBracket from '../../../utils/drawBracket'
 import ManualDrawGroup from './ManualDrawGroup'
 import ManualDrawKnockOut from './ManualDrawKnockOut'
+import request from '../../../utils/request'
 
 
 

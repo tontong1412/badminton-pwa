@@ -6,7 +6,7 @@ import { Modal, Form, InputNumber, DatePicker } from 'antd'
 import request from '../../utils/request'
 
 const MatchUp = ({ match, isManager }) => {
-  const matchType = match?.teamA?.team?.players?.length > 1 ? MATCH.TYPE.DOUBLE : MATCH.TYPE.SINGLE
+  const matchType = (match?.teamA?.team?.players?.length > 1 || match?.teamB?.team?.players?.length > 1) ? MATCH.TYPE.DOUBLE : MATCH.TYPE.SINGLE
   const [modalVisible, setModalVisible] = useState(false)
   const [form] = Form.useForm()
   const onFinish = (values) => {
