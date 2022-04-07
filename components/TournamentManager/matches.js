@@ -272,7 +272,7 @@ const Matches = (props) => {
           processedMatches = matches.filter(match => match.step === props.step)
         }
       }
-      const data = processedMatches?.sort((a, b) => a.matchNumber - b.matchNumber).map(match => ({
+      const data = processedMatches?.filter(elm => elm.matchNumber).sort((a, b) => a.matchNumber - b.matchNumber).map(match => ({
         key: match._id,
         match: match.matchNumber,
         event: <div><div>{match.eventName}</div>{match.step === 'consolation' && <div>สายล่าง</div>}</div>,
