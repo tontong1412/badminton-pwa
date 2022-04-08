@@ -124,10 +124,12 @@ const Matches = (props) => {
       }).then(() => {
         setSetScoreLoading(false)
         setSetScoreModal(false)
+        setScore([])
         mutate()
       }).catch(() => {
         Modal.error({ title: 'ผิดพลาด', content: 'กรุณากรอกรูปแบบคะแนนให้ถูกต้อง' })
         setSetScoreLoading(false)
+        setScore([])
       })
     }
 
@@ -158,6 +160,7 @@ const Matches = (props) => {
   const handleSetScoreAction = (match) => {
     setSetScoreModal(true)
     setSelectedMatch(match)
+    setScore([])
   }
 
   const renderSetScoreModal = () => {
