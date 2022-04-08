@@ -7,9 +7,9 @@ import ServiceErrorModal from '../ServiceErrorModal'
 import Loading from '../loading'
 
 const RoundUpEvent = ({ eventID, matches, step = 'knockOut' }) => {
-  const [order, setOrder] = useState()
+  const [order, setOrder] = useState([])
   const [groupMatches, setGroupMatches] = useState([])
-  const [showOrder, setShowOrder] = useState()
+  const [showOrder, setShowOrder] = useState([])
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false)
   const [width, height] = useWindowSize()
@@ -106,7 +106,7 @@ const RoundUpEvent = ({ eventID, matches, step = 'knockOut' }) => {
     const winner = score?.map(group => {
       group.sort((a, b) => {
         if (a.score === b.score) {
-          return a.diff - b.diff
+          return b.diff - a.diff
         } else {
           return b.score - a.score
         }
@@ -117,7 +117,7 @@ const RoundUpEvent = ({ eventID, matches, step = 'knockOut' }) => {
 
     const showOrderTemp = [...showOrder]
     const orderTemp = [...order]
-    const data = winner.reduce((prev, group) => {
+    const data = winner?.reduce((prev, group) => {
       group.forEach((team, index) => {
         const defaultOrder = event.order[step].findIndex((e) => e === `ที่ ${index + 1} กลุ่ม ${team.group}`)
 
