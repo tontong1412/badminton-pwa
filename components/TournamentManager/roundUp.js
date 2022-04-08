@@ -272,7 +272,7 @@ const RoundUpEvent = ({ eventID, matches, step = 'knockOut' }) => {
       dataIndex: 'diff',
       title: 'แต้มได้เสีย',
       align: 'center',
-      width: '15%'
+      width: '10%'
     },
     {
       key: 'draw',

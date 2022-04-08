@@ -144,7 +144,7 @@ const Matches = (props) => {
     }).then(() => {
       setAssignLoading(false)
       setAssignMatchModal(false)
-      // setSelectedCourt()
+      setSelectedCourt()
       mutate()
     }).catch(() => {
       ServiceErrorModal()
@@ -237,7 +237,7 @@ const Matches = (props) => {
           <Form.Item
             label="กรรมการ"
             name="umpire"
-            rules={[{ required: true, message: 'Please input umpire' }]}
+          // rules={[{ required: true, message: 'Please input umpire' }]}
           >
             <Select placeholder="เลือกกรรมการ" style={{ width: 200 }} >
               {tournament?.umpires.map((elm) => <Select.Option key={elm._id} value={elm._id}>{elm.officialName}</Select.Option>)}
