@@ -46,7 +46,27 @@ const Matches = (props) => {
         title: 'Match',
         dataIndex: 'match',
         align: 'center',
-        width: '6%'
+        width: '6%',
+        fixed: 'left'
+      },
+      {
+        title: 'สถานะ',
+        dataIndex: 'status',
+        key: 'status',
+        align: 'center',
+        width: '8%',
+        render: ({ text, court }) => <div>
+          <Tag color={text.COLOR}>{text.LABEL}</Tag>
+          {court ? <Tag color={text.COLOR}>{`คอร์ด ${court}`}</Tag> : null}
+        </div>,
+        filters: [
+          { text: MATCH.STATUS.waiting.LABEL, value: MATCH.STATUS.waiting.LABEL },
+          { text: MATCH.STATUS.playing.LABEL, value: MATCH.STATUS.playing.LABEL },
+          { text: MATCH.STATUS.finished.LABEL, value: MATCH.STATUS.finished.LABEL }
+        ],
+        // filteredValue: filteredInfo?.status || null,
+        defaultFilteredValue: [MATCH.STATUS.waiting.LABEL, MATCH.STATUS.playing.LABEL],
+        onFilter: (value, record) => record.status.text.LABEL.includes(value)
       },
       {
         title: 'ประเภท',
@@ -77,25 +97,7 @@ const Matches = (props) => {
         width: '25%',
         align: 'center'
       },
-      {
-        title: 'สถานะ',
-        dataIndex: 'status',
-        key: 'status',
-        align: 'center',
-        width: '8%',
-        render: ({ text, court }) => <div>
-          <Tag color={text.COLOR}>{text.LABEL}</Tag>
-          {court ? <Tag color={text.COLOR}>{`คอร์ด ${court}`}</Tag> : null}
-        </div>,
-        filters: [
-          { text: MATCH.STATUS.waiting.LABEL, value: MATCH.STATUS.waiting.LABEL },
-          { text: MATCH.STATUS.playing.LABEL, value: MATCH.STATUS.playing.LABEL },
-          { text: MATCH.STATUS.finished.LABEL, value: MATCH.STATUS.finished.LABEL }
-        ],
-        // filteredValue: filteredInfo?.status || null,
-        defaultFilteredValue: [MATCH.STATUS.waiting.LABEL, MATCH.STATUS.playing.LABEL],
-        onFilter: (value, record) => record.status.text.LABEL.includes(value)
-      },
+
 
     ]
     if (props.isManager) {
