@@ -55,6 +55,7 @@ const Matches = (props) => {
         key: 'status',
         align: 'center',
         width: '8%',
+        fixed: 'left',
         render: ({ text, court }) => <div>
           <Tag color={text.COLOR}>{text.LABEL}</Tag>
           {court ? <Tag color={text.COLOR}>{`คอร์ด ${court}`}</Tag> : null}
