@@ -17,8 +17,7 @@ const MyGang = (props) => {
       }}>
         {myGangs?.length > 0 && myGangs?.map(gang => {
           return <MyGangCard key={`mygang-card-${gang._id}`} gang={gang} style={{ float: 'right' }} />
-        })
-        }
+        })}
       </div>
       {props.bottomLine && <Divider />}
     </>

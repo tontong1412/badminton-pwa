@@ -1,75 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Table, BackTop } from 'antd'
-import { COLOR, MATCH } from '../../constant'
+import { COLOR, MATCH, GROUP_NAME } from '../../constant'
 import MatchDetail from './matchDetail'
 import { useMatchDraws, useEvent } from '../../utils'
-
-const GROUP_DRAW = [
-  {
-    NAME: 'A',
-    VALUE: 0
-  },
-  {
-    NAME: 'B',
-    VALUE: 1
-  },
-  {
-    NAME: 'C',
-    VALUE: 2
-  },
-  {
-    NAME: 'D',
-    VALUE: 3
-  },
-  {
-    NAME: 'E',
-    VALUE: 4
-  },
-  {
-    NAME: 'F',
-    VALUE: 5
-  },
-  {
-    NAME: 'G',
-    VALUE: 6
-  },
-  {
-    NAME: 'H',
-    VALUE: 7
-  },
-  {
-    NAME: 'I',
-    VALUE: 8
-  },
-  {
-    NAME: 'J',
-    VALUE: 9
-  },
-  {
-    NAME: 'K',
-    VALUE: 10
-  },
-  {
-    NAME: 'L',
-    VALUE: 11
-  },
-  {
-    NAME: 'M',
-    VALUE: 12
-  },
-  {
-    NAME: 'N',
-    VALUE: 13
-  },
-  {
-    NAME: 'O',
-    VALUE: 14
-  },
-  {
-    NAME: 'P',
-    VALUE: 15
-  }
-]
 
 const GroupTable = (props) => {
   const [groupMatches, setGroupMatches] = useState([])
@@ -88,7 +21,7 @@ const GroupTable = (props) => {
   const processColumn = (data) => data?.map((group, index) => {
     const result = [
       {
-        title: `Group ${GROUP_DRAW[index].NAME}`,
+        title: `Group ${GROUP_NAME[index].NAME}`,
         dataIndex: 'name',
         key: `${index + 1}-name`,
         align: 'center',
