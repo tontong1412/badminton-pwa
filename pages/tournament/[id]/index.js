@@ -23,7 +23,7 @@ const TournamentManagerID = () => {
   const [registerModal, setRegisterModal] = useState(false)
   const dispatch = useDispatch()
   const { user } = useSelector(state => state)
-  const [posterVisible, setPosterVisible] = useState(true)
+  const [posterVisible, setPosterVisible] = useState(false)
   const [isManager, setIsManager] = useState(false);
   const [tournamentModal, setTournamentModal] = useState(false);
   useEffect(() => {
