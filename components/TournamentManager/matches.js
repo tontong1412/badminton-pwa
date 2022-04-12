@@ -46,7 +46,27 @@ const Matches = (props) => {
         title: 'Match',
         dataIndex: 'match',
         align: 'center',
-        width: '6%'
+        width: '6%',
+        fixed: 'left'
+      },
+      {
+        title: 'สถานะ',
+        dataIndex: 'status',
+        key: 'status',
+        align: 'center',
+        width: '8%',
+        render: ({ text, court }) => <div>
+          <Tag color={text.COLOR}>{text.LABEL}</Tag>
+          {court ? <Tag color={text.COLOR}>{`คอร์ด ${court}`}</Tag> : null}
+        </div>,
+        filters: [
+          { text: MATCH.STATUS.waiting.LABEL, value: MATCH.STATUS.waiting.LABEL },
+          { text: MATCH.STATUS.playing.LABEL, value: MATCH.STATUS.playing.LABEL },
+          { text: MATCH.STATUS.finished.LABEL, value: MATCH.STATUS.finished.LABEL }
+        ],
+        // filteredValue: filteredInfo?.status || null,
+        defaultFilteredValue: [MATCH.STATUS.waiting.LABEL, MATCH.STATUS.playing.LABEL],
+        onFilter: (value, record) => record.status.text.LABEL.includes(value)
       },
       {
         title: 'ประเภท',
@@ -77,25 +97,7 @@ const Matches = (props) => {
         width: '25%',
         align: 'center'
       },
-      {
-        title: 'สถานะ',
-        dataIndex: 'status',
-        key: 'status',
-        align: 'center',
-        width: '8%',
-        render: ({ text, court }) => <div>
-          <Tag color={text.COLOR}>{text.LABEL}</Tag>
-          {court ? <Tag color={text.COLOR}>{`คอร์ด ${court}`}</Tag> : null}
-        </div>,
-        filters: [
-          { text: MATCH.STATUS.waiting.LABEL, value: MATCH.STATUS.waiting.LABEL },
-          { text: MATCH.STATUS.playing.LABEL, value: MATCH.STATUS.playing.LABEL },
-          { text: MATCH.STATUS.finished.LABEL, value: MATCH.STATUS.finished.LABEL }
-        ],
-        // filteredValue: filteredInfo?.status || null,
-        defaultFilteredValue: [MATCH.STATUS.waiting.LABEL, MATCH.STATUS.playing.LABEL],
-        onFilter: (value, record) => record.status.text.LABEL.includes(value)
-      },
+
 
     ]
     if (props.isManager) {
@@ -124,10 +126,12 @@ const Matches = (props) => {
       }).then(() => {
         setSetScoreLoading(false)
         setSetScoreModal(false)
+        setScore([])
         mutate()
       }).catch(() => {
         Modal.error({ title: 'ผิดพลาด', content: 'กรุณากรอกรูปแบบคะแนนให้ถูกต้อง' })
         setSetScoreLoading(false)
+        setScore([])
       })
     }
 
@@ -142,7 +146,7 @@ const Matches = (props) => {
     }).then(() => {
       setAssignLoading(false)
       setAssignMatchModal(false)
-      // setSelectedCourt()
+      setSelectedCourt()
       mutate()
     }).catch(() => {
       ServiceErrorModal()
@@ -158,6 +162,7 @@ const Matches = (props) => {
   const handleSetScoreAction = (match) => {
     setSetScoreModal(true)
     setSelectedMatch(match)
+    setScore([])
   }
 
   const renderSetScoreModal = () => {
@@ -234,7 +239,7 @@ const Matches = (props) => {
           <Form.Item
             label="กรรมการ"
             name="umpire"
-            rules={[{ required: true, message: 'Please input umpire' }]}
+          // rules={[{ required: true, message: 'Please input umpire' }]}
           >
             <Select placeholder="เลือกกรรมการ" style={{ width: 200 }} >
               {tournament?.umpires.map((elm) => <Select.Option key={elm._id} value={elm._id}>{elm.officialName}</Select.Option>)}
@@ -253,7 +258,8 @@ const Matches = (props) => {
       case MATCH.STATUS.playing.LABEL:
         // return <a onClick={() => handleSetScoreAction(match)}>สรุปผลการแข่งขัน</a>
         return <div>
-          <div><a onClick={() => router.push(`/match/${match._id}`)}>ดูการแข่งขัน</a></div>
+          {/* <div><a onClick={() => router.push(`/match/${match._id}`)}>ดูการแข่งขัน</a></div> */}
+          <div><a onClick={() => handleAssignMatchAction(match)}>แก้ไขข้อมูล</a></div>
           <div><a onClick={() => handleSetScoreAction(match)}>ลงผลการแข่งขัน</a></div>
         </div>
       case MATCH.STATUS.finished.LABEL:
@@ -272,7 +278,7 @@ const Matches = (props) => {
           processedMatches = matches.filter(match => match.step === props.step)
         }
       }
-      const data = processedMatches?.sort((a, b) => a.matchNumber - b.matchNumber).map(match => ({
+      const data = processedMatches?.filter(elm => elm.matchNumber).sort((a, b) => a.matchNumber - b.matchNumber).map(match => ({
         key: match._id,
         match: match.matchNumber,
         event: <div><div>{match.eventName}</div>{match.step === 'consolation' && <div>สายล่าง</div>}</div>,
