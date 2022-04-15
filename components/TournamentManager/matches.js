@@ -9,6 +9,7 @@ import request from '../../utils/request'
 import ServiceErrorModal from '../ServiceErrorModal'
 import { useSocket } from '../../utils'
 import { useRouter } from 'next/router'
+import { ROUND_NAME } from '../../constant'
 const Matches = (props) => {
   const router = useRouter()
   const [form] = Form.useForm()
@@ -78,6 +79,12 @@ const Matches = (props) => {
       {
         title: 'เวลา',
         dataIndex: 'schedule',
+        align: 'center',
+        width: '10%'
+      },
+      {
+        title: 'รอบ',
+        dataIndex: 'round',
         align: 'center',
         width: '10%'
       },
@@ -283,6 +290,7 @@ const Matches = (props) => {
         key: match._id,
         match: match.matchNumber,
         event: <div><div>{match.eventName}</div>{match.step === 'consolation' && <div>สายล่าง</div>}</div>,
+        round: match.step === 'group' ? 'แบ่งกลุ่ม' : ROUND_NAME[match.round],
         competitor1: match.teamA?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
         competitor2: match.teamB?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
         date: moment(match.date).format('ll'),

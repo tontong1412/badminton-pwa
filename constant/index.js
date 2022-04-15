@@ -197,6 +197,16 @@ const GROUP_NAME = [
     VALUE: 15
   }
 ]
+
+const ROUND_NAME = {
+  '128': '128',
+  '64': '64',
+  '32': '32',
+  '16': '16',
+  '8': 'Quarter Finals',
+  '4': 'Semi Finals',
+  '2': 'Finals'
+}
 export {
   GANG,
   TAB_OPTIONS,
@@ -208,5 +218,6 @@ export {
   MAP_TOURNAMENT_STATUS,
   MAP_FORMAT,
   MAP_EVENT_TYPE,
-  GROUP_NAME
+  GROUP_NAME,
+  ROUND_NAME
 }
