@@ -66,7 +66,6 @@ const EventTab = ({ eventID, mode, setMode }) => {
   }
 
   const renderManualDraw = (event) => {
-    console.log(event.teams)
     switch (event.format) {
       case 'singleElim':
         return <ManualDrawKnockOut mutate={mutate} eventID={event._id} playerList={event.teams} />

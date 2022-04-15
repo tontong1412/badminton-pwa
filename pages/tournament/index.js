@@ -4,7 +4,7 @@ import { analytics, logEvent } from '../../utils/firebase'
 import { useSelector, useDispatch } from 'react-redux'
 import Layout from '../../components/Layout'
 import { MAP_TOURNAMENT_STATUS, TAB_OPTIONS } from '../../constant'
-import { useTournaments } from '../../utils'
+import { useTournaments, useMyTournament } from '../../utils'
 import Image from 'next/image'
 import Link from 'next/link'
 import moment from 'moment'
@@ -16,7 +16,9 @@ import TournamentModal from '../../components/Tournament/TournamentModal'
 
 const Tournament = () => {
   const dispatch = useDispatch()
-  const { tournaments, mutate } = useTournaments()
+  const user = useSelector(state => state.user)
+  const { tournaments } = useTournaments()
+  const { mutate } = useMyTournament(user.token)
   const [createModalVisible, setCreateModalVisible] = useState(false)
   useEffect(() => {
     logEvent(analytics, 'tournament')
