@@ -64,6 +64,27 @@ const Match = () => {
 
   }
 
+  const manageShuttlecock = (action) => {
+    request.post('/match/manage-shuttlecock', {
+      matchID: id,
+      action,
+    }).then(() => mutate())
+      .catch(() => { })
+
+    request.post('/event/shuttlecock-credit', {
+      eventID: match.eventID,
+      teamID: match.teamA.team._id,
+      action,
+      amount: 1
+    })
+    request.post('/event/shuttlecock-credit', {
+      eventID: match.eventID,
+      teamID: match.teamB.team._id,
+      action,
+      amount: 1
+    })
+  }
+
 
   const updateScore = (team) => {
     const keepForUndo = [
@@ -260,7 +281,11 @@ const Match = () => {
             })}
           </div>
         </div>
-        {match.umpire && <div style={{ textAlign: 'center', fontSize: '20px' }}>ผู้ตัดสิน: {match.umpire?.officialName}</div>}
+
+        <div>
+          {match.umpire && <div style={{ textAlign: 'center', fontSize: '20px' }}>จำนวนลูก: {match.shuttlecockUsed} ลูก</div>}
+          {match.umpire && <div style={{ textAlign: 'center', fontSize: '20px' }}>ผู้ตัดสิน: {match.umpire?.officialName}</div>}
+        </div>
 
 
 
@@ -286,9 +311,11 @@ const Match = () => {
               {match.teamA.score === 0 && match.teamB.score === 0 && <Button onClick={() => setSettingVisible(true)}>เลือกคนรับ/เสิร์ฟ</Button>}
               <Button type='danger' onClick={() => endGame()}>จบเกม</Button>
               <Button disabled={undo.length <= 0} onClick={() => onUndo()}>undo</Button>
-
             </div>
-
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', paddingTop: '10px' }}>
+              <Button style={{ width: '50%' }} onClick={() => manageShuttlecock('decrement')}>ลบลูก</Button>
+              <Button style={{ width: '50%' }} onClick={() => manageShuttlecock('increment')}>เพิ่มลูก</Button>
+            </div>
           </div>
           <Button
             type='primary'

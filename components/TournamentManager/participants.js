@@ -92,12 +92,12 @@ const Participants = (props) => {
           prev.push({
             key: team._id,
             date: team.createdAt,
-            player1: team?.team.players.map(player => <div key={player._id} ><PlayerDisplay player={player} /></div>),
-            // player2: <PlayerDisplay player={team.team.players[1]} />,
+            player: team?.team.players.map(player => <div key={player._id} ><PlayerDisplay player={player} /></div>),
             event: event.name,
             allow: { event, team },
             payment: team.paymentStatus,
             note: { note: team.note, isInQueue: team.isInQueue },
+            shuttlecockCredit: team.shuttlecockCredit,
             action: <Dropdown overlay={menu(event, team)} placement="bottomRight">
               <div>เพิ่มเติม</div>
             </Dropdown>
@@ -155,12 +155,11 @@ const Participants = (props) => {
       },
       {
         title: 'ผู้สมัคร',
-        dataIndex: 'player1',
-        key: 'player1',
+        dataIndex: 'player',
+        key: 'player',
         align: 'center',
         width: '30%',
         filterIcon: filtered => <SearchOutlined style={{ color: searchText ? COLOR.MINOR_THEME : undefined }} />,
-
         filterDropdown: ({ confirm }) => <div style={{ padding: '8px', display: 'flex', gap: '5px' }}>
           <Input
             placeholder={`ชื่อผู้เล่นหรือทีม`}
@@ -173,13 +172,6 @@ const Participants = (props) => {
           }}>Reset</Button>
         </div>,
       },
-      // {
-      //   title: 'ผู้เล่น 2',
-      //   dataIndex: 'player2',
-      //   key: 'player2',
-      //   align: 'center',
-      //   width: '22%'
-      // },
       {
         title: 'ประเมินมือ',
         dataIndex: 'allow',
@@ -241,6 +233,16 @@ const Participants = (props) => {
             value: 'pending',
           },
         ],
+      },
+      {
+        title: 'เครดิตลูกขนไก่',
+        dataIndex: 'shuttlecockCredit',
+        key: 'shuttlecockCredit',
+        align: 'center',
+        width: '10%',
+        defaultSortOrder: 'descend',
+        sortDirections: ['descend', 'ascend', 'descend'],
+        sorter: (a, b) => a.shuttlecockCredit > b.shuttlecockCredit,
       },
       {
         title: 'หมายเหตุ',
