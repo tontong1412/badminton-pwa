@@ -47,7 +47,6 @@ const Matches = (props) => {
         title: 'Match',
         dataIndex: 'match',
         align: 'center',
-        width: '6%',
         fixed: 'left'
       },
       {
@@ -55,7 +54,6 @@ const Matches = (props) => {
         dataIndex: 'status',
         key: 'status',
         align: 'center',
-        width: '8%',
         fixed: 'left',
         render: ({ text, court }) => <div>
           <Tag color={text.COLOR}>{text.LABEL}</Tag>
@@ -86,7 +84,6 @@ const Matches = (props) => {
         title: 'รอบ',
         dataIndex: 'round',
         align: 'center',
-        width: '10%'
       },
       {
         title: 'ผู้เข้าแข่งขัน',
