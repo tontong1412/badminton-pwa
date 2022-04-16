@@ -22,10 +22,15 @@ const Match = () => {
   const [undo, setUndo] = useState([])
   const [settingVisible, setSettingVisible] = useState(false)
   const [width, height] = useWindowSize()
+  const [isSingle, setIsSingle] = useState(false)
 
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT_MANAGER.DETAIL })
   }, [])
+
+  useEffect(() => {
+    setIsSingle(match?.teamA.team.players.length === 1)
+  }, [match])
 
 
   useEffect(() => {
@@ -74,13 +79,13 @@ const Match = () => {
     request.post('/event/shuttlecock-credit', {
       eventID: match.eventID,
       teamID: match.teamA.team._id,
-      action,
+      action: action === 'increment' ? 'decrement' : 'increment',
       amount: 1
     })
     request.post('/event/shuttlecock-credit', {
       eventID: match.eventID,
       teamID: match.teamB.team._id,
-      action,
+      action: action === 'increment' ? 'decrement' : 'increment',
       amount: 1
     })
   }
@@ -113,9 +118,9 @@ const Match = () => {
       }
       payload = {
         $inc: { 'teamA.score': 1 },
-        'teamA.serving': match.teamA.isServing ? match.teamA.serving : Math.abs(match.teamA.serving - 1),
+        'teamA.serving': isSingle ? 0 : (match.teamA.isServing ? match.teamA.serving : Math.abs(match.teamA.serving - 1)),
         'teamA.receiving': null,
-        'teamB.receiving': teamBReceiver,
+        'teamB.receiving': isSingle ? 0 : teamBReceiver,
         'teamA.isServing': true,
         'teamB.isServing': false
       }
@@ -131,9 +136,9 @@ const Match = () => {
       }
       payload = {
         $inc: { 'teamB.score': 1 },
-        'teamB.serving': match.teamB.isServing ? match.teamB.serving : Math.abs(match.teamB.serving - 1),
+        'teamB.serving': isSingle ? 0 : (match.teamB.isServing ? match.teamB.serving : Math.abs(match.teamB.serving - 1)),
         'teamB.receiving': null,
-        'teamA.receiving': teamAReceiver,
+        'teamA.receiving': isSingle ? 0 : teamAReceiver,
         'teamB.isServing': true,
         'teamA.isServing': false
       }
