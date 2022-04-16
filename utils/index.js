@@ -152,6 +152,20 @@ export const useMyTournament = (token) => {
   }
 }
 
+export const useMyGang = (token) => {
+  const { data, error, mutate } = useSWR(
+    [`${API_ENDPOINT}/gang/my-gang`, token],
+    (url) => fetcher(url, token)
+  )
+
+  return {
+    myGangs: data,
+    isLoading: !error && !data,
+    isError: error,
+    mutate
+  }
+}
+
 export const useNextMatch = (token, eventID, tournamentID) => {
   const { data, error, mutate } = useSWR(
     [`${API_ENDPOINT}/match/next`, token, eventID, tournamentID],

@@ -11,6 +11,7 @@ import SlipModal from '../Tournament/SlipModal'
 import AddButton from '../addButton'
 import RegisterModal from '../Tournament/RegisterModal'
 import { useSelector } from 'react-redux'
+import ShuttlecockModal from '../Tournament/ShuttlecockModal'
 
 const Participants = (props) => {
   const { tournament, isLoading, isError, mutate } = useTournament(props.tournamentID)
@@ -20,6 +21,7 @@ const Participants = (props) => {
   const [contactPersonVisible, setContactPersonVisible] = useState(false)
   const [selectedTeam, setSelectedTeam] = useState()
   const [slipModalVisible, setSlipModalVisible] = useState(false)
+  const [shuttlecockModalVisible, setShuttlecockModalVisible] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState();
   const [registerModalVisible, setRegisterModalVisible] = useState(false)
   const [noteModalVisible, setNoteModalVisible] = useState(false)
@@ -49,6 +51,15 @@ const Participants = (props) => {
           setSelectedEvent(event)
         }}>
           ดู/อัพโหลดสลิป
+        </div>
+      </Menu.Item>
+      <Menu.Item key='shuttlecock-credit-slip'>
+        <div onClick={() => {
+          setShuttlecockModalVisible(true)
+          setSelectedTeam(team)
+          setSelectedEvent(event)
+        }}>
+          ซื้อ/ขายลูกแบด
         </div>
       </Menu.Item>
       {team.status !== 'idle' && <Menu.Item key='update-status'>
@@ -82,7 +93,11 @@ const Participants = (props) => {
   )
   useEffect(() => {
     let i = 0
-    const tempParticipant = tournament?.events?.reduce((prev, event) => {
+    let filteredEvent = tournament?.events
+    if (props.eventID) {
+      filteredEvent = filteredEvent?.filter(elm => elm._id === props.eventID)
+    }
+    const tempParticipant = filteredEvent?.reduce((prev, event) => {
       event.teams.forEach(team => {
         const searchTextLower = searchText.toLowerCase()
         if (team?.team?.players[0].officialName?.toLowerCase().includes(searchTextLower)
@@ -92,12 +107,12 @@ const Participants = (props) => {
           prev.push({
             key: team._id,
             date: team.createdAt,
-            player1: team?.team.players.map(player => <div key={player._id} ><PlayerDisplay player={player} /></div>),
-            // player2: <PlayerDisplay player={team.team.players[1]} />,
+            player: team?.team.players.map(player => <div key={player._id} ><PlayerDisplay player={player} /></div>),
             event: event.name,
             allow: { event, team },
             payment: team.paymentStatus,
             note: { note: team.note, isInQueue: team.isInQueue },
+            shuttlecockCredit: team.shuttlecockCredit,
             action: <Dropdown overlay={menu(event, team)} placement="bottomRight">
               <div>เพิ่มเติม</div>
             </Dropdown>
@@ -129,7 +144,24 @@ const Participants = (props) => {
   }
 
   const columns = () => {
-    const base = [
+    let base = []
+    if (!props.eventID) {
+      base.push({
+        title: 'รายการ',
+        dataIndex: 'event',
+        key: 'event',
+        align: 'center',
+        width: '10%',
+        fixed: 'left',
+        onFilter: (value, record) => record.event === value,
+        filters: tournament?.events.map(event => ({
+          text: event.name,
+          value: event.name
+        }))
+      })
+    }
+    base = [
+      ...base,
       {
         title: 'วันที่สมัคร',
         dataIndex: 'date',
@@ -142,25 +174,12 @@ const Participants = (props) => {
         render: text => moment(text).format('DD MMM yyyy')
       },
       {
-        title: 'รายการ',
-        dataIndex: 'event',
-        key: 'event',
-        align: 'center',
-        width: '10%',
-        onFilter: (value, record) => record.event === value,
-        filters: tournament?.events.map(event => ({
-          text: event.name,
-          value: event.name
-        }))
-      },
-      {
         title: 'ผู้สมัคร',
-        dataIndex: 'player1',
-        key: 'player1',
+        dataIndex: 'player',
+        key: 'player',
         align: 'center',
         width: '30%',
         filterIcon: filtered => <SearchOutlined style={{ color: searchText ? COLOR.MINOR_THEME : undefined }} />,
-
         filterDropdown: ({ confirm }) => <div style={{ padding: '8px', display: 'flex', gap: '5px' }}>
           <Input
             placeholder={`ชื่อผู้เล่นหรือทีม`}
@@ -173,13 +192,6 @@ const Participants = (props) => {
           }}>Reset</Button>
         </div>,
       },
-      // {
-      //   title: 'ผู้เล่น 2',
-      //   dataIndex: 'player2',
-      //   key: 'player2',
-      //   align: 'center',
-      //   width: '22%'
-      // },
       {
         title: 'ประเมินมือ',
         dataIndex: 'allow',
@@ -216,7 +228,7 @@ const Participants = (props) => {
         ],
       },
       {
-        title: 'การจ่ายเงิน',
+        title: 'ค่าสมัคร',
         dataIndex: 'payment',
         key: 'payment',
         align: 'center',
@@ -241,6 +253,16 @@ const Participants = (props) => {
             value: 'pending',
           },
         ],
+      },
+      {
+        title: 'เครดิตลูกขนไก่',
+        dataIndex: 'shuttlecockCredit',
+        key: 'shuttlecockCredit',
+        align: 'center',
+        width: '10%',
+        defaultSortOrder: 'descend',
+        sortDirections: ['descend', 'ascend', 'descend'],
+        sorter: (a, b) => a.shuttlecockCredit > b.shuttlecockCredit,
       },
       {
         title: 'หมายเหตุ',
@@ -298,6 +320,15 @@ const Participants = (props) => {
         event={selectedEvent}
         mutate={mutate}
         isManager
+      />
+      <ShuttlecockModal
+        visible={shuttlecockModalVisible}
+        setVisible={setShuttlecockModalVisible}
+        team={selectedTeam}
+        event={selectedEvent}
+        mutate={mutate}
+        isManager
+        tournament={tournament}
       />
       <Modal
         visible={noteModalVisible}

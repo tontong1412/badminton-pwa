@@ -3,6 +3,7 @@ import { useWindowSize } from '../../../utils'
 import { useState, } from 'react'
 import request from '../../../utils/request'
 import ServiceErrorModal from '../../ServiceErrorModal'
+import { GROUP_NAME } from '../../../constant'
 
 const DisplayTeam = ({ team }) => {
   return (
@@ -16,73 +17,6 @@ const DisplayTeam = ({ team }) => {
     </div >
   )
 }
-
-const GROUP_DRAW = [
-  {
-    NAME: 'A',
-    VALUE: 0
-  },
-  {
-    NAME: 'B',
-    VALUE: 1
-  },
-  {
-    NAME: 'C',
-    VALUE: 2
-  },
-  {
-    NAME: 'D',
-    VALUE: 3
-  },
-  {
-    NAME: 'E',
-    VALUE: 4
-  },
-  {
-    NAME: 'F',
-    VALUE: 5
-  },
-  {
-    NAME: 'G',
-    VALUE: 6
-  },
-  {
-    NAME: 'H',
-    VALUE: 7
-  },
-  {
-    NAME: 'I',
-    VALUE: 8
-  },
-  {
-    NAME: 'J',
-    VALUE: 9
-  },
-  {
-    NAME: 'K',
-    VALUE: 10
-  },
-  {
-    NAME: 'L',
-    VALUE: 11
-  },
-  {
-    NAME: 'M',
-    VALUE: 12
-  },
-  {
-    NAME: 'N',
-    VALUE: 13
-  },
-  {
-    NAME: 'O',
-    VALUE: 14
-  },
-  {
-    NAME: 'P',
-    VALUE: 15
-  }
-]
 
 const ManualDrawGroup = ({ event, playerList, mutate }) => {
   const [order, setOrder] = useState([])
@@ -137,7 +71,7 @@ const ManualDrawGroup = ({ event, playerList, mutate }) => {
 
   const groupColumn = (group) => [
     {
-      title: `กลุ่ม ${GROUP_DRAW[group].NAME}`,
+      title: `กลุ่ม ${GROUP_NAME[group].NAME}`,
       dataIndex: 'group',
       align: 'center'
     }
@@ -196,7 +130,7 @@ const ManualDrawGroup = ({ event, playerList, mutate }) => {
             index: index + 1,
             team: <DisplayTeam team={team.team} />,
             draw: <Select style={{ width: '80px' }} onChange={(value) => onChangeOrder(value, team, index)} allowClear>
-              {GROUP_DRAW.map((elm) => (
+              {GROUP_NAME.map((elm) => (
                 <Select.Option key={elm.VALUE} >
                   {elm.NAME}
                 </Select.Option>

@@ -60,7 +60,7 @@ const GangID = () => {
       icon: <ExclamationCircleOutlined />,
       content: 'หาก reset ผู้เล่นและคิวทั้งหมดจะถูกลบ',
       onOk() {
-        axios.post(`${API_ENDPOINT}/gang/close`, { gangID: id })
+        axios.post(`${API_ENDPOINT}/gang/close`, { gangID: id, resetPlayer: gang.clearPlayerWhenReset })
           .then(() => { })
           .catch(() => { })
       },
@@ -137,10 +137,9 @@ const GangID = () => {
     setPlayerID()
   }
 
-  const onToggleActive = (checked) => {
-    console.log(checked)
+  const onToggle = (checked, key) => {
     axios.put(`${API_ENDPOINT}/gang/${id}`, {
-      isActive: checked
+      [key]: checked
     }).then(() => mutate())
       .catch(() => { })
   }
@@ -152,17 +151,26 @@ const GangID = () => {
   return (
     <div>
       {qrSVG ?
-        <div style={{ textAlign: 'center', maxWidth: '350px', margin: 'auto' }}>
-          <div dangerouslySetInnerHTML={{ __html: qrSVG }} />
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '5px' }}>
-            <div style={{ fontWeight: 'bold', fontSize: '20px', marginRight: '5px' }}>{gang.name}</div>
-            <Switch defaultChecked={gang.isActive} onChange={onToggleActive} />
+        <>
+          <div style={{ maxWidth: '300px', margin: 'auto' }} dangerouslySetInnerHTML={{ __html: qrSVG }} />
+          <div style={{ maxWidth: '350px', margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '5px' }}>
+              <div style={{ fontWeight: 'bold', fontSize: '20px', marginRight: '5px' }}>{gang.name}</div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', width: '200px', marginBottom: '10px' }}>
+              <div>เปิดให้ลงชื่อ</div>
+              <Switch defaultChecked={gang.isActive} onChange={(check) => onToggle(check, 'isActive')} />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', width: '200px', marginBottom: '10px' }}>
+              <div>ลบรายชื่อเมื่อ Reset</div>
+              <Switch defaultChecked={gang.clearPlayerWhenReset} onChange={(check) => onToggle(check, 'clearPlayerWhenReset')} />
+            </div>
+            <div><Button onClick={getStat} style={{ width: '200px', marginBottom: '10px' }}>สถิติ</Button></div>
+            <div><Button onClick={clear} type='primary' style={{ width: '200px', marginBottom: '10px' }}>Reset</Button></div>
+            {isCreator && <div><Button onClick={() => router.push(`/gang/${id}/manager`)} type='primary' style={{ width: '200px', marginBottom: '50px' }}>ผู้จัดการ</Button></div>}
+            {isCreator && <div><Button onClick={removeGang} type='danger' style={{ width: '200px', marginBottom: '10px' }}>ลบก๊วน</Button></div>}
           </div>
-          <div><Button onClick={getStat} style={{ width: '200px', marginBottom: '10px' }}>สถิติ</Button></div>
-          <div><Button onClick={clear} type='primary' style={{ width: '200px', marginBottom: '10px' }}>Reset</Button></div>
-          {isCreator && <div><Button onClick={() => router.push(`/gang/${id}/manager`)} type='primary' style={{ width: '200px', marginBottom: '50px' }}>ผู้จัดการ</Button></div>}
-          {isCreator && <div><Button onClick={removeGang} type='danger' style={{ width: '200px', marginBottom: '10px' }}>ลบก๊วน</Button></div>}
-        </div>
+        </>
         :
         <Loading />
       }

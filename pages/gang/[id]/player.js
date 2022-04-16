@@ -107,6 +107,7 @@ const GangID = () => {
       scrollToBottom()
       setIsModalVisible(false)
       setConfirmLoading(false)
+      setValue('')
     }).catch(err => {
       setIsModalVisible(false)
       setConfirmLoading(false)
@@ -124,6 +125,7 @@ const GangID = () => {
 
   const handleCancel = () => {
     setIsModalVisible(false)
+    setValue('')
   }
 
   const onSearch = (searchText) => {
@@ -134,7 +136,7 @@ const GangID = () => {
     ).map(player => {
       return {
         key: player._id,
-        value: player.displayName || player.officialName,
+        value: player._id,
         label: (
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div>{player.displayName || player.officialName}</div>
@@ -178,7 +180,7 @@ const GangID = () => {
   }
 
   const onSelect = (data, options) => {
-    setValue(data)
+    setValue(options.label.props.children[0].props.children)
     setPlayerID(options.key)
   }
 
@@ -346,6 +348,8 @@ const GangID = () => {
         onSearch={onSearch}
         onChange={onChange}
         placeholder="ชื่อผู้เล่น"
+        value={value}
+        allowClear
       />
     </Modal>
     <Modal

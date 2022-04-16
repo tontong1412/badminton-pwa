@@ -22,10 +22,15 @@ const Match = () => {
   const [undo, setUndo] = useState([])
   const [settingVisible, setSettingVisible] = useState(false)
   const [width, height] = useWindowSize()
+  const [isSingle, setIsSingle] = useState(false)
 
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT_MANAGER.DETAIL })
   }, [])
+
+  useEffect(() => {
+    setIsSingle(match?.teamA.team.players.length === 1)
+  }, [match])
 
 
   useEffect(() => {
@@ -64,6 +69,27 @@ const Match = () => {
 
   }
 
+  const manageShuttlecock = (action) => {
+    request.post('/match/manage-shuttlecock', {
+      matchID: id,
+      action,
+    }).then(() => mutate())
+      .catch(() => { })
+
+    request.post('/event/shuttlecock-credit', {
+      eventID: match.eventID,
+      teamID: match.teamA.team._id,
+      action: action === 'increment' ? 'decrement' : 'increment',
+      amount: 1
+    })
+    request.post('/event/shuttlecock-credit', {
+      eventID: match.eventID,
+      teamID: match.teamB.team._id,
+      action: action === 'increment' ? 'decrement' : 'increment',
+      amount: 1
+    })
+  }
+
 
   const updateScore = (team) => {
     const keepForUndo = [
@@ -92,9 +118,9 @@ const Match = () => {
       }
       payload = {
         $inc: { 'teamA.score': 1 },
-        'teamA.serving': match.teamA.isServing ? match.teamA.serving : Math.abs(match.teamA.serving - 1),
+        'teamA.serving': isSingle ? 0 : (match.teamA.isServing ? match.teamA.serving : Math.abs(match.teamA.serving - 1)),
         'teamA.receiving': null,
-        'teamB.receiving': teamBReceiver,
+        'teamB.receiving': isSingle ? 0 : teamBReceiver,
         'teamA.isServing': true,
         'teamB.isServing': false
       }
@@ -110,9 +136,9 @@ const Match = () => {
       }
       payload = {
         $inc: { 'teamB.score': 1 },
-        'teamB.serving': match.teamB.isServing ? match.teamB.serving : Math.abs(match.teamB.serving - 1),
+        'teamB.serving': isSingle ? 0 : (match.teamB.isServing ? match.teamB.serving : Math.abs(match.teamB.serving - 1)),
         'teamB.receiving': null,
-        'teamA.receiving': teamAReceiver,
+        'teamA.receiving': isSingle ? 0 : teamAReceiver,
         'teamB.isServing': true,
         'teamA.isServing': false
       }
@@ -260,7 +286,11 @@ const Match = () => {
             })}
           </div>
         </div>
-        {match.umpire && <div style={{ textAlign: 'center', fontSize: '20px' }}>ผู้ตัดสิน: {match.umpire?.officialName}</div>}
+
+        <div>
+          {match.umpire && <div style={{ textAlign: 'center', fontSize: '20px' }}>จำนวนลูก: {match.shuttlecockUsed} ลูก</div>}
+          {match.umpire && <div style={{ textAlign: 'center', fontSize: '20px' }}>ผู้ตัดสิน: {match.umpire?.officialName}</div>}
+        </div>
 
 
 
@@ -286,9 +316,11 @@ const Match = () => {
               {match.teamA.score === 0 && match.teamB.score === 0 && <Button onClick={() => setSettingVisible(true)}>เลือกคนรับ/เสิร์ฟ</Button>}
               <Button type='danger' onClick={() => endGame()}>จบเกม</Button>
               <Button disabled={undo.length <= 0} onClick={() => onUndo()}>undo</Button>
-
             </div>
-
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', paddingTop: '10px' }}>
+              <Button style={{ width: '50%' }} onClick={() => manageShuttlecock('decrement')}>ลบลูก</Button>
+              <Button style={{ width: '50%' }} onClick={() => manageShuttlecock('increment')}>เพิ่มลูก</Button>
+            </div>
           </div>
           <Button
             type='primary'

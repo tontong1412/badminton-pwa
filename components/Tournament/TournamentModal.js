@@ -1,4 +1,4 @@
-import { Modal, Form, DatePicker, Input, AutoComplete, Divider, Upload, Button } from "antd"
+import { Modal, Form, DatePicker, Input, AutoComplete, Divider, Upload, Button, InputNumber } from "antd"
 import { useState, useEffect } from "react"
 import { UploadOutlined } from "@ant-design/icons"
 import { usePlayers } from '../../utils'
@@ -202,6 +202,16 @@ const TournamentModal = ({ visible, setVisible, tournament = {}, mutate, action 
           ]}
         >
           <DatePicker />
+        </Form.Item>
+
+        <Form.Item
+          label='ค่าลูกแบด'
+          name='shuttlecockFee'
+          rules={[
+            { required: true, message: 'กรุณาระบุค่าลูกแบด/ผู้เข้าแข่งขัน/ลูก' },
+          ]}
+        >
+          <InputNumber />
         </Form.Item>
 
         <Form.Item

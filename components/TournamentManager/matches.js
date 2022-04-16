@@ -9,6 +9,7 @@ import request from '../../utils/request'
 import ServiceErrorModal from '../ServiceErrorModal'
 import { useSocket } from '../../utils'
 import { useRouter } from 'next/router'
+import { ROUND_NAME } from '../../constant'
 const Matches = (props) => {
   const router = useRouter()
   const [form] = Form.useForm()
@@ -46,7 +47,6 @@ const Matches = (props) => {
         title: 'Match',
         dataIndex: 'match',
         align: 'center',
-        width: '6%',
         fixed: 'left'
       },
       {
@@ -54,7 +54,7 @@ const Matches = (props) => {
         dataIndex: 'status',
         key: 'status',
         align: 'center',
-        width: '8%',
+        fixed: 'left',
         render: ({ text, court }) => <div>
           <Tag color={text.COLOR}>{text.LABEL}</Tag>
           {court ? <Tag color={text.COLOR}>{`คอร์ด ${court}`}</Tag> : null}
@@ -79,6 +79,11 @@ const Matches = (props) => {
         dataIndex: 'schedule',
         align: 'center',
         width: '10%'
+      },
+      {
+        title: 'รอบ',
+        dataIndex: 'round',
+        align: 'center',
       },
       {
         title: 'ผู้เข้าแข่งขัน',
@@ -254,7 +259,7 @@ const Matches = (props) => {
   const renderAction = (status, match) => {
     switch (status) {
       case MATCH.STATUS.waiting.LABEL:
-        return <a onClick={() => handleAssignMatchAction(match)}>ลงทำการแข่งขัน</a>
+        return <a onClick={() => handleAssignMatchAction(match)}>ลงสนาม</a>
       case MATCH.STATUS.playing.LABEL:
         // return <a onClick={() => handleSetScoreAction(match)}>สรุปผลการแข่งขัน</a>
         return <div>
@@ -282,6 +287,7 @@ const Matches = (props) => {
         key: match._id,
         match: match.matchNumber,
         event: <div><div>{match.eventName}</div>{match.step === 'consolation' && <div>สายล่าง</div>}</div>,
+        round: match.step === 'group' ? 'แบ่งกลุ่ม' : ROUND_NAME[match.round],
         competitor1: match.teamA?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
         competitor2: match.teamB?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
         date: moment(match.date).format('ll'),

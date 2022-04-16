@@ -18,12 +18,12 @@ const TournamentManagerLayout = (props) => {
       href: `/tournament/${id}`,
       alias: TAB_OPTIONS.TOURNAMENT_MANAGER.DETAIL
     },
-    {
-      name: 'ตรวจสอบรายชื่อ',
-      icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.TOURNAMENT_MANAGER.PARTICIPANTS ? COLOR.MINOR_THEME : '#aaa' }} />,
-      href: `/tournament/${id}/participants`,
-      alias: TAB_OPTIONS.TOURNAMENT_MANAGER.PARTICIPANTS
-    },
+    // {
+    //   name: 'ตรวจสอบรายชื่อ',
+    //   icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.TOURNAMENT_MANAGER.PARTICIPANTS ? COLOR.MINOR_THEME : '#aaa' }} />,
+    //   href: `/tournament/${id}/participants`,
+    //   alias: TAB_OPTIONS.TOURNAMENT_MANAGER.PARTICIPANTS
+    // },
     {
       name: 'สายการแข่งขัน',
       icon: <PartitionOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.TOURNAMENT_MANAGER.DRAWS ? COLOR.MINOR_THEME : '#aaa' }} />,
@@ -45,14 +45,14 @@ const TournamentManagerLayout = (props) => {
         href: `/tournament/${id}`,
         alias: TAB_OPTIONS.TOURNAMENT_MANAGER.DETAIL
       },
+      // {
+      //   name: 'รายชื่อ',
+      //   icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.TOURNAMENT_MANAGER.PARTICIPANTS ? COLOR.MINOR_THEME : '#aaa' }} />,
+      //   href: `/tournament/${id}/participants`,
+      //   alias: TAB_OPTIONS.TOURNAMENT_MANAGER.PARTICIPANTS
+      // },
       {
-        name: 'รายชื่อ',
-        icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.TOURNAMENT_MANAGER.PARTICIPANTS ? COLOR.MINOR_THEME : '#aaa' }} />,
-        href: `/tournament/${id}/participants`,
-        alias: TAB_OPTIONS.TOURNAMENT_MANAGER.PARTICIPANTS
-      },
-      {
-        name: 'สาย',
+        name: 'รายชื่อ/สาย',
         icon: <PartitionOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.TOURNAMENT_MANAGER.DRAWS ? COLOR.MINOR_THEME : '#aaa' }} />,
         href: `/tournament/${id}/draws`,
         alias: TAB_OPTIONS.TOURNAMENT_MANAGER.DRAWS

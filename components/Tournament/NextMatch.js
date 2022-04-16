@@ -4,6 +4,7 @@ import { useNextMatch, useTournament } from "../../utils"
 import Loading from '../../components/loading'
 import { Divider } from "antd"
 import moment from 'moment'
+import Image from "next/image"
 const NextMatch = ({ event, tournamentID }) => {
   const { user } = useSelector(state => state)
   const { matches, isLoading } = useNextMatch(user.token, event._id, tournamentID)
@@ -26,7 +27,13 @@ const NextMatch = ({ event, tournamentID }) => {
                 </div>
               : null
             }
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>{moment(matches?.nextMatch[0].date).format('lll')}</div>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <Image alt='icon' src='/icon/shuttlecock.png' width={20} height={20} />
+              <div>{event?.teams?.find(elm => elm?.team?.players?.some(e => e?._id === user?.playerID))?.shuttlecockCredit}</div>
+            </div>
           </div>
 
 
@@ -50,7 +57,7 @@ const NextMatch = ({ event, tournamentID }) => {
                 </div>
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <div style={{ width: '150px' }}>{matches.nextMatch[0]?.teamA?.team.players[1]?.officialName}</div>
-                  <div>{matches.nextMatch[0]?.teamA?.team?.players[1].club}</div>
+                  <div>{matches.nextMatch[0]?.teamA?.team?.players[1]?.club}</div>
                 </div>
               </div>
           }
