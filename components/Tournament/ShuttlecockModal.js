@@ -122,7 +122,7 @@ const ShuttlecockModal = ({ event, team = {}, visible, setVisible, mutate, isMan
           <Form.Item
             label='รวมเป็นเงิน'
           >
-            <div>{totalToPay || tournament.shuttlecockFee * 10}</div>
+            <div>{totalToPay || tournament?.shuttlecockFee * 10}</div>
           </Form.Item>
         </Form>
       }

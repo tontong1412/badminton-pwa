@@ -12,7 +12,7 @@ const Card = ({ gang }) => {
     },
     {
       icon: '/icon/shuttlecock.png',
-      text: gang.shuttlecockFee
+      text: gang?.shuttlecockFee
     }
   ]
   return (
