@@ -75,7 +75,7 @@ const Manage = () => {
       <h1>Manage</h1>
       <Steps size="small" current={currentStep} onChange={current => setCurrentStep(current)}>
         <Step title="กำหนดรายการแข่งขัน" />
-        <Step title="ประเมินมือ" />
+        <Step title="รายชื่อ" />
         <Step title="จับสาย" />
         <Step title="จัดตารางแข่ง" />
         <Step title="แมตช์แข่งขัน" />

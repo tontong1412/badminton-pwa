@@ -259,7 +259,7 @@ const Matches = (props) => {
   const renderAction = (status, match) => {
     switch (status) {
       case MATCH.STATUS.waiting.LABEL:
-        return <a onClick={() => handleAssignMatchAction(match)}>ลงทำการแข่งขัน</a>
+        return <a onClick={() => handleAssignMatchAction(match)}>ลงสนาม</a>
       case MATCH.STATUS.playing.LABEL:
         // return <a onClick={() => handleSetScoreAction(match)}>สรุปผลการแข่งขัน</a>
         return <div>
