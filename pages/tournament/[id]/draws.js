@@ -1,6 +1,6 @@
 import Layout from '../../../components/Layout/tournamentManager'
 import { useDispatch, useSelector } from 'react-redux'
-import { TAB_OPTIONS } from '../../../constant'
+import { TAB_OPTIONS, MAP_TOURNAMENT_STATUS_TO_DRAW_TAB } from '../../../constant'
 import Bracket from '../../../components/Bracket'
 import { useTournament } from '../../../utils'
 import { useRouter } from 'next/router'
@@ -17,7 +17,7 @@ const Draws = () => {
   const router = useRouter()
   const { id } = router.query
   const { tournament, isLoading, isError, mutate } = useTournament(id)
-  const [mode, setMode] = useState('group')
+  const [mode, setMode] = useState(MAP_TOURNAMENT_STATUS_TO_DRAW_TAB[tournament?.status || 'participants'])
   const [tab, setTab] = useState(tournament?.events[0]?._id)
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT_MANAGER.DRAWS })
@@ -55,7 +55,7 @@ const Draws = () => {
         activeKey={tab}
         onChange={(key) => {
           setTab(key)
-          setMode('participants')
+          setMode(MAP_TOURNAMENT_STATUS_TO_DRAW_TAB[tournament?.status || 'participants'])
         }}
       >
         {tournament?.events?.map(event => {

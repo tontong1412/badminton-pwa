@@ -207,6 +207,16 @@ const ROUND_NAME = {
   '4': 'Semi Finals',
   '2': 'Finals'
 }
+
+const MAP_TOURNAMENT_STATUS_TO_DRAW_TAB = {
+  'ongoing': 'group',
+  'knockOut': 'knockOut',
+  'finish': 'knockOut',
+  'prepare': 'participants',
+  'register': 'participants',
+  'draw': 'participants',
+  'arrange': 'participants',
+}
 export {
   GANG,
   TAB_OPTIONS,
@@ -219,5 +229,6 @@ export {
   MAP_FORMAT,
   MAP_EVENT_TYPE,
   GROUP_NAME,
-  ROUND_NAME
+  ROUND_NAME,
+  MAP_TOURNAMENT_STATUS_TO_DRAW_TAB
 }
