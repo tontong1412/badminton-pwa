@@ -11,6 +11,7 @@ import SlipModal from '../Tournament/SlipModal'
 import AddButton from '../addButton'
 import RegisterModal from '../Tournament/RegisterModal'
 import { useSelector } from 'react-redux'
+import ShuttlecockModal from '../Tournament/ShuttlecockModal'
 
 const Participants = (props) => {
   const { tournament, isLoading, isError, mutate } = useTournament(props.tournamentID)
@@ -20,6 +21,7 @@ const Participants = (props) => {
   const [contactPersonVisible, setContactPersonVisible] = useState(false)
   const [selectedTeam, setSelectedTeam] = useState()
   const [slipModalVisible, setSlipModalVisible] = useState(false)
+  const [shuttlecockModalVisible, setShuttlecockModalVisible] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState();
   const [registerModalVisible, setRegisterModalVisible] = useState(false)
   const [noteModalVisible, setNoteModalVisible] = useState(false)
@@ -49,6 +51,15 @@ const Participants = (props) => {
           setSelectedEvent(event)
         }}>
           ดู/อัพโหลดสลิป
+        </div>
+      </Menu.Item>
+      <Menu.Item key='shuttlecock-credit-slip'>
+        <div onClick={() => {
+          setShuttlecockModalVisible(true)
+          setSelectedTeam(team)
+          setSelectedEvent(event)
+        }}>
+          ซื้อ/ขายลูกแบด
         </div>
       </Menu.Item>
       {team.status !== 'idle' && <Menu.Item key='update-status'>
@@ -217,7 +228,7 @@ const Participants = (props) => {
         ],
       },
       {
-        title: 'การจ่ายเงิน',
+        title: 'ค่าสมัคร',
         dataIndex: 'payment',
         key: 'payment',
         align: 'center',
@@ -309,6 +320,15 @@ const Participants = (props) => {
         event={selectedEvent}
         mutate={mutate}
         isManager
+      />
+      <ShuttlecockModal
+        visible={shuttlecockModalVisible}
+        setVisible={setShuttlecockModalVisible}
+        team={selectedTeam}
+        event={selectedEvent}
+        mutate={mutate}
+        isManager
+        tournament={tournament}
       />
       <Modal
         visible={noteModalVisible}
