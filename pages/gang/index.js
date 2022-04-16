@@ -8,19 +8,19 @@ import { Modal, Form, Input, Radio, InputNumber, Button, Checkbox } from 'antd'
 import Loading from '../../components/loading'
 import MyGang from '../../components/gang/myGang'
 import router from 'next/router'
-import { useGangs } from '../../utils'
+import { useGangs, useMyGang } from '../../utils'
 import { formatPromptpay } from '../../utils/formatter'
 import request from '../../utils/request'
 import { TAB_OPTIONS } from '../../constant'
 
 const Gang = () => {
-  const myGangRef = useRef()
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [courtFeeType, setCourtFeeType] = useState('buffet')
   const [displayGangs, setDisplayGangs] = useState()
   const { user } = useSelector(state => state)
   const { gangs, mutate, isLoading, isError } = useGangs()
+  const { mutate: mutateMyGang } = useMyGang(user.token)
   const dispatch = useDispatch()
 
   const createGangFormLayout = {
@@ -81,10 +81,10 @@ const Gang = () => {
       user.token
     ).then(() => {
       mutate()
+      mutateMyGang()
       setDisplayGangs(gangs)
       setIsModalVisible(false)
       setConfirmLoading(false)
-      myGangRef.current.fetchMyGang()
     }).catch(err => {
       setIsModalVisible(false)
       setConfirmLoading(false)
@@ -102,7 +102,7 @@ const Gang = () => {
   if (isLoading) return <Loading />
   return (
     <div>
-      <MyGang bottomLine ref={myGangRef} />
+      <MyGang bottomLine />
       <div style={{ margin: '10px' }}>
         <Input.Search
           allowClear
