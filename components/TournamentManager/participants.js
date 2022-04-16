@@ -82,7 +82,11 @@ const Participants = (props) => {
   )
   useEffect(() => {
     let i = 0
-    const tempParticipant = tournament?.events?.reduce((prev, event) => {
+    let filteredEvent = tournament?.events
+    if (props.eventID) {
+      filteredEvent = filteredEvent?.filter(elm => elm._id === props.eventID)
+    }
+    const tempParticipant = filteredEvent?.reduce((prev, event) => {
       event.teams.forEach(team => {
         const searchTextLower = searchText.toLowerCase()
         if (team?.team?.players[0].officialName?.toLowerCase().includes(searchTextLower)
@@ -129,7 +133,24 @@ const Participants = (props) => {
   }
 
   const columns = () => {
-    const base = [
+    let base = []
+    if (!props.eventID) {
+      base.push({
+        title: 'รายการ',
+        dataIndex: 'event',
+        key: 'event',
+        align: 'center',
+        width: '10%',
+        fixed: 'left',
+        onFilter: (value, record) => record.event === value,
+        filters: tournament?.events.map(event => ({
+          text: event.name,
+          value: event.name
+        }))
+      })
+    }
+    base = [
+      ...base,
       {
         title: 'วันที่สมัคร',
         dataIndex: 'date',
@@ -140,18 +161,6 @@ const Participants = (props) => {
         sortDirections: ['descend', 'ascend', 'descend'],
         sorter: (a, b) => a.date > b.date,
         render: text => moment(text).format('DD MMM yyyy')
-      },
-      {
-        title: 'รายการ',
-        dataIndex: 'event',
-        key: 'event',
-        align: 'center',
-        width: '10%',
-        onFilter: (value, record) => record.event === value,
-        filters: tournament?.events.map(event => ({
-          text: event.name,
-          value: event.name
-        }))
       },
       {
         title: 'ผู้สมัคร',
