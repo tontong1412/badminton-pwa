@@ -64,8 +64,8 @@ const Draws = () => {
 
               <Radio.Group onChange={e => setMode(e.target.value)} value={mode} style={{ marginBottom: 8 }}>
                 <Radio.Button value="participants">รายชื่อ</Radio.Button>
-                {event?.format !== 'singleElim' && <Radio.Button value="group">สายแบ่งกลุ่ม</Radio.Button>}
-                <Radio.Button value="knockOut">สาย Knock Out</Radio.Button>
+                {event?.format !== 'singleElim' && <Radio.Button value="group">แบ่งกลุ่ม</Radio.Button>}
+                <Radio.Button value="knockOut">Knock Out</Radio.Button>
                 {event?.format === 'roundRobinConsolation' && <Radio.Button value="consolation">สายล่าง</Radio.Button>}
               </Radio.Group>
               {renderDraws(event)}

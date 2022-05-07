@@ -287,7 +287,7 @@ const Matches = (props) => {
         key: match._id,
         match: match.matchNumber,
         event: <div><div>{match.eventName}</div>{match.step === 'consolation' && <div>สายล่าง</div>}</div>,
-        round: match.step === 'group' ? 'แบ่งกลุ่ม' : ROUND_NAME[match.round],
+        round: match.step === 'group' ? `แบ่งกลุ่ม` : ROUND_NAME[match.round],
         competitor1: match.teamA?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
         competitor2: match.teamB?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
         date: moment(match.date).format('ll'),
