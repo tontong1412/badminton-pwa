@@ -50,8 +50,8 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
       eventID: values.eventID,
       players: composePlayer,
       contact: {
-        _id: contactPerson,
-        officialName: values.contactName,
+        _id: user.playerID,
+        // officialName: values.contactName,
         lineID: values.lineID,
         tel: values.tel
       }
@@ -152,6 +152,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         scrollToFirstError
+        initialValues={{ lineID: user.lineID, tel: user.tel }}
         onValuesChange={({ eventID }) => { if (eventID) setType(tournament.events.find(elm => elm._id === eventID).type) }}
       >
         <Form.Item
@@ -290,7 +291,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
           </Form.Item>
         </div>}
         <Divider plain>หัวหน้าทีม/ผู้จัดการทีม</Divider>
-        <Form.Item
+        {/* <Form.Item
           label='ชื่อ'
           name='contactName'
           rules={[
@@ -303,7 +304,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
             onSearch={onSearch}
             onChange={() => onChange('contact')}
           />
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item
           label='เบอร์โทรศัพท์'
           name='tel'

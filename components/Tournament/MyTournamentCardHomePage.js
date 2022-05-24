@@ -60,12 +60,12 @@ const MyTournamentCardHomePage = ({ tournament, mutate }) => {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <div style={{ width: '150px' }}>{team.team.players[0].officialName}</div>
+              <div style={{ width: '150px' }}>{team.team.players[0]?.officialName}</div>
               <div>{team.team.players[0].club}</div>
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <div style={{ width: '150px' }}>{team.team.players[1].officialName}</div>
-              <div>{team.team.players[1].club}</div>
+              <div style={{ width: '150px' }}>{team.team.players[1]?.officialName}</div>
+              <div>{team.team.players[1]?.club}</div>
             </div>
           </div>
           <Dropdown overlay={menu(event, team)} placement="bottomRight">
