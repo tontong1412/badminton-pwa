@@ -43,7 +43,9 @@ const Login = () => {
         officialName: player?.officialName,
         displayName: player?.displayName,
         club: player?.club,
-        photo: player?.photo
+        photo: player?.photo,
+        tel: player?.tel,
+        lineID: player?.lineID
       }
       localStorage.setItem('rememberMe', values.remember);
       localStorage.setItem('token', values.remember ? login.user.token : '');
