@@ -68,7 +68,7 @@ const MyTournamentCardHomePage = ({ tournament, mutate }) => {
               <div>{team.team.players[1]?.club}</div>
             </div>
           </div>
-          <Dropdown overlay={menu(event, team)} placement="bottomRight">
+          <Dropdown overlay={menu(event, team)} trigger={['click']} placement="bottomRight">
             <div><MenuOutlined /></div>
           </Dropdown>
         </div>
