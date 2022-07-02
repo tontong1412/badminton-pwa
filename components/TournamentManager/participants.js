@@ -113,7 +113,7 @@ const Participants = (props) => {
             payment: team.paymentStatus,
             note: { note: team.note, isInQueue: team.isInQueue },
             shuttlecockCredit: team.shuttlecockCredit,
-            action: <Dropdown overlay={menu(event, team)} placement="bottomRight">
+            action: <Dropdown overlay={menu(event, team)} trigger={['click', 'hover']} placement="bottomRight">
               <div>เพิ่มเติม</div>
             </Dropdown>
           })

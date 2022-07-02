@@ -4,7 +4,7 @@ import { Divider, Tag, Menu, Dropdown, Modal } from 'antd'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { EVENT, TRANSACTION } from '../../constant'
-import { MenuOutlined } from '@ant-design/icons'
+import { MenuOutlined, RightOutlined } from '@ant-design/icons'
 import SlipModal from './SlipModal'
 import request from '../../utils/request'
 import NextMatch from './NextMatch'
@@ -56,6 +56,10 @@ const MyTournamentCardHomePage = ({ tournament, mutate }) => {
         <div style={{ display: 'flex', marginBottom: '5px', alignItems: 'center' }}>
           <Tag color={EVENT.TEAM_STATUS[team?.status]?.COLOR}>{EVENT.TEAM_STATUS[team?.status]?.LABEL}</Tag>
           <Tag color={TRANSACTION[team?.paymentStatus].COLOR}>{TRANSACTION[team?.paymentStatus].LABEL}</Tag>
+          {team?.paymentStatus === 'paid' && <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <Image alt='icon' src='/icon/shuttlecock.png' width={20} height={20} />
+            <div>{team?.shuttlecockCredit}</div>
+          </div>}
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
@@ -91,7 +95,11 @@ const MyTournamentCardHomePage = ({ tournament, mutate }) => {
         href={`/tournament/${tournament._id}`}
         passHref
       >
-        <h3 style={{ padding: '20px 20px 0 20px' }}>{tournament.name}</h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 20px 0 20px' }}>
+          <h3 style={{ margin: 0 }}>{tournament.name}</h3>
+          <RightOutlined />
+        </div>
+
       </Link >
       {
         tournament.events.map(event => {
