@@ -21,8 +21,8 @@ const ArrangeMatch = ({ tournamentID, setStep }) => {
         knockOut: values.knockOutDuration || values.groupDuration,
       },
       timeGap: {
-        group: values.timeGapGroup,
-        knockOut: values.timeGapKnockOut || values.timeGapGroup
+        group: values.timeGapGroup || 2, // fix
+        knockOut: values.timeGapKnockOut || values.timeGapGroup || 2 // fix
       },
       method: values.method
     }).then(async () => {
@@ -68,7 +68,6 @@ const ArrangeMatch = ({ tournamentID, setStep }) => {
       <Form.Item
         label="วัน/เวลาที่เริ่มแข่ง"
         name="knockOutStartTime"
-      // rules={[{ required: true, message: 'กรุณาระบุ' }]}
       >
         <DatePicker showTime format="DD-MMM-YYYY HH:mm" minuteStep={5} />
       </Form.Item>
@@ -100,6 +99,12 @@ const ArrangeMatch = ({ tournamentID, setStep }) => {
           <DatePicker showTime format="DD-MMM-YYYY HH:mm" minuteStep={5} />
         </Form.Item>
         <Form.Item
+          label="วัน/เวลาที่เริ่มแข่ง (รอบ Knock Out)"
+          name="knockOutStartTime"
+        >
+          <DatePicker showTime format="DD-MMM-YYYY HH:mm" minuteStep={5} />
+        </Form.Item>
+        <Form.Item
           label="เวลาที่ใช้ต่อคู่ (นาที)"
           name="groupDuration"
           rules={[{ required: true, message: 'กรุณาระบุ' }]}
@@ -114,7 +119,7 @@ const ArrangeMatch = ({ tournamentID, setStep }) => {
           <InputNumber min={1} />
         </Form.Item>
 
-        <Form.Item
+        {/* <Form.Item
           label="จำนวนรอบสนามก่อนแมตช์ถัดไป แบ่งกลุ่ม"
           name="timeGapGroup"
           rules={[{ required: true, message: 'กรุณาระบุ' }]}
@@ -126,7 +131,7 @@ const ArrangeMatch = ({ tournamentID, setStep }) => {
           name="timeGapKnockOut"
         >
           <InputNumber min={1} />
-        </Form.Item>
+        </Form.Item> */}
       </div>
     )
   }
@@ -155,11 +160,11 @@ const ArrangeMatch = ({ tournamentID, setStep }) => {
           </Radio.Group>
         </Form.Item>
 
-        {method === 'official' ? renderOfficialSort() : renderMinWaitSort()}
+        {method === 'official' ? renderOfficialSort() : renderOfficialSort() /*same form*/}
 
 
 
-        <Form.Item wrapperCol={{ span: 24 }}>
+        < Form.Item wrapperCol={{ span: 24 }}>
           <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             <Button type="primary" htmlType="submit" loading={loading} style={{ minWidth: "350px" }}>
               ตกลง
@@ -167,7 +172,7 @@ const ArrangeMatch = ({ tournamentID, setStep }) => {
           </div>
         </Form.Item>
       </Form>
-    </div>
+    </div >
 
   )
 }
