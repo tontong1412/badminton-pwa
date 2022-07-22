@@ -18,6 +18,7 @@ const Setting = () => {
   const user = useSelector(state => state.user)
   const { tournament, isLoading, isError } = useTournament(id)
   const [isCreator, setIsCreator] = useState(false)
+  const [isManager, setIsManager] = useState(false)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -29,6 +30,11 @@ const Setting = () => {
       setIsCreator(true)
     } else {
       setIsCreator(false)
+    }
+    if (user && tournament && tournament?.managers.map(e => e._id).includes(user.playerID)) {
+      setIsManager(true)
+    } else {
+      setIsManager(false)
     }
   }, [tournament, user])
 
@@ -95,11 +101,11 @@ const Setting = () => {
         </div>
 
         {isCreator && <div><Button onClick={finishTournament} type='primary' style={{ width: '200px', marginBottom: '10px' }}>สิ้นสุดการแข่งขัน</Button></div>}
-        {isCreator && <div><Button onClick={() => router.push(`/tournament/${id}/umpire`)} type='primary' style={{ width: '200px', marginBottom: '10px' }}>กรรมการ</Button></div>}
+        {(isCreator || isManager) && <div> <Button onClick={() => router.push(`/tournament/${id}/umpire`)} type='primary' style={{ width: '200px', marginBottom: '10px' }}>กรรมการ</Button></div>}
         {isCreator && <div><Button onClick={() => router.push(`/tournament/${id}/manager`)} type='primary' style={{ width: '200px', marginBottom: '50px' }}>ผู้จัดการ</Button></div>}
         {/* {isCreator && <div><Button onClick={removeTournament} type='danger' style={{ width: '200px', marginBottom: '10px' }}>ลบรายการนี้</Button></div>} */}
       </div>
-    </Layout>
+    </Layout >
   )
 }
 export default Setting
