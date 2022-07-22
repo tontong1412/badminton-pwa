@@ -22,12 +22,20 @@ const Manager = () => {
   const { players } = usePlayers()
   const playerEndRef = useRef(null)
   const [isCreator, setIsCreator] = useState(false)
+  const [isManager, setIsManager] = useState(false)
 
   useEffect(() => {
     if (user && tournament && (user.playerID === tournament.creator)) {
       setIsCreator(true)
     } else {
       setIsCreator(false)
+    }
+    if (user && tournament && tournament?.managers.map(e => e._id).includes(user.playerID)) {
+      console.log('isManager')
+      setIsManager(true)
+    } else {
+      console.log('not manager')
+      setIsManager(false)
     }
   }, [user, tournament])
 
@@ -112,7 +120,7 @@ const Manager = () => {
 
   if (isError) return "An error has occurred."
   if (isLoading) return <Loading />
-  if (!isCreator) return <div>permission denied</div>
+  if (!isCreator && !isManager) return <div>permission denied</div>
   return <>
     <div style={{ fontSize: '20px' }}>{tournament.name} </div>
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -149,7 +157,7 @@ const Manager = () => {
       })
         : <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}><div style={{ color: '#ccc' }}>เพิ่มผู้จัดการได้ที่ปุ่ม + ด้านล่าง</div></div>
     }
-    {isCreator && <AddButton onClick={showModal} style={{ bottom: '40px' }} />}
+    {(isCreator || isManager) && <AddButton onClick={showModal} style={{ bottom: '40px' }} />}
     <Modal
       title="เพิ่มกรรมการ"
       visible={isModalVisible}
