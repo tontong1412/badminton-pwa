@@ -4,6 +4,8 @@ import { useTournament, usePlayers } from '../../utils'
 import request from '../../utils/request'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
+import Highlighter from "react-highlight-words";
+import { COLOR } from '../../constant'
 const RegisterModal = ({ visible, setVisible, tournamentID }) => {
   const [form] = Form.useForm()
   const [player1, setPlayer1] = useState()
@@ -87,17 +89,24 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
   const onSearch = (searchText) => {
     const searchTextLower = searchText.toLowerCase()
     const searchOptions = players.filter(player => player.officialName?.toLowerCase().includes(searchTextLower)
-    ).map(player => {
-      return {
-        key: player._id,
-        value: player.officialName,
-        label: (
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <div>{player.officialName}</div>
-          </div>
-        )
-      }
-    })
+    )
+      .sort((a, b) => a.officialName.localeCompare(b.officialName))
+      .map(player => {
+        return {
+          key: player._id,
+          value: player.officialName,
+          label: (
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Highlighter
+                highlightStyle={{ backgroundColor: 'peachpuff', padding: 0, margin: 0, borderRadius: '3px' }}
+                searchWords={[searchText]}
+                autoEscape={true}
+                textToHighlight={player.officialName}
+              />
+            </div>
+          )
+        }
+      })
     setOptions(
       !searchText ? [] : searchOptions,
     )
