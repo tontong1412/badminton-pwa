@@ -127,6 +127,8 @@ const RoundUpEvent = ({ eventID, matches, step = 'knockOut' }) => {
     const showOrderTemp = [...showOrder]
     const orderTemp = [...order]
     const orderValueTemp = []
+
+    let orderValueIndex = 0
     const data = winner?.reduce((prev, group) => {
       group.forEach((team, index) => {
         const defaultOrder = event.order[step].findIndex((e) => e === `ที่ ${index + 1} กลุ่ม ${team.group}`)
@@ -143,7 +145,8 @@ const RoundUpEvent = ({ eventID, matches, step = 'knockOut' }) => {
           </div>
           orderTemp[defaultOrder] = team.team
         }
-        orderValueTemp[index] = defaultOrder >= 0 && defaultOrder + 1
+        orderValueTemp[orderValueIndex] = defaultOrder >= 0 && defaultOrder + 1
+        const orderValueIndexImmutable = orderValueIndex //ถ้าไม่สร้าง const มารับ จะใช้ตัวล่าสุดในการเรียกฟังก์ชั่น
         prev.push({
           key: team.team._id,
           team: <div>
@@ -159,12 +162,12 @@ const RoundUpEvent = ({ eventID, matches, step = 'knockOut' }) => {
           draw: <InputNumber
             key={team.team._id}
             // defaultValue={defaultOrder >= 0 && defaultOrder + 1}
-            onBlur={(e) => onChangeOrder(e.target.value, team, index)}
+            onBlur={(e) => onChangeOrder(e.target.value, team, orderValueIndexImmutable)}
             max={event.order[step].length}
-            value={orderValue[index]}
+            value={orderValue[orderValueIndex]}
             min={1} />
         })
-
+        orderValueIndex++
       })
       return prev
     }, [])
