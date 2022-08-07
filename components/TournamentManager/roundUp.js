@@ -11,17 +11,11 @@ const RoundUpEvent = ({ eventID, matches, step = 'knockOut' }) => {
   const [order, setOrder] = useState([])
   const [groupMatches, setGroupMatches] = useState([])
   const [showOrder, setShowOrder] = useState([])
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [width, height] = useWindowSize()
   const { event, isLoading, isError } = useEvent(eventID)
-
-  useEffect(() => {
-    if (event) {
-      setOrder(event.order.knockOut)
-      setShowOrder(event.order.knockOut)
-    }
-  }, [event])
+  const [orderValue, setOrderValue] = useState([])
 
   useEffect(() => {
     if (matches) {
@@ -34,26 +28,31 @@ const RoundUpEvent = ({ eventID, matches, step = 'knockOut' }) => {
     if (event) {
       setOrder(event.order[step])
       setShowOrder(event.order[step])
+      const result = prepareData(event)
+      setData(result.data)
+      setOrderValue([])
     }
-
   }, [step, event])
 
   useEffect(() => {
+    setData(prepareData(event).data)
+    // to force update when click button auto fill because it delay
+  }, [orderValue])
+
+  const onAutoRoundup = async () => {
     if (groupMatches.length > 0) {
-      const result = prepareData(event)
-      setData(result.data)
+      const result = await prepareData(event)
       setShowOrder(result.showOrder)
       setOrder(result.order)
+      setData(result.data)
+      setOrderValue(result.orderValue)
     }
-  }, [groupMatches])
+  }
 
-
-
-
-  const onChangeOrder = async (orderValue, team) => {
-    if (orderValue) {
+  const onChangeOrder = async (orderValueInput, team, i) => {
+    if (orderValueInput) {
       const tempOrderShow = [...showOrder]
-      tempOrderShow[orderValue - 1] = <div>
+      tempOrderShow[orderValueInput - 1] = <div>
         {team.team.players?.map(player =>
           <div
             key={player._id}
@@ -63,9 +62,13 @@ const RoundUpEvent = ({ eventID, matches, step = 'knockOut' }) => {
           </div>)}
       </div>
       const tempOrder = [...order]
-      tempOrder[orderValue - 1] = team.team
+      tempOrder[orderValueInput - 1] = team.team
+
+      const tempOrderValue = [...orderValue]
+      tempOrderValue[i] = orderValueInput
       setShowOrder(tempOrderShow)
       setOrder(tempOrder)
+      setOrderValue(tempOrderValue)
     } else {
       const index = order.findIndex(elm => elm?._id === team.team._id)
       const tempOrder = [...order]
@@ -76,6 +79,11 @@ const RoundUpEvent = ({ eventID, matches, step = 'knockOut' }) => {
 
       setOrder(tempOrder)
       setShowOrder(tempOrderShow)
+
+      const tempOrderValue = [...orderValue]
+      tempOrderValue[i] = null
+      setOrderValue(tempOrderValue)
+
     }
   }
 
@@ -118,6 +126,7 @@ const RoundUpEvent = ({ eventID, matches, step = 'knockOut' }) => {
 
     const showOrderTemp = [...showOrder]
     const orderTemp = [...order]
+    const orderValueTemp = []
     const data = winner?.reduce((prev, group) => {
       group.forEach((team, index) => {
         const defaultOrder = event.order[step].findIndex((e) => e === `ที่ ${index + 1} กลุ่ม ${team.group}`)
@@ -134,6 +143,7 @@ const RoundUpEvent = ({ eventID, matches, step = 'knockOut' }) => {
           </div>
           orderTemp[defaultOrder] = team.team
         }
+        orderValueTemp[index] = defaultOrder >= 0 && defaultOrder + 1
         prev.push({
           key: team.team._id,
           team: <div>
@@ -148,18 +158,22 @@ const RoundUpEvent = ({ eventID, matches, step = 'knockOut' }) => {
           group: team.group,
           draw: <InputNumber
             key={team.team._id}
-            defaultValue={defaultOrder >= 0 && defaultOrder + 1}
-            onBlur={(e) => onChangeOrder(e.target.value, team)}
+            // defaultValue={defaultOrder >= 0 && defaultOrder + 1}
+            onBlur={(e) => onChangeOrder(e.target.value, team, index)}
             max={event.order[step].length}
+            value={orderValue[index]}
             min={1} />
         })
+
       })
       return prev
     }, [])
+
     return {
       data,
       order: orderTemp,
-      showOrder: showOrderTemp
+      showOrder: showOrderTemp,
+      orderValue: orderValueTemp
     }
   }
 
@@ -224,7 +238,7 @@ const RoundUpEvent = ({ eventID, matches, step = 'knockOut' }) => {
       <div style={{ display: 'flex' }}>
         <Table
           columns={columns}
-          dataSource={groupMatches.length > 0 ? prepareData(event).data : []}
+          dataSource={groupMatches.length > 0 ? data : []}
           pagination={false}
           style={{ width: '50%' }}
           scroll={{ y: height - 340 }}
@@ -235,8 +249,9 @@ const RoundUpEvent = ({ eventID, matches, step = 'knockOut' }) => {
         </div>
 
       </div>
+      <Button onClick={onAutoRoundup} type='primary' style={{ position: 'absolute', top: '20px', right: '20px', width: '150px' }}>Auto Fill</Button>
       <Popconfirm placement="top" title={'แน่ใจที่จะบันทึกหรือไม่'} onConfirm={onRoundUp} okText="Yes" cancelText="No">
-        <Button type='primary' style={{ position: 'absolute', top: '20px', right: '20px', width: '150px' }}>บันทึก</Button>
+        <Button type='primary' style={{ position: 'absolute', top: '60px', right: '20px', width: '150px' }}>บันทึก</Button>
       </Popconfirm>
     </div>
   )
@@ -246,7 +261,7 @@ const RoundUp = (props) => {
   const { matches } = useMatches(props.tournamentID)
   const { tournament } = useTournament(props.tournamentID)
   const [mode, setMode] = useState('knockOut')
-  const [tab, setTab] = useState(tournament.events[0]._id)
+  const [tab, setTab] = useState(tournament.events.filter(elm => elm.format !== 'singleElim')[0]._id)
   return (
     <Tabs
       defaultActiveKey={tab}
@@ -266,7 +281,7 @@ const RoundUp = (props) => {
             </Radio.Group>
             {
               (mode === 'knockOut')
-                ? <RoundUpEvent eventID={event._id} matches={matches} />
+                ? <RoundUpEvent eventID={event._id} matches={matches} step={mode} />
                 : <RoundUpEvent eventID={event._id} matches={matches} step={mode} />
             }
 

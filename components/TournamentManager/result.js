@@ -33,8 +33,6 @@ const Result = ({ tournamentID }) => {
 
         const consolationSemifinalist = semiMatch?.map(match => (match.teamA.scoreSet > match.teamB.scoreSet) ? 'teamB' : 'teamA')
 
-
-
         return (
           <Tabs.TabPane tab={event.name} key={event._id} >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '10px' }}>
