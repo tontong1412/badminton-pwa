@@ -16,7 +16,6 @@ const Result = ({ tournamentID }) => {
       }}
     >
       {tournament?.events?.map((event, i) => {
-        if (event.order.knockOut.length <= 0) return null
         const finalMatch = matches?.filter(elm => elm.eventID === event._id).find(elm => elm.step === 'knockOut' && elm.round === 2 && elm.status === 'finished')
         const semiMatch = matches?.filter(elm => elm.eventID === event._id && elm.step === 'knockOut' && elm.round === 4 && elm.status === 'finished')
 
