@@ -74,14 +74,14 @@ const ArrangeMatch = ({ tournamentID, setStep }) => {
       <Form.Item
         label="เวลาที่ใช้ต่อคู่ (นาที)"
         name="knockOutDuration"
-        rules={[{ required: true, message: 'กรุณาระบุ' }]}
+      // rules={[{ required: true, message: 'กรุณาระบุ' }]}
       >
         <InputNumber />
       </Form.Item>
       <Form.Item
         label="จำนวนคอร์ด"
         name="numberOfCourtKnockOut"
-        rules={[{ required: true, message: 'กรุณาระบุ' }]}
+      // rules={[{ required: true, message: 'กรุณาระบุ' }]}
       >
         <InputNumber />
       </Form.Item>

@@ -255,7 +255,7 @@ const Participants = (props) => {
         ],
       },
       {
-        title: 'เครดิตลูกขนไก่',
+        title: 'คูปองลูก',
         dataIndex: 'shuttlecockCredit',
         key: 'shuttlecockCredit',
         align: 'center',

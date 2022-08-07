@@ -8,6 +8,7 @@ import Matches from '../../../components/TournamentManager/matches'
 import Draw from '../../../components/TournamentManager/draw'
 import ArrangeMatch from '../../../components/TournamentManager/arrangeMatch'
 import RoundUp from '../../../components/TournamentManager/roundUp'
+import Result from '../../../components/TournamentManager/result'
 import { Steps } from 'antd'
 import { useRouter } from 'next/router'
 import { useTournament } from '../../../utils'
@@ -61,6 +62,8 @@ const Manage = () => {
         return <Matches isManager tournamentID={id} />
       case 5:
         return <RoundUp tournamentID={id} />
+      case 6:
+        return <Result tournamentID={id} />
       // case 6:
       //   return <Matches isManager tournamentID={id} step='knockOut' />
       default:
@@ -81,6 +84,7 @@ const Manage = () => {
         <Step title="แมตช์แข่งขัน" />
         {/* <Step title="แข่งรอบแบ่งกลุ่ม" /> */}
         <Step title="สรุปทีมเข้ารอบ" />
+        <Step title="สรุปผลการแข่งขัน" />
         {/* <Step title="แข่งรอบแพ้คัดออก" /> */}
       </Steps>
       {renderStepContent()}

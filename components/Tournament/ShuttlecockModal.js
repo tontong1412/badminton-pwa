@@ -72,7 +72,7 @@ const ShuttlecockModal = ({ event, team = {}, visible, setVisible, mutate, isMan
       onCancel={() => setVisible(false)}
       centered
       // footer={getFooter()}
-      title='เครดิตลูกแบด'
+      title='คูปองลูก'
       destroyOnClose
     >
       <div style={{ marginBottom: '20px' }}>
