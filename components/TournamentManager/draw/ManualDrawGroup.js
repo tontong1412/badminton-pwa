@@ -91,6 +91,7 @@ const ManualDrawGroup = ({ event, playerList, mutate }) => {
     request.post('/event/random-order', {
       groupOrder: order,
       eventID: event._id,
+      groupCount: order.length,
       qualified: values.qualified,
       qualifiedConsolation: values.qualifiedConsolation
     })
