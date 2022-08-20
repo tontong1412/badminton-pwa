@@ -16,6 +16,21 @@ const MatchUp = ({ match, isManager }) => {
       })
       .catch((e) => console.log(e))
   }
+  const renderMatchDetail = (match, team, teamIndex) => {
+    if (match.status === 'waiting') return (
+      <div className='detail-date'>
+        <p>{`#${match.matchNumber}\r\n${moment(match.date).format('l')}`}</p>
+      </div>
+    )
+    return (
+      <React.Fragment>
+        {match.scoreLabel.map((set, i) => <div key={i} className='detail-score'><p>{set.split('-')[teamIndex]}</p></div>)}
+        {match.status === 'playing' && <div className='detail-score'><p>{match[team].score}</p></div>}
+        {match.status === 'finished' && match.scoreLabel.length < 3 && Array.apply(null, Array(3 - match.scoreLabel.length)).map((i) => <div key={i} className='detail-score'><p></p></div>)}
+        {match.status === 'playing' && match.scoreLabel.length < 2 && Array.apply(null, Array(2 - match.scoreLabel.length)).map((i) => <div key={i} className='detail-score'><p></p></div>)}
+      </React.Fragment>
+    )
+  }
   return (
     <div className="matchup">
       <div className="participants" >
@@ -33,11 +48,8 @@ const MatchUp = ({ match, isManager }) => {
             }
           </div>
           {
-            !match.matchNumber || match.scoreLabel && match.scoreLabel.length > 0 ? (
-              <React.Fragment>
-                {[0, 1, 2].map(index => <div className='detail-score' key={index}><p>{match.scoreLabel[index]?.split('-')[0]}</p></div>)}
-              </React.Fragment>
-            )
+            !match.matchNumber || match.status === 'playing' || (match.scoreLabel && match.scoreLabel.length) > 0
+              ? renderMatchDetail(match, 'teamA', 0)
               : <div className='detail-date'>
                 <p>{`#${match.matchNumber}\r\n${moment(match.date).format('l')}`}</p>
               </div>
@@ -56,11 +68,8 @@ const MatchUp = ({ match, isManager }) => {
             }
           </div>
           {
-            !match.matchNumber || match.scoreLabel && match.scoreLabel.length > 0 ? (
-              <React.Fragment>
-                {[0, 1, 2].map(index => <div key={index} className='detail-score'><p>{match.scoreLabel[index]?.split('-')[1]}</p></div>)}
-              </React.Fragment>
-            )
+            !match.matchNumber || match.status === 'playing' || (match.scoreLabel && match.scoreLabel.length) > 0
+              ? renderMatchDetail(match, 'teamB', 1)
               : <div className='detail-time'><p>{moment(match.date).format('LT')}</p></div>
           }
         </div>
