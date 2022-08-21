@@ -19,7 +19,7 @@ const TournamentLayout = (props) => {
       alias: TAB_OPTIONS.GANG.DETAIL
     },
     {
-      name: 'สายการแข่งขัน',
+      name: 'รายชื่อ/สาย',
       icon: <TeamOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.GANG.PLAYERS ? COLOR.MINOR_THEME : '#aaa' }} />,
       href: `/tournament/${id}/player`,
       alias: TAB_OPTIONS.GANG.PLAYERS

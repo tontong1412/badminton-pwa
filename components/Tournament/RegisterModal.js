@@ -1,5 +1,5 @@
 import { DatePicker, Form, Input, Modal, Select, Divider, AutoComplete, message } from 'antd'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTournament, usePlayers } from '../../utils'
 import request from '../../utils/request'
 import moment from 'moment'
@@ -17,6 +17,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
   const { players, mutate: mutatePlayer } = usePlayers()
   const { user } = useSelector(state => state)
   const [type, setType] = useState('single')
+
 
   const onFinish = (values) => {
     if (player1 && player2 && player1 === player2) {
@@ -205,7 +206,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
           label='ชื่อเล่น'
           name='player1DisplayName'
         >
-          <Input disabled={player1} />
+          <Input disabled={player1 && player1 !== user.playerID} />
         </Form.Item>
         <Form.Item
           label='ทีม'
@@ -214,7 +215,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
             { required: true, message: 'กรุณาระบุชื่อทีม' },
           ]}
         >
-          <Input disabled={player1} />
+          <Input disabled={player1 && player1 !== user.playerID} />
         </Form.Item>
         <Form.Item
           label='เพศ'
@@ -226,7 +227,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
           <Select
             placeholder='กรุณาเลือก'
             allowClear
-            disabled={player1}
+            disabled={player1 && player1 !== user.playerID}
           >
             <Select.Option value='male'>ชาย</Select.Option>
             <Select.Option value='female'>หญิง</Select.Option>
@@ -239,7 +240,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
         //   { required: true, message: 'กรุณาระบุวันเกิด' },
         // ]}
         >
-          <DatePicker disabled={player1} />
+          <DatePicker disabled={player1 && player1 !== user.playerID} />
         </Form.Item>
         {type === 'double' && <div>
           <Divider plain>ผู้เล่นคนที่ 2</Divider>
@@ -262,7 +263,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
             label='ชื่อเล่น'
             name='player2DisplayName'
           >
-            <Input disabled={player2} />
+            <Input disabled={player2 && player2 !== user.playerID} />
           </Form.Item>
 
           <Form.Item
@@ -272,7 +273,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
               { required: true, message: 'กรุณาระบุชื่อทีม' },
             ]}
           >
-            <Input disabled={player2} />
+            <Input disabled={player2 && player2 !== user.playerID} />
           </Form.Item>
           <Form.Item
             label='เพศ'
@@ -284,7 +285,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
             <Select
               placeholder='กรุณาเลือก'
               allowClear
-              disabled={player2}
+              disabled={player2 && player2 !== user.playerID}
             >
               <Select.Option value='male'>ชาย</Select.Option>
               <Select.Option value='female'>หญิง</Select.Option>
@@ -297,7 +298,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
           //   { required: true, message: 'กรุณาระบุวันเกิด' },
           // ]}
           >
-            <DatePicker disabled={player2} />
+            <DatePicker disabled={player2 && player2 !== user.playerID} />
           </Form.Item>
         </div>}
         <Divider plain>หัวหน้าทีม/ผู้จัดการทีม</Divider>

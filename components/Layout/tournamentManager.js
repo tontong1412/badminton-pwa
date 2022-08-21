@@ -25,7 +25,7 @@ const TournamentManagerLayout = (props) => {
     //   alias: TAB_OPTIONS.TOURNAMENT_MANAGER.PARTICIPANTS
     // },
     {
-      name: 'สายการแข่งขัน',
+      name: 'รายชื่อ/สาย',
       icon: <PartitionOutlined style={{ fontSize: '24px', color: activeMenu === TAB_OPTIONS.TOURNAMENT_MANAGER.DRAWS ? COLOR.MINOR_THEME : '#aaa' }} />,
       href: `/tournament/${id}/draws`,
       alias: TAB_OPTIONS.TOURNAMENT_MANAGER.DRAWS
