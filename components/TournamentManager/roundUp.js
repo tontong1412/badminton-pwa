@@ -264,7 +264,7 @@ const RoundUp = (props) => {
   const { matches } = useMatches(props.tournamentID)
   const { tournament } = useTournament(props.tournamentID)
   const [mode, setMode] = useState('knockOut')
-  const [tab, setTab] = useState(tournament.events.filter(elm => elm.format !== 'singleElim')[0]._id)
+  const [tab, setTab] = useState(tournament.events.filter(elm => elm.format !== 'singleElim')[0]?._id)
   return (
     <Tabs
       defaultActiveKey={tab}

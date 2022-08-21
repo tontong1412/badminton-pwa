@@ -7,7 +7,7 @@ import EventTab from "./EventTab"
 const Draw = (props) => {
   const { tournament } = useTournament(props.tournamentID)
   const [mode, setMode] = useState('group')
-  const [tab, setTab] = useState(tournament?.events[0]._id)
+  const [tab, setTab] = useState(tournament?.events[0]?._id)
 
   return <div>
     <Tabs

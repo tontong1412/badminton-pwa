@@ -46,8 +46,7 @@ const TournamentModal = ({ visible, setVisible, tournament = {}, mutate, action 
         startDate: values.date[0],
         endDate: values.date[1],
         contact: {
-          _id: contactPerson,
-          name: values.contactName,
+          _id: user.playerID,
           tel: values.tel,
           lineID: values.lineID
         }
@@ -142,8 +141,8 @@ const TournamentModal = ({ visible, setVisible, tournament = {}, mutate, action 
           ],
           deadlineDate: tournament.deadlineDate ? moment(tournament.deadlineDate) : null,
           contactName: tournament?.contact?.displayName || tournament?.contact?.officialName,
-          tel: tournament?.contact?.tel,
-          lineID: tournament?.contact?.lineID
+          tel: user.tel,
+          lineID: user.lineID
         }}
       >
         <Form.Item
@@ -233,7 +232,7 @@ const TournamentModal = ({ visible, setVisible, tournament = {}, mutate, action 
         </Form.Item>
 
         <Divider plain>ผู้จัด</Divider>
-        <Form.Item
+        {/* <Form.Item
           label='ชื่อ'
           name='contactName'
           rules={[
@@ -246,7 +245,9 @@ const TournamentModal = ({ visible, setVisible, tournament = {}, mutate, action 
             onSearch={onSearch}
             onChange={() => setContactPerson()}
           />
-        </Form.Item>
+        </Form.Item> */}
+        <div style={{ textAlign: 'center' }}>{user.officialName}</div>
+        <div style={{ textAlign: 'center', marginBottom: '10px' }}>{user.displayName}</div>
         <Form.Item
           label='เบอร์โทรศัพท์'
           name='tel'

@@ -4,7 +4,7 @@ import { useState } from 'react'
 const Result = ({ tournamentID }) => {
   const { matches } = useMatches(tournamentID)
   const { tournament } = useTournament(tournamentID)
-  const [tab, setTab] = useState(tournament.events[0]._id)
+  const [tab, setTab] = useState(tournament.events[0]?._id)
 
 
   return (

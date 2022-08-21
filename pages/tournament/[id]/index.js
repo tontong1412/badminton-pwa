@@ -24,18 +24,26 @@ const TournamentManagerID = () => {
   const dispatch = useDispatch()
   const { user } = useSelector(state => state)
   const [posterVisible, setPosterVisible] = useState(false)
-  const [isManager, setIsManager] = useState(false);
+  const [isManager, setIsManager] = useState(false)
+  const [isCreator, setIsCreator] = useState(false)
   const [tournamentModal, setTournamentModal] = useState(false);
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT_MANAGER.DETAIL })
   }, [])
 
   useEffect(() => {
-    if (user && tournament && (user.playerID === tournament.creator || tournament?.managers?.map(e => e._id).includes(user.playerID))) {
+    if (user && tournament && tournament?.managers?.map(e => e._id).includes(user.playerID)) {
       setIsManager(true)
     } else {
       setIsManager(false)
     }
+
+    if (user && tournament && (user.playerID === tournament.creator)) {
+      setIsCreator(true)
+    } else {
+      setIsCreator(false)
+    }
+
   }, [user, tournament])
 
   if (isLoading) return <Loading />
@@ -108,7 +116,7 @@ const TournamentManagerID = () => {
               }
             </div>
           </>}
-        {tournament.registerOpen && <Button style={{ width: '80%' }} type='primary' onClick={() => {
+        {tournament.registerOpen && <Button style={{ width: '80%', marginBottom: '5px' }} type='primary' onClick={() => {
           if (user.id) setRegisterModal(true)
           else {
             Modal.info({
@@ -121,7 +129,7 @@ const TournamentManagerID = () => {
           สมัครแข่งขัน
         </Button>}
         {
-          isManager && <Button style={{ width: '80%', marginBottom: '10px' }} type='primary' onClick={() => {
+          isCreator && <Button style={{ width: '80%', marginBottom: '10px' }} type='primary' onClick={() => {
             setTournamentModal(true)
           }}>
             แก้ไขข้อมูล
