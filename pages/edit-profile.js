@@ -10,7 +10,7 @@ const EditAccount = () => {
   const router = useRouter()
   const dispatch = useDispatch()
   const onFinish = (values) => {
-    request.put(`/player/${user.playerID}`, values)
+    request.put(`/player/${user.playerID}`, values, user.token)
       .then(res => {
         dispatch({
           type: 'LOGIN',
