@@ -158,9 +158,9 @@ const TournamentModal = ({ visible, setVisible, tournament = {}, mutate, action 
           contactName: tournament?.contact?.displayName || tournament?.contact?.officialName,
           tel: user.tel,
           lineID: user.lineID,
-          paymentBank: tournament.payment.bank,
-          paymentCode: tournament.payment.code,
-          paymentName: tournament.payment.name
+          paymentBank: tournament.payment?.bank,
+          paymentCode: tournament.payment?.code,
+          paymentName: tournament.payment?.name
         }}
       >
         <Form.Item
