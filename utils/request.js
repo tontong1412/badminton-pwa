@@ -29,9 +29,18 @@ const put = (path, body, token) =>
       },
     })
 
+const remove = (path, token) =>
+  axios.delete(`${API_ENDPOINT}${path}`,
+    {
+      headers: {
+        'Authorization': `Token ${token}`
+      },
+    })
+
 
 export default {
   get,
   put,
-  post
+  post,
+  remove
 }
