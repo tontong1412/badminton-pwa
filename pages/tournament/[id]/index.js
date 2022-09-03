@@ -116,6 +116,17 @@ const TournamentManagerID = () => {
               }
             </div>
           </>}
+        {
+          tournament.sponsors?.length > 0 &&
+          <div>
+            <Divider>สนับสนุนโดย</Divider>
+            {tournament.sponsors?.map((sp, i) =>
+              <div key={i + 1}
+                style={{ widht: '80px', height: '80px', overflow: 'hidden', margin: 'auto', marginTop: '20px' }}>
+                <Image alt='logo' src={tournament?.logo || '/icon/logo.png'} objectFit='contain' width={80} height={80} />
+              </div>)}
+          </div>
+        }
         {tournament.registerOpen && <Button style={{ width: '80%', marginBottom: '5px' }} type='primary' onClick={() => {
           if (user.id) setRegisterModal(true)
           else {

@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import MyGang from '../components/gang/myGang'
 import MyTournament from '../components/Tournament/MyTournament'
 import AddToHomeScreenCard from '../components/addToHomeScreenCard'
+import RegisteringTournament from '../components/Tournament/RegisteringTournament'
 
 
 const Home = () => {
@@ -27,6 +28,7 @@ const Home = () => {
   return (
     <>
       <Greeting user={user} />
+      <RegisteringTournament />
       <MyTournament homePage />
       <MyGang />
       {!isDownloaded && <AddToHomeScreenCard />}
