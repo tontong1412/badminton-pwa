@@ -13,7 +13,7 @@ const RegisteringTournament = (props, ref) => {
   const { tournaments } = useTournaments()
 
 
-  if (!tournaments || tournaments.length === 0) return <div />
+  if (!tournaments || tournaments.filter(t => t.status === 'register').length === 0) return <div />
 
   return (
     <div>
