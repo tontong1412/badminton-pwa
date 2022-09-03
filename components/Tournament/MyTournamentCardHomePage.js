@@ -124,6 +124,7 @@ const MyTournamentCardHomePage = ({ tournament, mutate }) => {
         team={selectedTeam}
         event={selectedEvent}
         mutate={mutate}
+        tournament={tournament}
       />
     </div>
 
