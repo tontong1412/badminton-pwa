@@ -17,7 +17,7 @@ const RegisteringTournament = (props, ref) => {
 
   return (
     <div>
-      <div style={{ margin: '20px 20px 0 20px' }}>รายการแข่งเปิดรับสมัคร</div>
+      <div style={{ margin: '20px 20px 0 20px' }}>รายการแข่งที่เปิดรับสมัคร</div>
       <div style={{
         overflowX: 'scroll',
         overflowY: 'hidden',

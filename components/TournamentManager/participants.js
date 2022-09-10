@@ -320,6 +320,7 @@ const Participants = (props) => {
         event={selectedEvent}
         mutate={mutate}
         isManager
+        tournament={tournament}
       />
       <ShuttlecockModal
         visible={shuttlecockModalVisible}

@@ -9,6 +9,7 @@ import MyGang from '../components/gang/myGang'
 import MyTournament from '../components/Tournament/MyTournament'
 import AddToHomeScreenCard from '../components/addToHomeScreenCard'
 import RegisteringTournament from '../components/Tournament/RegisteringTournament'
+import Banner from '../components/Tournament/Banner'
 
 
 const Home = () => {
@@ -28,6 +29,7 @@ const Home = () => {
   return (
     <>
       <Greeting user={user} />
+      {/* <Banner /> */}
       <RegisteringTournament />
       <MyTournament homePage />
       <MyGang />
