@@ -20,8 +20,6 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
   const { player: me } = usePlayer(user.playerID)
 
 
-
-
   const onFinish = (values) => {
     if (player1 && player2 && player1 === player2) {
       Modal.error({
@@ -145,9 +143,6 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
   const onFormValuesChange = ({ eventID, isMe }) => {
     if (eventID) setType(tournament.events.find(elm => elm._id === eventID).type)
     if (isMe) {
-      console.log(isMe)
-      console.log(me)
-      console.log(user)
       setPlayer1(user.playerID)
       form.setFieldsValue({
         player1Name: me.officialName,
