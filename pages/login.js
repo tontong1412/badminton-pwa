@@ -79,7 +79,7 @@ const Login = () => {
       autoComplete='off'
       style={{ maxWidth: '320px', margin: 'auto', textAlign: 'center' }}
     >
-      <Image src={logo} alt='logo' />
+      <div style={{ width: '250px', height: '250px', margin: 'auto' }}><Image src={logo} alt='logo' /></div>
       <Form.Item
         label='Email'
         name='email'
@@ -106,7 +106,7 @@ const Login = () => {
         <Input.Password />
       </Form.Item>
 
-      <Link href="/signup" passHref><div>{'Don\'t have an account?'}<span style={{ color: '#4F708A' }}>{'Sign up now!'}</span></div></Link>
+      <Link href="/signup" passHref><div>{'Don\'t have an account? '}<span style={{ color: '#4F708A' }}>{'Sign up now!'}</span></div></Link>
 
       <Form.Item
         name='remember'
@@ -118,7 +118,7 @@ const Login = () => {
 
       <Form.Item >
         <Button type='primary' htmlType='submit' loading={loading}>
-          Submit
+          Log in
         </Button>
       </Form.Item>
     </Form>

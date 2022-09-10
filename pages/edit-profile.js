@@ -41,7 +41,8 @@ const EditAccount = () => {
         style={{ maxWidth: '320px', margin: 'auto' }}
         initialValues={{
           officialName: user.officialName,
-          displayName: user.displayName
+          displayName: user.displayName,
+          club: user.club
         }}
       >
         <Form.Item
@@ -61,6 +62,13 @@ const EditAccount = () => {
           label='ชื่อเล่น'
           name='displayName'
           help='ชื่อที่ใช้แสดงบนแอพ จะเป็นชื่อเล่น หรือชื่อที่คนอื่นๆในวงการใช้เรียกคุณก็ได้'
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label='ทีม'
+          name='club'
+          help='ชื่อทีมที่ใช้แข่งขัน'
         >
           <Input />
         </Form.Item>

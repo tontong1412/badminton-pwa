@@ -21,6 +21,7 @@ const CreatePlayerForm = ({ onFinish, loading }) => {
     >
       <Input />
     </Form.Item>
+
     <Form.Item
       label='ชื่อเล่น'
       name='displayName'
@@ -29,6 +30,13 @@ const CreatePlayerForm = ({ onFinish, loading }) => {
       <Input />
     </Form.Item>
 
+    <Form.Item
+      label='ทีม'
+      name='club'
+      help='ชื่อทีมที่ใช้ในการแข่งขัน'
+    >
+      <Input />
+    </Form.Item>
     <Form.Item
       label='เพศ'
       name='gender'
