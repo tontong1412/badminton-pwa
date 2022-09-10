@@ -1,6 +1,6 @@
-import { DatePicker, Form, Input, Modal, Select, Divider, AutoComplete, message } from 'antd'
+import { DatePicker, Form, Input, Modal, Select, Divider, AutoComplete, message, Checkbox } from 'antd'
 import { useState, useEffect } from 'react'
-import { useTournament, usePlayers } from '../../utils'
+import { useTournament, usePlayers, usePlayer } from '../../utils'
 import request from '../../utils/request'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
@@ -17,6 +17,9 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
   const { players, mutate: mutatePlayer } = usePlayers()
   const { user } = useSelector(state => state)
   const [type, setType] = useState('single')
+  const { player: me } = usePlayer(user.playerID)
+
+
 
 
   const onFinish = (values) => {
@@ -138,6 +141,33 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
     else if (player === 'player2') setPlayer2()
     else if (player === 'contact') setContactPerson()
   }
+
+  const onFormValuesChange = ({ eventID, isMe }) => {
+    if (eventID) setType(tournament.events.find(elm => elm._id === eventID).type)
+    if (isMe) {
+      console.log(isMe)
+      console.log(me)
+      console.log(user)
+      setPlayer1(user.playerID)
+      form.setFieldsValue({
+        player1Name: me.officialName,
+        player1Gender: me.gender,
+        player1Club: me.club,
+        player1DisplayName: me.displayName,
+        player1BirthDate: moment(me.birthDate)
+      })
+    }
+    if (isMe === false) {
+      setPlayer1()
+      form.setFieldsValue({
+        player1Name: undefined,
+        player1Gender: undefined,
+        player1Club: undefined,
+        player1DisplayName: undefined,
+        player1BirthDate: undefined
+      })
+    }
+  }
   return (
     <Modal
       visible={visible}
@@ -162,7 +192,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
         wrapperCol={{ span: 16 }}
         scrollToFirstError
         initialValues={{ lineID: user.lineID, tel: user.tel }}
-        onValuesChange={({ eventID }) => { if (eventID) setType(tournament.events.find(elm => elm._id === eventID).type) }}
+        onValuesChange={onFormValuesChange}
       >
         <Form.Item
           label='ประเภท'
@@ -187,6 +217,12 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
           </Select>
         </Form.Item>
         <Divider plain>ผู้เล่นคนที่ 1</Divider>
+        <Form.Item
+          name='isMe'
+          valuePropName='checked'
+        >
+          <Checkbox>ฉัน</Checkbox>
+        </Form.Item>
         <Form.Item
           label='ชื่อ-นามสกุล'
           name='player1Name'

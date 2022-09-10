@@ -45,7 +45,9 @@ const Login = () => {
         club: player?.club,
         photo: player?.photo,
         tel: player?.tel,
-        lineID: player?.lineID
+        lineID: player?.lineID,
+        birthDate: player?.birthDate,
+        gender: player?.gender
       }
       localStorage.setItem('rememberMe', values.remember);
       localStorage.setItem('token', values.remember ? login.user.token : '');

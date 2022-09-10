@@ -17,6 +17,7 @@ const EditAccount = () => {
           payload: {
             officialName: res.data.officialName,
             displayName: res.data.displayName,
+            club: res.data.club
           }
         })
         router.push('/account')
