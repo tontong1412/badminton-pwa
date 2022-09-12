@@ -1,11 +1,13 @@
-import { DatePicker, Form, Input, Modal, Select, Divider, AutoComplete, message, Checkbox } from 'antd'
+import { DatePicker, Form, Input, Modal, Select, Divider, AutoComplete, message, Checkbox, Collapse } from 'antd'
 import { useState, useEffect } from 'react'
 import { useTournament, usePlayers, usePlayer } from '../../utils'
 import request from '../../utils/request'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
 import Highlighter from "react-highlight-words";
-import { COLOR } from '../../constant'
+import RulesRR from './Rules.js/Roundrobin'
+import { COLOR, MAP_FORMAT_RULE } from '../../constant'
+import { DownOutlined, RightOutlined } from '@ant-design/icons'
 const RegisterModal = ({ visible, setVisible, tournamentID }) => {
   const [form] = Form.useForm()
   const [player1, setPlayer1] = useState()
@@ -18,6 +20,9 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
   const { user } = useSelector(state => state)
   const [type, setType] = useState('single')
   const { player: me } = usePlayer(user.playerID)
+  const [collapseActive, setCollapseActive] = useState(false)
+  const [disableRegister, setDisableRegister] = useState(true)
+
 
 
   const onFinish = (values) => {
@@ -140,7 +145,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
     else if (player === 'contact') setContactPerson()
   }
 
-  const onFormValuesChange = ({ eventID, isMe }) => {
+  const onFormValuesChange = ({ eventID, isMe, acceptRules }) => {
     if (eventID) setType(tournament.events.find(elm => elm._id === eventID).type)
     if (isMe) {
       setPlayer1(user.playerID)
@@ -162,6 +167,11 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
         player1BirthDate: undefined
       })
     }
+    if (acceptRules) {
+      setDisableRegister(false)
+    } else {
+      setDisableRegister(true)
+    }
   }
   return (
     <Modal
@@ -177,6 +187,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
       title={`สมัครแข่งขัน`}
       destroyOnClose
       confirmLoading={loading}
+      okButtonProps={{ disabled: disableRegister }}
     >
       <Form
         name='createPlayer'
@@ -363,6 +374,21 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
           name='lineID'
         >
           <Input />
+        </Form.Item>
+        <Collapse ghost expandIconPosition='left' accordion onChange={(value) => setCollapseActive(value)} style={{ width: '80%' }}>
+          <Collapse.Panel header={<div><span style={{ textDecoration: 'underline', marginRight: '5px' }}>กติกาการแข่งขัน</span><span>{collapseActive ? <DownOutlined /> : <RightOutlined />}</span></div>} key="1" showArrow={false}>
+            <RulesRR />
+          </Collapse.Panel>
+        </Collapse>
+
+        <Form.Item
+          name='acceptRules'
+          valuePropName='checked'
+          rules={[
+            { required: true, message: 'กรุณายอมรับกติการการแข่งขัน' },
+          ]}
+        >
+          <Checkbox>ฉันยอมรับกติกาการแข่งขัน</Checkbox>
         </Form.Item>
       </Form>
     </Modal>

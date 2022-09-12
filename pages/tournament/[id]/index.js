@@ -170,13 +170,13 @@ const TournamentManagerID = () => {
           onCancel={() => setPosterVisible(false)}
           footer={null}
           centered
-          modalRender={() => <div style={{ width: '100%' }}>
+          modalRender={() => <div style={{ width: '100%', margin: 'auto' }}>
             <Image alt='logo'
               src={tournament?.poster || '/icon/logo.png'}
               width={434}
               height={614}
               objectFit='cover'
-              fill='responsive'
+              layout='responsive'
             />
           </div>}
         >
