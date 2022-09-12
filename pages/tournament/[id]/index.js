@@ -124,7 +124,7 @@ const TournamentManagerID = () => {
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
               {tournament.sponsors?.map((sp, i) =>
                 <div key={i + 1}
-                  style={{ widht: '60px', height: '60px', overflow: 'hidden', margin: 'auto', marginTop: '20px' }}>
+                  style={{ widht: '60px', height: '60px', overflow: 'hidden', margin: 'auto' }}>
                   <Image alt='logo' src={sp} objectFit='contain' width={60} height={60} />
                 </div>)}
             </div>
