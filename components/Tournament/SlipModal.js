@@ -126,7 +126,8 @@ const SlipModal = ({ event, team = {}, visible, setVisible, mutate, isManager, t
               message.success('copied')
             }}
             style={{ color: COLOR.MINOR_THEME }}>
-            <CopyOutlined />
+            {/* <CopyOutlined /> */}
+            <a>copy</a>
           </div>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
