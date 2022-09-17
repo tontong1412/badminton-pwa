@@ -312,7 +312,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
             label='ทีม'
             name='player2Club'
             rules={[
-              { required: player1 && player1 === user.playerID, message: 'กรุณาระบุชื่อทีม' },
+              { required: player2 && player2 === user.playerID, message: 'กรุณาระบุชื่อทีม' },
             ]}
           >
             <Input disabled={player2 && player2 !== user.playerID} />
