@@ -84,6 +84,11 @@ const Participants = (props) => {
       <Menu.Item key='leave-event'>
         <div onClick={() => Modal.confirm({
           title: 'แน่ใจที่จะถอนคู่นี้หรือไม่',
+          content: (
+            <>
+              {team.team?.players?.map(p => <div key={p._id}>{p.officialName}</div>)}
+            </>
+          ),
           onOk: () => onLeaveEvent(event._id, team._id)
         })}>
           ถอนตัว
