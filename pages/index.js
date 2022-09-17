@@ -29,7 +29,7 @@ const Home = () => {
   return (
     <>
       <Greeting user={user} />
-      {/* <Banner /> */}
+      <Banner />
       <RegisteringTournament />
       <MyTournament homePage />
       <MyGang />

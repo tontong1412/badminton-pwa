@@ -236,3 +236,17 @@ export const useWindowSize = () => {
   }, []);
   return size;
 }
+
+export const useBanners = () => {
+  const { data, error, mutate } = useSWR(
+    `${API_ENDPOINT}/banner`,
+    fetcher
+  )
+
+  return {
+    banners: data,
+    isLoading: !error && !data,
+    isError: error,
+    mutate
+  }
+}
