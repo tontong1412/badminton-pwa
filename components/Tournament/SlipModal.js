@@ -111,6 +111,16 @@ const SlipModal = ({ event, team = {}, visible, setVisible, mutate, isManager, t
           <div>{event?.fee}</div>
           <div>บาท</div>
         </div>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <div style={{ fontWeight: 'bold', width: '90px' }}>ค่าคูปองลูก:</div>
+          <div>{tournament?.shuttlecockFee * 10}</div>
+          <div>บาท (ใช้ไม่หมดคืนได้)</div>
+        </div>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <div style={{ fontWeight: 'bold', width: '90px' }}>รวม:</div>
+          <div>{Number(event?.fee) + tournament?.shuttlecockFee * 10}</div>
+          <div>บาท</div>
+        </div>
 
         <Divider>ช่องทางโอนเงิน</Divider>
         <div style={{ display: 'flex', gap: '10px' }}>
