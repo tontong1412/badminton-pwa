@@ -89,7 +89,7 @@ const TournamentManagerID = () => {
                 }}
                 onClick={() => {
                   if (tournament.registerOpen) {
-                    onClickRegisterButton
+                    onClickRegisterButton()
                   } else {
                     message.warning('ยังไม่เปิดรับสมัครหรือปิดรับสมัครไปแล้ว')
                   }
