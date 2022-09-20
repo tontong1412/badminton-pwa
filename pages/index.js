@@ -31,8 +31,8 @@ const Home = () => {
     <>
       <Greeting user={user} />
       {isMobileOnly && <Banner />}
-      <RegisteringTournament />
       <MyTournament homePage />
+      <RegisteringTournament />
       <MyGang />
       {!isDownloaded && <AddToHomeScreenCard />}
 
