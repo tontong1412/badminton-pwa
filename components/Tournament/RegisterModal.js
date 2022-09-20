@@ -8,8 +8,10 @@ import Highlighter from "react-highlight-words";
 import RulesRR from './Rules.js/Roundrobin'
 import { COLOR, MAP_FORMAT_RULE } from '../../constant'
 import { DownOutlined, RightOutlined } from '@ant-design/icons'
+import { useRouter } from 'next/router';
 const RegisterModal = ({ visible, setVisible, tournamentID }) => {
   const [form] = Form.useForm()
+  const router = useRouter()
   const [player1, setPlayer1] = useState()
   const [player2, setPlayer2] = useState()
   const { tournament, mutate } = useTournament(tournamentID)
@@ -73,7 +75,8 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
       form.resetFields()
       setPlayer1()
       setPlayer2()
-      message.success('ลงทะเบียนแล้ว ท่านสามารถตรวจสอบได้ที่แท็บ "รายชื่อ"')
+      router.push('/')
+      message.success('ลงทะเบียนแล้ว ท่านสามารถตรวจสอบผลการประเมินมือและการชำระเงินได้ในหน้านี้')
     })
       .catch(err => {
         setVisible(false)

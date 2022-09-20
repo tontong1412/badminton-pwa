@@ -46,6 +46,17 @@ const TournamentManagerID = () => {
 
   }, [user, tournament])
 
+  const onClickRegisterButton = () => {
+    if (user.id) setRegisterModal(true)
+    else {
+      Modal.info({
+        title: 'กรุณา Log in ก่อนสมัครแข่งขัน',
+        onOk: () => router.push('/login')
+      })
+    }
+
+  }
+
   if (isLoading) return <Loading />
   if (isError) return <p>error</p>
 
@@ -75,6 +86,13 @@ const TournamentManagerID = () => {
                   margin: '10px',
                   boxShadow: '2px 2px 10px -5px rgba(0,0,0,0.75)',
                   borderRadius: '10px'
+                }}
+                onClick={() => {
+                  if (tournament.registerOpen) {
+                    onClickRegisterButton
+                  } else {
+                    message.warning('ยังไม่เปิดรับสมัครหรือปิดรับสมัครไปแล้ว')
+                  }
                 }}
               >
                 <div style={{ fontWeight: 'bold' }}>{event.name}</div>
@@ -130,16 +148,7 @@ const TournamentManagerID = () => {
             </div>
           </>
         }
-        {tournament.registerOpen && <Button style={{ width: '80%', marginBottom: '5px' }} type='primary' onClick={() => {
-          if (user.id) setRegisterModal(true)
-          else {
-            Modal.info({
-              title: 'กรุณา Log in ก่อนสมัครแข่งขัน',
-              onOk: () => router.push('/login')
-            })
-          }
-
-        }}>
+        {tournament.registerOpen && <Button style={{ width: '80%', marginBottom: '5px' }} type='primary' onClick={onClickRegisterButton}>
           สมัครแข่งขัน
         </Button>}
         {
