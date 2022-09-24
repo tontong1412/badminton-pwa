@@ -11,7 +11,7 @@ const NextMatch = ({ event, tournamentID }) => {
   const { tournament } = useTournament(tournamentID)
   if (isLoading) return <Loading />
 
-  if (matches.nextMatch.length > 0) {
+  if (matches?.nextMatch.length > 0) {
     return (
       <div>
         <Divider>{event.name}</Divider>
