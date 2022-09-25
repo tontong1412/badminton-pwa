@@ -126,10 +126,11 @@ const StreamingScoreboard = () => {
       </div >
       <div style={{
         fontFamily: 'Comfortaa',
-        fontSize: '40px',
+        fontSize: '50px',
+        fontWeight: 'bold',
         width: `${width}px`,
         textAlign: 'center',
-        textShadow: '-1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff',
+        textShadow: '0px 0px 0 #fff, 1px 0px 0 #fff, 0px 1px 0 #fff, 1px 1px 0 #fff',
         color: COLOR.MINOR_THEME
       }} > badminstar.com</div>
     </>
