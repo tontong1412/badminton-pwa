@@ -3,10 +3,10 @@ import { useMatch, useSocket, useWindowSize } from '../../../utils'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 
-const FONT_SIZE = 20
-const LINE_HEIGHT = '40px'
-const SCORE_WIDTH = 40
-const PLAYER_WIDTH = 250
+const FONT_SIZE = 40
+const LINE_HEIGHT = '60px'
+const SCORE_WIDTH = 60
+const PLAYER_WIDTH = 350
 
 const ScoreSet = ({ score }) => (
   <div style={{
