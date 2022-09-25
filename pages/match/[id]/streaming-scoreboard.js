@@ -3,30 +3,39 @@ import { useMatch, useSocket, useWindowSize } from '../../../utils'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 
+const FONT_SIZE = 20
+const LINE_HEIGHT = '40px'
+const SCORE_WIDTH = 40
+const PLAYER_WIDTH = 250
+
 const ScoreSet = ({ score }) => (
   <div style={{
     color: 'white',
-    fontSize: '50px',
+    fontSize: `${FONT_SIZE}px`,
     textAlign: 'center',
-    lineHeight: '100px',
-    width: '80px',
-    backgroundColor: COLOR.MINOR_THEME, height: '100%',
+    lineHeight: LINE_HEIGHT,
+    width: `${SCORE_WIDTH}px`,
+    backgroundColor: COLOR.MINOR_THEME
   }}>{score}</div>
 )
 
 const Players = ({ players }) => (
-  <div style={{ fontSize: '50px', width: '400px', padding: '10px', borderRight: '2px solid #ccc' }}>
+  <div style={{
+    fontSize: `${FONT_SIZE}px`,
+    width: `${PLAYER_WIDTH}px`,
+    borderRight: '2px solid #ccc',
+    lineHeight: LINE_HEIGHT
+  }}>
     {players.map(player => player.officialName.split(' ')[0]).join('/')}
   </div>
 )
 
 const Score = ({ score, borderRight, isWinner }) => (
   <div style={{
-    fontSize: '50px',
+    fontSize: `${FONT_SIZE}px`,
     textAlign: 'center',
-    lineHeight: '100px',
-    width: '80px',
-    height: '100%',
+    lineHeight: LINE_HEIGHT,
+    width: `${SCORE_WIDTH}px`,
     borderRight: borderRight ? '2px solid #ccc' : null,
     color: isWinner ? '#FF5A59' : null
   }}>{score}</div>
@@ -36,14 +45,14 @@ const StreamingScoreboard = () => {
   const router = useRouter()
   const { id } = router.query
   const { match, isError, isLoading, mutate } = useMatch(id)
-  const [width, setWidth] = useState(540)
+  const [width, setWidth] = useState(PLAYER_WIDTH)
   const socket = useSocket()
 
   useEffect(() => {
     if (match) {
-      let tempWidth = 540 + match?.scoreLabel.length * 80
+      let tempWidth = (PLAYER_WIDTH + SCORE_WIDTH) + match?.scoreLabel.length * SCORE_WIDTH
       if (match.status !== 'playing') {
-        tempWidth -= 80
+        tempWidth -= SCORE_WIDTH
       }
       setWidth(tempWidth)
     }
@@ -62,22 +71,22 @@ const StreamingScoreboard = () => {
   return (
     <div style={{
       width: `${width}px`,
-      borderRadius: '20px',
+      borderRadius: '5px',
       overflow: 'hidden',
       boxShadow: '2px 2px 20px -5px rgba(0,0,0,0.75)',
       backgroundColor: 'white'
     }}>
       <div style={{
-        fontSize: '40px',
+        fontSize: `${FONT_SIZE - 5}px`,
         padding: '0px 10px',
         borderBottom: '2px solid #ccc',
         backgroundColor: COLOR.MAIN_THEME
+
       }}>
         {`${match.eventName} - รอบ ${match.step === 'group' ? 'แบ่งกลุ่ม' : ROUND_NAME[match.round]}`}
       </div>
 
       <div style={{
-        height: '100px',
         borderBottom: '2px solid #ccc',
         display: 'flex',
         alignItems: 'center'
@@ -93,7 +102,7 @@ const StreamingScoreboard = () => {
       </div>
 
       <div style={{
-        height: '100px',
+        height: LINE_HEIGHT,
         display: 'flex',
         alignItems: 'center'
       }}>
