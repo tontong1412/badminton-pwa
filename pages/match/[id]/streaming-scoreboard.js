@@ -29,7 +29,7 @@ const Players = ({ players }) => (
     textOverflow: 'clip',
     whiteSpace: 'nowrap',
   }}>
-    {players.map(player => player.officialName.split(' ')[0]).join('/------')}
+    {players.map(player => player.officialName.split(' ')[0]).join('/')}
   </div >
 )
 
