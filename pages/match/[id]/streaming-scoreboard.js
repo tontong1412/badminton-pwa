@@ -4,8 +4,8 @@ import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 
 const FONT_SIZE = 40
-const LINE_HEIGHT = '60px'
-const SCORE_WIDTH = 60
+const LINE_HEIGHT = '65px'
+const SCORE_WIDTH = 65
 const PLAYER_WIDTH = 350
 
 const ScoreSet = ({ score }) => (
@@ -72,53 +72,67 @@ const StreamingScoreboard = () => {
 
   if (!match || isError || isLoading) return null
   return (
-    <div style={{
-      width: `${width}px`,
-      borderRadius: '5px',
-      overflow: 'hidden',
-      boxShadow: '2px 2px 20px -5px rgba(0,0,0,0.75)',
-      backgroundColor: 'white'
-    }}>
+    <>
       <div style={{
-        fontSize: `${FONT_SIZE - 5}px`,
-        padding: '0px 10px',
-        borderBottom: '2px solid #ccc',
-        backgroundColor: COLOR.MAIN_THEME
-
+        width: `${width}px`,
+        borderRadius: '5px',
+        overflow: 'hidden',
+        boxShadow: '2px 2px 20px -5px rgba(0,0,0,0.75)',
+        backgroundColor: 'white'
       }}>
-        {`${match.eventName} - รอบ ${match.step === 'group' ? 'แบ่งกลุ่ม' : ROUND_NAME[match.round]}`}
-      </div>
+        <div style={{
+          fontSize: `${FONT_SIZE - 5}px`,
+          padding: '0px 10px',
+          borderBottom: '2px solid #ccc',
+          backgroundColor: COLOR.MAIN_THEME
 
+        }}>
+          {`${match.eventName} - รอบ ${match.step === 'group' ? 'แบ่งกลุ่ม' : ROUND_NAME[match.round]}`}
+        </div>
+
+        <div style={{
+          borderBottom: '2px solid #ccc',
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          <ScoreSet score={match.teamA.scoreSet} />
+          <Players players={match.teamA.team.players} />
+          {match.scoreLabel.map((set, i) => {
+            return <Score
+              key={i + 1}
+              score={set.split('-')[0]}
+              isWinner={Number(set.split('-')[0]) > Number(set.split('-')[1])}
+              borderRight={match.status === 'playing' || i < match.scoreLabel.length - 1} />
+          })}
+          {match.status === 'playing' && <Score score={match.teamA.score} />}
+        </div>
+
+        <div style={{
+          height: LINE_HEIGHT,
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          <ScoreSet score={match.teamB.scoreSet} />
+          <Players players={match.teamB.team.players} />
+          {match.scoreLabel.map((set, i) => {
+            return <Score
+              key={i + 1}
+              isWinner={Number(set.split('-')[0]) < Number(set.split('-')[1])}
+              score={set.split('-')[1]}
+              borderRight={match.status === 'playing' || i < match.scoreLabel.length - 1} />
+          })}
+          {match.status === 'playing' && <Score score={match.teamB.score} />}
+        </div>
+      </div >
       <div style={{
-        borderBottom: '2px solid #ccc',
-        display: 'flex',
-        alignItems: 'center'
-      }}>
-        <ScoreSet score={match.teamA.scoreSet} />
-        <Players players={match.teamA.team.players} />
-        {match.scoreLabel.map((set, i) => <Score
-          key={i + 1}
-          score={set.split('-')[0]}
-          isWinner={set.split('-')[0] > set.split('-')[1]}
-          borderRight={match.status === 'playing' || i < match.scoreLabel.length - 1} />)}
-        {match.status === 'playing' && <Score score={match.teamA.score} />}
-      </div>
-
-      <div style={{
-        height: LINE_HEIGHT,
-        display: 'flex',
-        alignItems: 'center'
-      }}>
-        <ScoreSet score={match.teamB.scoreSet} />
-        <Players players={match.teamB.team.players} />
-        {match.scoreLabel.map((set, i) => <Score
-          key={i + 1}
-          isWinner={set.split('-')[0] < set.split('-')[1]}
-          score={set.split('-')[1]}
-          borderRight={match.status === 'playing' || i < match.scoreLabel.length - 1} />)}
-        {match.status === 'playing' && <Score score={match.teamB.score} />}
-      </div>
-    </div >
+        fontFamily: 'Comfortaa',
+        fontSize: '40px',
+        width: `${width}px`,
+        textAlign: 'center',
+        textShadow: '-1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff',
+        color: COLOR.MINOR_THEME
+      }} > badminstar.com</div>
+    </>
   )
 }
 export default StreamingScoreboard
