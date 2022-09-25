@@ -24,10 +24,13 @@ const Players = ({ players }) => (
     fontSize: `${FONT_SIZE}px`,
     width: `${PLAYER_WIDTH}px`,
     borderRight: '2px solid #ccc',
-    lineHeight: LINE_HEIGHT
+    lineHeight: LINE_HEIGHT,
+    overflow: 'hidden',
+    textOverflow: 'clip',
+    whiteSpace: 'nowrap',
   }}>
-    {players.map(player => player.officialName.split(' ')[0]).join('/')}
-  </div>
+    {players.map(player => player.officialName.split(' ')[0]).join('/------')}
+  </div >
 )
 
 const Score = ({ score, borderRight, isWinner }) => (
