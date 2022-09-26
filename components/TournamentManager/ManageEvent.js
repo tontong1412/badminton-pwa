@@ -6,6 +6,8 @@ import request from "../../utils/request"
 import axios from "axios"
 import { API_ENDPOINT } from "../../config"
 import { MAP_FORMAT, MAP_EVENT_TYPE } from "../../constant"
+import { useSelector } from 'react-redux'
+
 
 const ManageEvent = ({ tournamentID }) => {
   const { tournament, isError, isLoading, mutate } = useTournament(tournamentID)
@@ -15,6 +17,7 @@ const ManageEvent = ({ tournamentID }) => {
   const [loading, setLoading] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState()
   const [form] = Form.useForm()
+  const { user } = useSelector(state => state)
   useEffect(() => {
     if (selectedEvent) {
       setModalVisible(true)
@@ -81,7 +84,7 @@ const ManageEvent = ({ tournamentID }) => {
   }
 
   const onRemoveEvent = () => {
-    axios.delete(`${API_ENDPOINT}/event/${selectedEvent._id}`)
+    request.remove(`/event/${selectedEvent._id}`, user.token)
       .then(() => {
         setSelectedEvent()
         // setModalVisible(false)

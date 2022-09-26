@@ -95,6 +95,20 @@ export const usePlayers = () => {
   }
 }
 
+export const usePlayer = (id) => {
+  const { data, error, mutate } = useSWR(
+    `${API_ENDPOINT}/player/${id}`,
+    fetcher
+  )
+
+  return {
+    player: data,
+    isLoading: !error && !data,
+    isError: error,
+    mutate
+  }
+}
+
 export const useMatchDraws = (eventID) => {
   const { data, error, mutate } = useSWR(
     [eventID ? `${API_ENDPOINT}/match` : null, eventID],
@@ -221,4 +235,18 @@ export const useWindowSize = () => {
     return () => window.removeEventListener('resize', updateSize);
   }, []);
   return size;
+}
+
+export const useBanners = () => {
+  const { data, error, mutate } = useSWR(
+    `${API_ENDPOINT}/banner`,
+    fetcher
+  )
+
+  return {
+    banners: data,
+    isLoading: !error && !data,
+    isError: error,
+    mutate
+  }
 }

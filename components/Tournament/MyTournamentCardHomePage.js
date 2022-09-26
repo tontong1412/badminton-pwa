@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { Divider, Tag, Menu, Dropdown, Modal } from 'antd'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { EVENT, TRANSACTION } from '../../constant'
+import { COLOR, EVENT, TRANSACTION } from '../../constant'
 import { MenuOutlined, RightOutlined } from '@ant-design/icons'
 import SlipModal from './SlipModal'
 import request from '../../utils/request'
@@ -53,13 +53,22 @@ const MyTournamentCardHomePage = ({ tournament, mutate }) => {
   const prepareStateData = ({ event, team }) => {
     return (
       <div key={team._id} style={{ padding: '0 20px 10px 20px', }}>
-        <div style={{ display: 'flex', marginBottom: '5px', alignItems: 'center' }}>
-          <Tag color={EVENT.TEAM_STATUS[team?.status]?.COLOR}>{EVENT.TEAM_STATUS[team?.status]?.LABEL}</Tag>
-          <Tag color={TRANSACTION[team?.paymentStatus].COLOR}>{TRANSACTION[team?.paymentStatus].LABEL}</Tag>
-          {team?.paymentStatus === 'paid' && <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <Image alt='icon' src='/icon/shuttlecock.png' width={20} height={20} />
-            <div>{team?.shuttlecockCredit}</div>
-          </div>}
+        <div style={{ display: 'flex', marginBottom: '5px', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex' }}>
+            <Tag color={EVENT.TEAM_STATUS[team?.status]?.COLOR}>{EVENT.TEAM_STATUS[team?.status]?.LABEL}</Tag>
+            <Tag color={TRANSACTION[team?.paymentStatus].COLOR}>{TRANSACTION[team?.paymentStatus].LABEL}</Tag>
+            {team?.paymentStatus === 'paid' && <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <Image alt='icon' src='/icon/shuttlecock.png' width={20} height={20} />
+              <div>{team?.shuttlecockCredit}</div>
+            </div>}
+          </div>
+
+          <a
+            onClick={() => {
+              setSlipModalVisible(true)
+              setSelectedTeam(team)
+              setSelectedEvent(event)
+            }}>จ่ายเงิน</a>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
@@ -72,9 +81,9 @@ const MyTournamentCardHomePage = ({ tournament, mutate }) => {
               <div>{team.team.players[1]?.club}</div>
             </div>
           </div>
-          <Dropdown overlay={menu(event, team)} trigger={['click']} placement="bottomRight">
+          {/* <Dropdown overlay={menu(event, team)} trigger={['click']} placement="bottomRight">
             <div><MenuOutlined /></div>
-          </Dropdown>
+          </Dropdown> */}
         </div>
       </div>
     )
@@ -124,6 +133,7 @@ const MyTournamentCardHomePage = ({ tournament, mutate }) => {
         team={selectedTeam}
         event={selectedEvent}
         mutate={mutate}
+        tournament={tournament}
       />
     </div>
 

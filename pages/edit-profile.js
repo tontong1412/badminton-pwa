@@ -10,13 +10,14 @@ const EditAccount = () => {
   const router = useRouter()
   const dispatch = useDispatch()
   const onFinish = (values) => {
-    request.put(`/player/${user.playerID}`, values)
+    request.put(`/player/${user.playerID}`, values, user.token)
       .then(res => {
         dispatch({
           type: 'LOGIN',
           payload: {
             officialName: res.data.officialName,
             displayName: res.data.displayName,
+            club: res.data.club
           }
         })
         router.push('/account')
@@ -41,7 +42,8 @@ const EditAccount = () => {
         style={{ maxWidth: '320px', margin: 'auto' }}
         initialValues={{
           officialName: user.officialName,
-          displayName: user.displayName
+          displayName: user.displayName,
+          club: user.club
         }}
       >
         <Form.Item
@@ -61,6 +63,13 @@ const EditAccount = () => {
           label='ชื่อเล่น'
           name='displayName'
           help='ชื่อที่ใช้แสดงบนแอพ จะเป็นชื่อเล่น หรือชื่อที่คนอื่นๆในวงการใช้เรียกคุณก็ได้'
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label='ทีม'
+          name='club'
+          help='ชื่อทีมที่ใช้แข่งขัน'
         >
           <Input />
         </Form.Item>

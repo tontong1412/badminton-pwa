@@ -48,7 +48,7 @@ const Setting = () => {
     if (checked) {
       updateParams.status = 'register'
     }
-    request.put(`/tournament/${id}`, updateParams).then(() => mutate())
+    request.put(`/tournament/${id}`, updateParams, user.token).then(() => mutate())
       .catch(() => { })
   }
 

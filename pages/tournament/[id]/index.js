@@ -46,6 +46,17 @@ const TournamentManagerID = () => {
 
   }, [user, tournament])
 
+  const onClickRegisterButton = () => {
+    if (user.id) setRegisterModal(true)
+    else {
+      Modal.info({
+        title: 'กรุณา Log in ก่อนสมัครแข่งขัน',
+        onOk: () => router.push('/login')
+      })
+    }
+
+  }
+
   if (isLoading) return <Loading />
   if (isError) return <p>error</p>
 
@@ -75,6 +86,13 @@ const TournamentManagerID = () => {
                   margin: '10px',
                   boxShadow: '2px 2px 10px -5px rgba(0,0,0,0.75)',
                   borderRadius: '10px'
+                }}
+                onClick={() => {
+                  if (tournament.registerOpen) {
+                    onClickRegisterButton()
+                  } else {
+                    message.warning('ยังไม่เปิดรับสมัครหรือปิดรับสมัครไปแล้ว')
+                  }
                 }}
               >
                 <div style={{ fontWeight: 'bold' }}>{event.name}</div>
@@ -116,16 +134,21 @@ const TournamentManagerID = () => {
               }
             </div>
           </>}
-        {tournament.registerOpen && <Button style={{ width: '80%', marginBottom: '5px' }} type='primary' onClick={() => {
-          if (user.id) setRegisterModal(true)
-          else {
-            Modal.info({
-              title: 'กรุณา Log in ก่อนสมัครแข่งขัน',
-              onOk: () => router.push('/login')
-            })
-          }
 
-        }}>
+        {
+          tournament.sponsors?.length > 0 &&
+          <>
+            <Divider>สนับสนุนโดย</Divider>
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              {tournament.sponsors?.map((sp, i) =>
+                <div key={i + 1}
+                  style={{ widht: '60px', height: '60px', overflow: 'hidden', margin: 'auto' }}>
+                  <Image alt='logo' src={sp} objectFit='contain' width={60} height={60} />
+                </div>)}
+            </div>
+          </>
+        }
+        {tournament.registerOpen && <Button style={{ width: '80%', marginBottom: '5px' }} type='primary' onClick={onClickRegisterButton}>
           สมัครแข่งขัน
         </Button>}
         {
@@ -156,13 +179,13 @@ const TournamentManagerID = () => {
           onCancel={() => setPosterVisible(false)}
           footer={null}
           centered
-          modalRender={() => <div style={{ width: '100%' }}>
+          modalRender={() => <div style={{ width: '100%', margin: 'auto' }}>
             <Image alt='logo'
               src={tournament?.poster || '/icon/logo.png'}
               width={434}
               height={614}
               objectFit='cover'
-              fill='responsive'
+              layout='responsive'
             />
           </div>}
         >

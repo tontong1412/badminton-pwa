@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { Form, Input, Button, Modal, Select, DatePicker } from 'antd'
+import Image from 'next/image'
 import Layout from '../components/Layout/noFooter'
 import { useRouter } from "next/router"
 import { useState } from "react"
@@ -21,16 +22,18 @@ const ClaimPlayer = () => {
       // สร้าง player
       const { data: player } = await request.post(`/player`, values, user.token)
         .then(res => res)
-        .catch(error => {
+        .catch(async (error) => {
           if (error.response.status === 409) { // this player is already created
             if (error.response.data.userID) { // check if player is owned by other account
               throw new Error('player already claim')
               // TODO: error player นี้มีคน claim ไปแล้ว หากเป็นตัวจริงกรุณาติดต่อทางเว็บไซต์เพื่อยืนยันตัวตน
             } else {
               // TODO: แสดงข้อมูล player + activity ล่าสุด พร้อมปุ่ม claim or decline
+              const recentActivity = await request.get(`/player/${error.response.data._id}/recent-activity`)
+              console.log(recentActivity)
               setPlayerExistData({
                 profile: error.response.data,
-                events: []
+                events: recentActivity.data
               })
               throw new Error('found player')
             }
@@ -121,7 +124,22 @@ const ClaimPlayer = () => {
         okText='นี่คือฉัน'
         cancelText='ไม่ใช่ฉัน'
       >
-        <div>{playerExistData?.profile.officialName}</div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{ width: '100px', height: '100px', borderRadius: '100px', overflow: 'hidden', border: '1px solid #eee' }}><Image objectFit='cover' src={playerExistData?.profile.photo || `/avatar.png`} alt='' width={100} height={100} /></div>
+          <div style={{ fontWeight: 'bold', marginTop: '10px', fontSize: '18px' }}>{playerExistData?.profile.officialName}</div>
+          {playerExistData?.events.length > 0 &&
+            <div style={{ width: '100%' }}>
+              <div style={{ fontSize: '16px', borderBottom: '1px solid #eee', padding: '5px', width: '100%', textAlign: 'center' }}>รายการแข่งล่าสุด</div>
+              {
+                playerExistData?.events.map(t => <div
+                  key={t._id}
+                  style={{ borderBottom: '1px solid #eee', padding: '5px', width: '100%', textAlign: 'center' }}>{t.name}</div>)
+              }
+            </div>}
+
+        </div>
+
       </Modal>
     </>
   )

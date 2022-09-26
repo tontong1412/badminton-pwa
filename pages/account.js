@@ -58,9 +58,10 @@ const Account = () => {
 
   const uploadPhoto = (image) => {
     logEvent(analytics, 'upload profile photo')
-    request.put(`/player/${user.playerID}`, {
-      photo: image
-    }, user.token
+    request.put(
+      `/player/${user.playerID}`,
+      { photo: image },
+      user.token,
     ).then((res) => {
       dispatch({ type: 'LOGIN', payload: { photo: res.data.photo } })
       setImageUrl()

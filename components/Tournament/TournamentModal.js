@@ -1,4 +1,4 @@
-import { Modal, Form, DatePicker, Input, AutoComplete, Divider, Upload, Button, InputNumber } from "antd"
+import { Modal, Form, DatePicker, Input, AutoComplete, Divider, Upload, Button, InputNumber, Select } from "antd"
 import { useState, useEffect } from "react"
 import { UploadOutlined } from "@ant-design/icons"
 import { usePlayers } from '../../utils'
@@ -7,6 +7,16 @@ import moment from 'moment'
 import { beforeUpload, getBase64 } from "../../utils/image"
 import { API_ENDPOINT } from "../../config"
 import { useSelector } from "react-redux"
+const THAI_BANK = [
+  'พร้อมเพย์',
+  'ธนาคารไทยพาณิชย์',
+  'ธนาคารกสิกรไทย',
+  'ธนาคารกรุงไทย',
+  'ธนาคารกรุงเทพ',
+  'ธนาคารกรุงศรีอยุธยา',
+  'ธนาคารทหารไทยธนชาต',
+  'ธนาคารเกียรตินาคินภัทร',
+]
 const TournamentModal = ({ visible, setVisible, tournament = {}, mutate, action = 'update' }) => {
   const [form] = Form.useForm()
   const [contactPerson, setContactPerson] = useState(tournament?.contact?._id);
@@ -33,6 +43,11 @@ const TournamentModal = ({ visible, setVisible, tournament = {}, mutate, action 
           name: values.contactName,
           tel: values.tel,
           lineID: values.lineID
+        },
+        payment: {
+          bank: values.paymentBank,
+          code: values.paymentCode,
+          name: values.paymentName
         }
       },
         user.token
@@ -142,7 +157,10 @@ const TournamentModal = ({ visible, setVisible, tournament = {}, mutate, action 
           deadlineDate: tournament.deadlineDate ? moment(tournament.deadlineDate) : null,
           contactName: tournament?.contact?.displayName || tournament?.contact?.officialName,
           tel: user.tel,
-          lineID: user.lineID
+          lineID: user.lineID,
+          paymentBank: tournament.payment?.bank,
+          paymentCode: tournament.payment?.code,
+          paymentName: tournament.payment?.name
         }}
       >
         <Form.Item
@@ -260,6 +278,34 @@ const TournamentModal = ({ visible, setVisible, tournament = {}, mutate, action 
         <Form.Item
           label='Line ID'
           name='lineID'
+        >
+          <Input />
+        </Form.Item>
+        <Divider plain>ช่องทางโอนเงิน</Divider>
+        <Form.Item
+          label='ธนาคาร'
+          name='paymentBank'
+          rules={[
+            // { required: true, message: 'กรุณาระบุ' },
+          ]}
+        >
+          <Select
+            placeholder='กรุณาเลือก'
+            allowClear
+          >
+            {THAI_BANK.map((b, i) => <Select.Option key={i + 1} value={b}>{b}</Select.Option>)}
+          </Select>
+
+        </Form.Item>
+        <Form.Item
+          label='เลขบัญชี'
+          name='paymentCode'
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label='ชื่อบัญชี'
+          name='paymentName'
         >
           <Input />
         </Form.Item>

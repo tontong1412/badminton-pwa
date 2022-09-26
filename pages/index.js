@@ -8,6 +8,9 @@ import { useRouter } from 'next/router'
 import MyGang from '../components/gang/myGang'
 import MyTournament from '../components/Tournament/MyTournament'
 import AddToHomeScreenCard from '../components/addToHomeScreenCard'
+import RegisteringTournament from '../components/Tournament/RegisteringTournament'
+import Banner from '../components/Tournament/Banner'
+import { isMobileOnly } from 'react-device-detect'
 
 
 const Home = () => {
@@ -27,7 +30,9 @@ const Home = () => {
   return (
     <>
       <Greeting user={user} />
+      {isMobileOnly && <Banner />}
       <MyTournament homePage />
+      <RegisteringTournament />
       <MyGang />
       {!isDownloaded && <AddToHomeScreenCard />}
 

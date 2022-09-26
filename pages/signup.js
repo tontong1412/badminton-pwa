@@ -64,7 +64,7 @@ const Signup = () => {
       autoComplete='off'
       style={{ maxWidth: '300px', margin: 'auto', textAlign: 'center' }}
     >
-      <Image src={logo} alt='logo' />
+      <div style={{ width: '250px', height: '250px', margin: 'auto' }}><Image src={logo} alt='logo' /></div>
       <Form.Item
         label='Email'
         name='email'
@@ -145,10 +145,10 @@ const Signup = () => {
 
       <Form.Item >
         <Button type='primary' htmlType='submit' loading={loading}>
-          Submit
+          Sign Up
         </Button>
       </Form.Item>
-    </Form>
+    </Form >
 
   )
 }
