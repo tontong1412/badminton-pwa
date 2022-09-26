@@ -1,5 +1,6 @@
 // ref: https://sichii.medium.com/how-to-implement-push-notifications-in-pwa-using-react-fd689f8394d3
 
+import { NOTI } from '../config'
 import request from './request'
 
 const handleSubscription = (user) => {
@@ -30,7 +31,7 @@ const handleSubscription = (user) => {
     })
   }
 
-  const applicationServerPublicKey = 'BJ33dpB29ksLL_SKwSc9ma9j4QM7po3IBQVvCqK-sGxG0wdZSLDMRfJ1jb4cjbZuVWeZQys7htDvgZDusKLU2fs'
+  const applicationServerPublicKey = NOTI.VAPID_PUBLIC_KEY
 
   function subscribeUser() {
     //Prompt user permission for notification
