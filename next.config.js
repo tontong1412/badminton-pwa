@@ -1,5 +1,4 @@
 require('dotenv').config();
-const withPWA = require("next-pwa");
 const withAntdLess = require('next-plugin-antd-less');
 const withPlugins = require('next-compose-plugins');
 
@@ -15,13 +14,6 @@ const nextConfig = {
 };
 
 const plugins = [
-  withPWA({
-    pwa: {
-      dest: "public",
-      register: true,
-      skipWaiting: true,
-    },
-  }),
   withAntdLess({
     // optional
     modifyVars: {
