@@ -1,5 +1,4 @@
 
-
 // This code executes in its own worker or thread
 self.addEventListener("install", event => {
   console.log("Service worker installed");
@@ -31,4 +30,14 @@ self.addEventListener('push', (event) => {
       'Badminstar Notification',
       options
     ))
+})
+
+// TODO: ยังไม่ได้ test
+self.addEventListener('notificationclick', async (event) => {
+  console.log(event)
+  if (!event.action) return
+
+  // This always opens a new browser tab,
+  // even if the URL happens already open in a tab
+  clients.openWindow(event.action)
 })
