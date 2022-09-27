@@ -6,8 +6,8 @@ const CreatePlayerForm = ({ onFinish, loading }) => {
     style={{ maxWidth: '350px', margin: 'auto' }}
     labelCol={{ span: 8 }}
     wrapperCol={{ span: 16 }}
+    requiredMark={'optional'}
   >
-    <div>อีกนิดเดียว!</div>
     <Form.Item
       label='ชื่อ-นามสกุล'
       name='officialName'
@@ -23,9 +23,9 @@ const CreatePlayerForm = ({ onFinish, loading }) => {
     </Form.Item>
 
     <Form.Item
-      label='ชื่อเล่น'
+      label='ชื่อเล่น '
       name='displayName'
-      help='ชื่อที่ใช้แสดงบนแอพ จะเป็นชื่อเล่น หรือชื่อที่คนอื่นๆในวงการใช้เรียกคุณก็ได้'
+      help='ชื่อที่ใช้แสดงบนแอพ'
     >
       <Input />
     </Form.Item>
