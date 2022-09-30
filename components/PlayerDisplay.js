@@ -50,7 +50,7 @@ const PlayerDisplay = ({ player, showContact }) => {
     </div >
   )
   return (
-    <Popover content={playerDetail}>
+    <Popover content={playerDetail} trigger='click'>
       {player.officialName}
       <span style={{ marginLeft: '5px' }}>
         {player.club ? `(${player.club})` : ''}

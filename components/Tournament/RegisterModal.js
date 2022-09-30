@@ -183,8 +183,14 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
   }
 
   const onChange = (player) => {
-    if (player === 'player1') setPlayer1()
-    else if (player === 'player2') setPlayer2()
+    if (player === 'player1') {
+      setPlayer1()
+      setPlayer1Data()
+    }
+    else if (player === 'player2') {
+      setPlayer2()
+      setPlayer2Data()
+    }
     else if (player === 'contact') setContactPerson()
   }
 
@@ -192,7 +198,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
     if (eventID) setType(tournament.events.find(elm => elm._id === eventID).type)
     if (isMe) {
       setPlayer1(user.playerID)
-      setPlayer1Data(user)
+      setPlayer1Data(me)
       form.setFieldsValue({
         player1Name: me.officialName,
         player1Gender: me.gender,
@@ -291,7 +297,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
           label='ชื่อเล่น'
           name='player1DisplayName'
         >
-          <Input disabled={player1 && player1 !== user.playerID} />
+          <Input disabled={player1 && player1 !== user.playerID && player1Data.userID} />
         </Form.Item>
         <Form.Item
           label='ทีม'
@@ -300,7 +306,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
             { required: player1 && player1 === user.playerID, message: 'กรุณาระบุชื่อทีม' },
           ]}
         >
-          <Input disabled={player1 && player1 !== user.playerID} />
+          <Input disabled={player1 && player1 !== user.playerID && player1Data.userID} />
         </Form.Item>
         <Form.Item
           label='เพศ'
@@ -312,7 +318,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
           <Select
             placeholder='กรุณาเลือก'
             allowClear
-            disabled={player1 && player1 !== user.playerID}
+            disabled={player1 && player1 !== user.playerID && player1Data.userID}
           >
             <Select.Option value='male'>ชาย</Select.Option>
             <Select.Option value='female'>หญิง</Select.Option>
@@ -325,7 +331,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
         //   { required: true, message: 'กรุณาระบุวันเกิด' },
         // ]}
         >
-          <DatePicker disabled={player1 && player1 !== user.playerID} />
+          <DatePicker disabled={player1 && player1 !== user.playerID && player1Data.userID} />
         </Form.Item>
         {player1Data?.photo ?
           <div style={{ width: '110px', height: '110px', border: '1px dashed #ccc', padding: '5px', overflow: 'hidden', borderRadius: '5px' }}>
@@ -360,7 +366,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
             label='ชื่อเล่น'
             name='player2DisplayName'
           >
-            <Input disabled={player2 && player2 !== user.playerID} />
+            <Input disabled={player2 && player2 !== user.playerID && player2Data.userID} />
           </Form.Item>
 
           <Form.Item
@@ -370,7 +376,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
               { required: player2 && player2 === user.playerID, message: 'กรุณาระบุชื่อทีม' },
             ]}
           >
-            <Input disabled={player2 && player2 !== user.playerID} />
+            <Input disabled={player2 && player2 !== user.playerID && player2Data.userID} />
           </Form.Item>
           <Form.Item
             label='เพศ'
@@ -382,7 +388,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
             <Select
               placeholder='กรุณาเลือก'
               allowClear
-              disabled={player2 && player2 !== user.playerID}
+              disabled={player2 && player2 !== user.playerID && player2Data.userID}
             >
               <Select.Option value='male'>ชาย</Select.Option>
               <Select.Option value='female'>หญิง</Select.Option>
@@ -395,7 +401,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
           //   { required: true, message: 'กรุณาระบุวันเกิด' },
           // ]}
           >
-            <DatePicker disabled={player2 && player2 !== user.playerID} />
+            <DatePicker disabled={player2 && player2 !== user.playerID && player2Data.userID} />
           </Form.Item>
           {player2Data?.photo ?
             <div style={{ width: '110px', height: '110px', border: '1px dashed #ccc', padding: '5px', overflow: 'hidden', borderRadius: '5px' }}>

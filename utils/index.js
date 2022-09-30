@@ -98,7 +98,7 @@ export const usePlayers = () => {
 export const usePlayer = (id) => {
   const { data, error, mutate } = useSWR(
     `${API_ENDPOINT}/player/${id}`,
-    fetcher
+    (url) => { if (id) return fetcher(url) }
   )
 
   return {
