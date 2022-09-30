@@ -337,7 +337,13 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
           <div style={{ width: '110px', height: '110px', border: '1px dashed #ccc', padding: '5px', overflow: 'hidden', borderRadius: '5px' }}>
             <Image objectFit='contain' src={player1Data.photo} alt='' width={100} height={100} />
           </div>
-          : <Form.Item name='player1Photo' label="รูปภาพ" valuePropName="player1Photo">
+          : <Form.Item
+            name='player1Photo'
+            label="รูปภาพ" valuePropName="player1Photo"
+            rules={[
+              { required: true, message: 'กรุณาอัพโหลดรูปภาพ' },
+            ]}
+          >
             <Upload action={`${API_ENDPOINT}/mock`} listType="picture-card" maxCount={1} beforeUpload={beforeUpload}>
               <div>
                 <PlusOutlined />
