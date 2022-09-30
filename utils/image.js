@@ -11,9 +11,9 @@ export const beforeUpload = (file) => {
   if (!isJpgOrPng) {
     message.error('You can only upload JPG/PNG file!');
   }
-  const isLt5M = file.size / 1024 / 1024 < 5;
+  const isLt5M = file.size / 1024 / 1024 < 10;
   if (!isLt5M) {
-    message.error('Image must smaller than 5MB!');
+    message.error('Image must smaller than 10MB!');
   }
   return isJpgOrPng && isLt5M;
 }
