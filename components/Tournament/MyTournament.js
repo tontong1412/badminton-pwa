@@ -12,11 +12,11 @@ const MyTournament = (props, ref) => {
   const user = useSelector(state => state.user)
   const { tournaments, mutate } = useMyTournament(user.token)
 
-  if (!tournaments || tournaments.length === 0) return <div />
+  if (!tournaments || tournaments.length <= 0) return <div />
 
   return (
     <div>
-      <div style={{ margin: '20px 20px 0 20px' }}>รายการแข่งของฉัน</div>
+      {tournaments.filter(e => e.status !== 'finish').length > 0 && <div style={{ margin: '20px 20px 0 20px' }}>รายการแข่งของฉัน</div>}
       <div style={{
         overflowX: 'scroll',
         overflowY: 'hidden',
