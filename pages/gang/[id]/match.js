@@ -198,6 +198,11 @@ const MatchList = () => {
           </Popconfirm>
         </Menu.Item>
       }
+      {
+        <Menu.Item key='scoreboard'>
+          <div onClick={() => router.push(`/match/${match._id}`)}>Scoreboard</div>
+        </Menu.Item>
+      }
     </Menu >
   )
 

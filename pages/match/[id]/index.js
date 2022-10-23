@@ -76,18 +76,21 @@ const Match = () => {
     }).then(() => mutate())
       .catch(() => { })
 
-    request.post('/event/shuttlecock-credit', {
-      eventID: match.eventID,
-      teamID: match.teamA.team._id,
-      action: action === 'increment' ? 'decrement' : 'increment',
-      amount: 1
-    })
-    request.post('/event/shuttlecock-credit', {
-      eventID: match.eventID,
-      teamID: match.teamB.team._id,
-      action: action === 'increment' ? 'decrement' : 'increment',
-      amount: 1
-    })
+
+    if (match.eventID) { // only tournament realted match has to do this
+      request.post('/event/shuttlecock-credit', {
+        eventID: match.eventID,
+        teamID: match.teamA.team._id,
+        action: action === 'increment' ? 'decrement' : 'increment',
+        amount: 1
+      })
+      request.post('/event/shuttlecock-credit', {
+        eventID: match.eventID,
+        teamID: match.teamB.team._id,
+        action: action === 'increment' ? 'decrement' : 'increment',
+        amount: 1
+      })
+    }
   }
 
 
@@ -148,6 +151,12 @@ const Match = () => {
       .catch(err => console.log(err))
   }
 
+  const endMatch = async () => {
+    await request.put(`/match/${match._id}`, {
+      status: 'finished'
+    })
+  }
+
   const endGame = async () => {
     if (match.teamA.score === match.teamB.score) {
       Modal.info({ title: 'ไม่สามารถจบเกมได้เนื่องจากไม่มีผู้ชนะ' })
@@ -158,7 +167,7 @@ const Match = () => {
     await request.post('/match/set-score', {
       matchID: id,
       score: scoreLabel,
-      status: scoreLabel.length < (match.step === 'group' ? 2 : 3) ? 'playing' : 'finished'
+      status: 'playing'
     })
     await request.put(`/match/${id}`, {
       'teamA.score': 0,
@@ -219,7 +228,7 @@ const Match = () => {
                   <div style={{ width: '40px', height: '40px', borderRadius: '20px', overflow: 'hidden', objectFit: 'contain' }}>
                     <Image src={player.photo || `/avatar.png`} alt='' width={40} height={40} objectFit='cover' />
                   </div>
-                  <div>{player.officialName}</div>
+                  <div>{player.officialName || player.displayName}</div>
                   {match.teamA.serving === index && match.teamA.isServing && <div style={{ padding: '2px 5px', backgroundColor: COLOR.MAIN_THEME, borderRadius: '5px' }}>S</div>}
                   {match.teamA.receiving === index && !match.teamA.isServing && <div style={{ padding: '2px 5px', backgroundColor: COLOR.MAIN_THEME, borderRadius: '5px' }}>R</div>}
                 </div>
@@ -278,7 +287,7 @@ const Match = () => {
                   <div style={{ width: '40px', height: '40px', borderRadius: '20px', overflow: 'hidden', objectFit: 'contain' }}>
                     <Image src={player.photo || `/avatar.png`} alt='' width={40} height={40} objectFit='cover' />
                   </div>
-                  <div className='info' style={{ marginRight: '5px', marginLeft: 0, textAlign: 'right' }}>{player.officialName}</div>
+                  <div className='info' style={{ marginRight: '5px', marginLeft: 0, textAlign: 'right' }}>{player.officialName || player.displayName}</div>
                   {match.teamB.serving === index && match.teamB.isServing && <div style={{ padding: '2px 5px', backgroundColor: COLOR.MAIN_THEME, borderRadius: '5px' }}>S</div>}
                   {match.teamB.receiving === index && !match.teamB.isServing && < div style={{ padding: '2px 5px', backgroundColor: COLOR.MAIN_THEME, borderRadius: '5px' }}>R</div>}
                 </div>
@@ -288,13 +297,13 @@ const Match = () => {
         </div>
 
         <div>
-          {match.umpire && <div style={{ textAlign: 'center', fontSize: '20px' }}>จำนวนลูก: {match.shuttlecockUsed} ลูก</div>}
+          {(match.gangID || match.umpire) && <div style={{ textAlign: 'center', fontSize: '20px' }}>จำนวนลูก: {match.shuttlecockUsed} ลูก</div>}
           {match.umpire && <div style={{ textAlign: 'center', fontSize: '20px' }}>ผู้ตัดสิน: {match.umpire?.officialName}</div>}
         </div>
 
 
 
-        {isUmpire && match.scoreLabel.length < (match.step === 'group' ? 2 : 3) && match.status === 'playing' && <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexDirection: side ? 'row-reverse' : 'row' }}>
+        {(match.gangID || isUmpire) && match.status === 'playing' && <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexDirection: side ? 'row-reverse' : 'row' }}>
           <Button
             type='primary'
             style={{
@@ -321,6 +330,10 @@ const Match = () => {
               <Button style={{ width: '50%' }} onClick={() => manageShuttlecock('decrement')}>ลบลูก</Button>
               <Button style={{ width: '50%' }} onClick={() => manageShuttlecock('increment')}>เพิ่มลูก</Button>
             </div>
+            {match.teamA.score === 0 && match.teamB.score === 0 &&
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', paddingTop: '30px' }}>
+                <Button style={{ width: '100%' }} type='danger' onClick={() => endMatch()}>จบแมตช์</Button>
+              </div>}
           </div>
           <Button
             type='primary'
@@ -362,13 +375,13 @@ const Match = () => {
                 key={`A-${index}`}
                 value={`A-${index}`}
               >
-                {player.officialName}
+                {player.officialName || player.displayName}
               </Select.Option>)}
               {match.teamB.team.players.map((player, index) => <Select.Option
                 key={`B-${index}`}
                 value={`B-${index}`}
               >
-                {player.officialName}
+                {player.officialName || player.displayName}
               </Select.Option>)}
             </Select>
           </Form.Item>
@@ -382,12 +395,12 @@ const Match = () => {
                 key={`A-${index}`}
                 value={`A-${index}`}
               >
-                {player.officialName}
+                {player.officialName || player.displayName}
               </Select.Option>)}
               {match.teamB.team.players.map((player, index) => <Select.Option
                 key={`B-${index}`}
                 value={`B-${index}`}>
-                {player.officialName}
+                {player.officialName || player.displayName}
               </Select.Option>)}
             </Select>
           </Form.Item>

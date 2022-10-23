@@ -29,7 +29,7 @@ const Players = ({ players }) => (
     textOverflow: 'clip',
     whiteSpace: 'nowrap',
   }}>
-    {players.map(player => player.officialName.split(' ')[0]).join('/')}
+    {players.map(player => player.officialName?.split(' ')[0] || player.displayName).join('/')}
   </div >
 )
 
@@ -80,7 +80,7 @@ const StreamingScoreboard = () => {
         boxShadow: '2px 2px 20px -5px rgba(0,0,0,0.75)',
         backgroundColor: 'white'
       }}>
-        <div style={{
+        {match.eventID && <div style={{
           fontSize: `${FONT_SIZE - 5}px`,
           padding: '0px 10px',
           borderBottom: '2px solid #ccc',
@@ -88,7 +88,7 @@ const StreamingScoreboard = () => {
 
         }}>
           {`${match.eventName} - รอบ ${match.step === 'group' ? 'แบ่งกลุ่ม' : ROUND_NAME[match.round]}`}
-        </div>
+        </div>}
 
         <div style={{
           borderBottom: '2px solid #ccc',
