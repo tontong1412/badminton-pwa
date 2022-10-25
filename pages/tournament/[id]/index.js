@@ -151,6 +151,14 @@ const TournamentManagerID = () => {
         {tournament.registerOpen && <Button style={{ width: '80%', marginBottom: '5px' }} type='primary' onClick={onClickRegisterButton}>
           สมัครแข่งขัน
         </Button>}
+
+        <Button
+          style={{ width: '80%', marginBottom: '5px' }}
+          type='primary'
+          onClick={() => router.push(`/tournament/${tournament._id}/draws`)}>
+          ดูรายชื่อ
+        </Button>
+
         {
           isCreator && <Button style={{ width: '80%', marginBottom: '10px' }} type='primary' onClick={() => {
             setTournamentModal(true)
