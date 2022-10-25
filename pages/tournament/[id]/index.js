@@ -103,7 +103,7 @@ const TournamentManagerID = () => {
             )
           })}
         </div>
-        {tournament?.poster && <div style={{ color: COLOR.MINOR_THEME }} onClick={() => setPosterVisible(true)}>ดูรายละเอียดเพิ่มเติม</div>}
+        {tournament?.poster && <div style={{ color: COLOR.MINOR_THEME }} onClick={() => setPosterVisible(true)}>ดูโปสเตอร์</div>}
         {tournament?.contact?.officialName &&
           <>
             <Divider>ผู้จัด</Divider>
