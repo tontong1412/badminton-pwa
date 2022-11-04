@@ -24,8 +24,8 @@ class MyDocument extends Document {
           <meta name="apple-mobile-web-app-capable" content="yes"></meta>
 
           {/* social meta */}
-          <meta property="og:title" content="Badminstar - โปรแกรมจัดก๊วน จัดแข่ง แบดมินตัน" />
-          <meta property="og:description" content="การจัดการก๊วน หรือ จัดแข่ง จะไม่ปวดหัวอีกต่อไปด้วย Badminstar" />
+          <meta property="og:title" content="Badminstar - ศูนย์รวมข้อมูลแบดมินตัน โปรแกรมจัดก๊วน โปรแกรมจัดแข่ง" />
+          <meta property="og:description" content="ศูนย์รวมข้อมูลแบดมินตัน ก๊วน รายการแข่ง สนามแบด" />
           <meta property="og:image" content="/social.png" />
           <meta property="og:url" content="https://badminstar.com" />
         </Head>

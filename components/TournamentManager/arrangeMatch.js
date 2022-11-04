@@ -2,7 +2,10 @@ import { Table, Modal, Form, Input, Checkbox, Radio, Button, DatePicker, InputNu
 import { useState } from "react"
 import request from "../../utils/request"
 import ServiceErrorModal from '../../components/ServiceErrorModal'
+import { useSelector } from 'react-redux'
+
 const ArrangeMatch = ({ tournamentID, setStep }) => {
+  const { user } = useSelector(state => state)
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
   const [method, setMethod] = useState('minWait')
@@ -25,11 +28,11 @@ const ArrangeMatch = ({ tournamentID, setStep }) => {
         knockOut: values.timeGapKnockOut || values.timeGapGroup || 2 // fix
       },
       method: values.method
-    }).then(async () => {
+    }, user.token).then(async () => {
       setLoading(false)
       await request.put(`/tournament/${tournamentID}`, {
         status: 'ongoing'
-      })
+      }, user.token)
       setStep(4)
     })
       .catch(err => {
