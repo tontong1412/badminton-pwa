@@ -306,7 +306,8 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
             { required: player1 && player1 === user.playerID, message: 'กรุณาระบุชื่อทีม' },
           ]}
         >
-          <Input disabled={player1 && player1 !== user.playerID && player1Data.userID} />
+          {/* <Input disabled={player1 && player1 !== user.playerID && player1Data.userID} /> */}
+          <Input />
         </Form.Item>
         <Form.Item
           label='เพศ'
@@ -382,7 +383,8 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
               { required: player2 && player2 === user.playerID, message: 'กรุณาระบุชื่อทีม' },
             ]}
           >
-            <Input disabled={player2 && player2 !== user.playerID && player2Data.userID} />
+            <Input />
+            {/* <Input disabled={player2 && player2 !== user.playerID && player2Data.userID} /> */}
           </Form.Item>
           <Form.Item
             label='เพศ'
