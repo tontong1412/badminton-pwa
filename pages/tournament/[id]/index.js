@@ -47,8 +47,10 @@ const TournamentManagerID = () => {
   }, [user, tournament])
 
   const onClickRegisterButton = () => {
-    if (user.id) setRegisterModal(true)
-    else {
+    if (user.id && user.officialName) setRegisterModal(true)
+    else if (user.id && !user.playerID) {
+      router.push('/claim-player')
+    } else {
       Modal.info({
         title: 'กรุณา Log in ก่อนสมัครแข่งขัน',
         onOk: () => router.push('/login')
