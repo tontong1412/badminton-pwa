@@ -1,4 +1,4 @@
-import { COLOR } from '../../../constant'
+import { COLOR, ROUND_NAME } from '../../../constant'
 import { useMatch, useSocket, useWindowSize } from '../../../utils'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
