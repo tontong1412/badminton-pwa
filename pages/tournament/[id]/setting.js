@@ -74,7 +74,7 @@ const Setting = () => {
       icon: <ExclamationCircleOutlined />,
       // content: 'หากลบแล้วจะไม่สามารถกู้คืนข้อมูลได้',
       onOk() {
-        request.put(`/tournament/${id}`, { status: 'finish' })
+        request.put(`/tournament/${id}`, { status: 'finish' }, user.token)
           .then(() => { router.push('/tournament') })
           .catch(() => { })
       },
