@@ -21,7 +21,8 @@ const Participants = (props) => {
   }, [])
   return (
     <Layout>
-      <h1>ตรวจสอบรายชื่อ</h1>
+      <h2 style={{ marginBottom: 0 }}>{tournament?.name}</h2>
+      <h2>ตรวจสอบรายชื่อ</h2>
       <ParticipantsTable tournamentID={id} />
       {tournament?.registerOpen && <AddButton onClick={() => {
         if (user.id) setRegisterModalVisible(true)

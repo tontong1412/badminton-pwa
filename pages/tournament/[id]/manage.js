@@ -75,7 +75,8 @@ const Manage = () => {
   if (!isManager) return <Layout><div>permission denied</div></Layout>
   return (
     <Layout>
-      <h1>Manage</h1>
+      <h2 style={{ marginBottom: 0 }}>{tournament?.name}</h2>
+      <h2>Manage</h2>
       <Steps size="small" current={currentStep} onChange={current => setCurrentStep(current)}>
         <Step title="กำหนดรายการแข่งขัน" />
         <Step title="รายชื่อ" />

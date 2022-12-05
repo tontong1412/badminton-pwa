@@ -49,7 +49,8 @@ const Draws = () => {
   if (isError) return <div>Error</div>
   return (
     <Layout>
-      <h1>สายการแข่งขัน</h1>
+      <h2 style={{ marginBottom: 0 }}>{tournament?.name}</h2>
+      <h2>สายการแข่งขัน</h2>
       <Tabs
         defaultActiveKey={tab}
         activeKey={tab}

@@ -12,8 +12,10 @@ import AddButton from '../addButton'
 import RegisterModal from '../Tournament/RegisterModal'
 import { useSelector } from 'react-redux'
 import ShuttlecockModal from '../Tournament/ShuttlecockModal'
+import { useRouter } from "next/router"
 
 const Participants = (props) => {
+  const router = useRouter()
   const { tournament, isLoading, isError, mutate } = useTournament(props.tournamentID)
   const [formatParticipantTable, setFormatParticipantTable] = useState([])
   const [searchText, setSearchText] = useState('')

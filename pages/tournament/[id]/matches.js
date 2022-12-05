@@ -7,7 +7,7 @@ import { useRouter } from 'next/router'
 import 'moment/locale/th'
 import Loading from '../../../components/loading'
 import MatchesTable from '../../../components/TournamentManager/matches'
-import { useMatches } from '../../../utils'
+import { useMatches, useTournament } from '../../../utils'
 import { Tabs } from 'antd'
 import MatchUp from '../../../components/Bracket/MatchUp'
 const { TabPane } = Tabs
@@ -31,6 +31,7 @@ const Matches = () => {
   const router = useRouter()
   const { id } = router.query
   const { matches, isError, isLoading, mutate } = useMatches(id)
+  const { tournament } = useTournament(id)
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT_MANAGER.MATCHES })
   }, [])
@@ -39,35 +40,38 @@ const Matches = () => {
 
   return (
     <Layout>
-      <h1>รายการแข่งขัน</h1>
+      <h2 style={{ marginBottom: 0 }}>{tournament?.name}</h2>
+      <h2>รายการแข่งขัน</h2>
       {isMobile
         ?
         <Tabs defaultActiveKey={TAB_LIST[0].key} >
           {TAB_LIST.map((tab =>
             <TabPane tab={tab.label} key={tab.key}>
-              {matches?.filter(m => m.status === tab.key && m.matchNumber).sort((a, b) => a.matchNumber - b.matchNumber).map(match => {
-                return (
-                  <div key={match._id} className='match-list matchups' onClick={() => router.push(`/match/${match._id}`)}>
-                    <div style={{
-                      backgroundColor: COLOR.MINOR_THEME,
-                      borderTopLeftRadius: '0.25rem',
-                      borderTopRightRadius: '0.25rem',
-                      color: 'whitesmoke',
-                      padding: '0px 10px',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                    }}>
-                      <div>{`${match.eventName} - รอบ ${match.step === 'group' ? 'แบ่งกลุ่ม' : ROUND_NAME[match.round]}`}</div>
-                      <div style={{ display: 'flex', gap: '10px' }}>
-                        {match.status !== 'waiting' && <div>{`#${match.matchNumber}`}</div>}
-                        {match.status === 'playing' && <div>{`คอร์ด - ${match.court}`}</div>}
+              {matches?.filter(m => m.status === tab.key && m.matchNumber)
+                .sort((a, b) => tab.key === 'waiting' ? a.matchNumber - b.matchNumber : b.matchNumber - a.matchNumber)
+                .map(match => {
+                  return (
+                    <div key={match._id} className='match-list matchups' onClick={() => router.push(`/match/${match._id}`)}>
+                      <div style={{
+                        backgroundColor: COLOR.MINOR_THEME,
+                        borderTopLeftRadius: '0.25rem',
+                        borderTopRightRadius: '0.25rem',
+                        color: 'whitesmoke',
+                        padding: '0px 10px',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                      }}>
+                        <div>{`${match.eventName} - รอบ ${match.step === 'group' ? 'แบ่งกลุ่ม' : ROUND_NAME[match.round]}`}</div>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                          {match.status !== 'waiting' && <div>{`#${match.matchNumber}`}</div>}
+                          {match.status === 'playing' && <div>{`คอร์ด - ${match.court}`}</div>}
+                        </div>
                       </div>
+                      <MatchUp match={match} />
                     </div>
-                    <MatchUp match={match} />
-                  </div>
-                )
+                  )
 
-              })}
+                })}
             </TabPane>))}
         </Tabs>
         : <MatchesTable tournamentID={id} />}
