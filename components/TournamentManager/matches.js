@@ -21,6 +21,7 @@ const Matches = (props) => {
   const [setScoreLoading, setSetScoreLoading] = useState(false)
   const [selectedMatch, setSelectedMatch] = useState()
   const [selectedCourt, setSelectedCourt] = useState()
+  const [availableUmpires, setAvailableUmpires] = useState([])
   const [score, setScore] = useState([])
   const socket = useSocket()
   const { matches, isError, isLoading, mutate } = useMatches(props.tournamentID)
@@ -149,9 +150,10 @@ const Matches = (props) => {
       court: values.court,
       umpire: values.umpire
     }).then(() => {
+      setSelectedCourt()
       setAssignLoading(false)
       setAssignMatchModal(false)
-      setSelectedCourt()
+      form.resetFields()
       mutate()
     }).catch(() => {
       ServiceErrorModal()
@@ -162,6 +164,14 @@ const Matches = (props) => {
   const handleAssignMatchAction = (match) => {
     setAssignMatchModal(true)
     setSelectedMatch(match)
+
+    form.setFieldsValue({
+      court: match?.court,
+      umpire: match?.umpire
+    })
+
+    getAvailableUmpires(match)
+
   }
 
   const handleSetScoreAction = (match) => {
@@ -217,15 +227,29 @@ const Matches = (props) => {
     )
   }
 
+  const getAvailableUmpires = (match) => {
+    const playingMatches = matches.filter(m => m.status === 'playing' && m._id !== match._id)
+    const occupiedUmpires = playingMatches.map(m => m.umpire)
+    const tempAvailableUmpires = tournament.umpires.filter(u => !occupiedUmpires.includes(u._id))
+    const availableUmpiresWithStatic = tempAvailableUmpires.map(u => {
+      const totalMatchesJudged = matches.filter(m => m.umpire === u._id)
+      u.totalMatchesJudged = totalMatchesJudged.length
+      return u
+    })
+    setAvailableUmpires(availableUmpiresWithStatic)
+  }
+
   const renderAssignMatchModal = () => {
-    // const availableCourts = getAvailableCourts()
     return (
       <Modal
         title="ลงทำการแข่งขัน"
         visible={assignMatchModal}
         onOk={form.submit}
         confirmLoading={assignLoading}
-        onCancel={() => setAssignMatchModal(false)}
+        onCancel={() => {
+          setSelectedMatch()
+          setAssignMatchModal(false)
+        }}
         destroyOnClose
       >
         <Form
@@ -246,8 +270,14 @@ const Matches = (props) => {
             name="umpire"
           // rules={[{ required: true, message: 'Please input umpire' }]}
           >
-            <Select placeholder="เลือกกรรมการ" style={{ width: 200 }} >
-              {tournament?.umpires.map((elm) => <Select.Option key={elm._id} value={elm._id}>{elm.officialName}</Select.Option>)}
+            <Select placeholder="เลือกกรรมการ" style={{ width: 250 }} >
+              {availableUmpires.map((elm) => <Select.Option key={elm._id} value={elm._id}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div>{`${elm.officialName} (${elm.displayName})`}</div>
+                  <div>{elm.totalMatchesJudged}</div>
+                </div>
+
+              </Select.Option>)}
             </Select>
           </Form.Item>
         </Form>
