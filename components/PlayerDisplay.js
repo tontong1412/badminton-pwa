@@ -48,15 +48,15 @@ const PlayerDisplay = ({ player, showContact }) => {
         <div style={{ width: '100px', textAlign: 'right' }}>เพศ:</div>
         <div>{MAP_GENDER[player.gender]}</div>
       </div>}
-      {activity?.length > 0 &&
+      {activity?.length > 1 &&
         <div style={{ width: '100%' }}>
           <div style={{ borderBottom: '1px solid #eee', padding: '5px', width: '100%', textAlign: 'center' }}>รายการแข่งล่าสุด</div>
           {
-            activity.map(t =>
+            activity.slice(1).map(t =>
               <div key={t?._id} >
                 <div
                   style={{ borderBottom: '1px solid #eee', padding: '5px', width: '100%', textAlign: 'center' }}>
-                  {t?.name}
+                  <a href={`/tournament/${t._id}`}>{t?.name}</a>
                   {t?.events.map(e => <Tag key={e?._id} color='blue' style={{ marginLeft: '3px' }}>{e?.name}</Tag>)}
                 </div>
               </div>)
