@@ -41,16 +41,16 @@ const Match = () => {
     }
   }, [user, match])
 
-  useEffect(() => {
-    const handleEvent = (payload) => {
-      mutate()
-    }
-    if (socket) {
-      socket.on('update-match', handleEvent)
-    }
-  }, [socket])
+  // useEffect(() => {
+  //   const handleEvent = (payload) => {
+  //     // mutate()
+  //   }
+  //   if (socket) {
+  //     socket.on('update-match', handleEvent)
+  //   }
+  // }, [socket])
 
-  const onFinish = async (values) => {
+  const onSetServingReceiving = async (values) => {
     const { server, receiver } = values
     const [serverTeam, serverIndex] = server.split('-')
     const [receiverTeam, receiverIndex] = receiver.split('-')
@@ -112,10 +112,11 @@ const Match = () => {
     if (team === 'A') {
       const currentScore = match.teamA.score
       let teamBReceiver
+
       if (match.teamB.score % 2 === 0 && (currentScore + 1) % 2 === 0) {
-        teamBReceiver = match.teamB.serving
+        teamBReceiver = match.teamB.serving || 0
       } else if (match.teamB.score % 2 === 1 && (currentScore + 1) % 2 === 1) {
-        teamBReceiver = match.teamB.serving
+        teamBReceiver = match.teamB.serving || 1
       } else {
         teamBReceiver = Math.abs(match.teamB.serving - 1)
       }
@@ -131,9 +132,9 @@ const Match = () => {
       const currentScore = match.teamB.score
       let teamAReceiver
       if (match.teamA.score % 2 === 0 && (currentScore + 1) % 2 === 0) {
-        teamAReceiver = match.teamA.serving
+        teamAReceiver = match.teamA.serving || 0
       } else if (match.teamA.score % 2 === 1 && (currentScore + 1) % 2 === 1) {
-        teamAReceiver = match.teamA.serving
+        teamAReceiver = match.teamA.serving || 1
       } else {
         teamAReceiver = Math.abs(match.teamA.serving - 1)
       }
@@ -147,7 +148,60 @@ const Match = () => {
       }
     }
     request.put(`/match/${id}`, payload)
-      .then(res => { })
+      .then(res => {
+        if (team === 'A') {
+          const currentScore = match.teamA.score
+          let teamBReceiver
+          if (match.teamB.score % 2 === 0 && (currentScore + 1) % 2 === 0) {
+            teamBReceiver = match.teamB.serving
+          } else if (match.teamB.score % 2 === 1 && (currentScore + 1) % 2 === 1) {
+            teamBReceiver = match.teamB.serving
+          } else {
+            teamBReceiver = Math.abs(match.teamB.serving - 1)
+          }
+          mutate({
+            ...match,
+            teamA: {
+              ...match.teamA,
+              score: match.teamA.score + 1,
+              serving: isSingle ? 0 : (match.teamA.isServing ? match.teamA.serving : Math.abs(match.teamA.serving - 1)),
+              receiving: null,
+              isServing: true
+            },
+            teamB: {
+              ...match.teamB,
+              receiving: isSingle ? 0 : teamBReceiver,
+              isServing: false
+            }
+          })
+        } else {
+          const currentScore = match.teamB.score
+          let teamAReceiver
+          if (match.teamA.score % 2 === 0 && (currentScore + 1) % 2 === 0) {
+            teamAReceiver = match.teamA.serving || 0
+          } else if (match.teamA.score % 2 === 1 && (currentScore + 1) % 2 === 1) {
+            teamAReceiver = match.teamA.serving || 1
+          } else {
+            teamAReceiver = Math.abs(match.teamA.serving - 1)
+          }
+          mutate({
+            ...match,
+            teamB: {
+              ...match.teamB,
+              score: match.teamB.score + 1,
+              serving: isSingle ? 0 : (match.teamB.isServing ? match.teamB.serving : Math.abs(match.teamB.serving - 1)),
+              receiving: null,
+              isServing: true
+            },
+            teamA: {
+              ...match.teamA,
+              receiving: isSingle ? 0 : teamAReceiver,
+              isServing: false
+            }
+          })
+        }
+
+      })
       .catch(err => console.log(err))
   }
 
@@ -176,14 +230,35 @@ const Match = () => {
       'teamB.isServing': match.teamB.score > match.teamA.score,
       'teamA.serving': match.teamA.score > match.teamB.score ? 0 : null,
       'teamB.serving': match.teamB.score > match.teamA.score ? 0 : null,
-      'teamB.receiving': 0,
+      'teamA.receiving': 0,
       'teamB.receiving': 0,
     })
     setUndo([])
     setSide(!side)
+    mutate()
   }
   const onUndo = async () => {
-    await request.put(`/match/${id}`, undo.pop())
+    const prev = undo.pop()
+    await request.put(`/match/${id}`, prev)
+      .then(res => {
+        mutate({
+          ...match,
+          teamB: {
+            ...match.teamB,
+            score: prev['teamB.score'],
+            serving: prev['teamB.serving'],
+            receiving: prev['teamB.receiving'],
+            isServing: prev['teamB.isServing']
+          },
+          teamA: {
+            ...match.teamA,
+            score: prev['teamA.score'],
+            serving: prev['teamA.serving'],
+            receiving: prev['teamA.receiving'],
+            isServing: prev['teamA.isServing']
+          }
+        })
+      })
   }
 
   if (isLoading) return <Loading />
@@ -209,8 +284,7 @@ const Match = () => {
           alignItems: 'center',
           flexDirection: side ? 'row-reverse' : 'row'
 
-        }}
-        >
+        }}>
 
           <div style={{ width: '35%' }}>
             {match?.teamA.team.players.map((player, index) => {
@@ -363,7 +437,7 @@ const Match = () => {
           form={form}
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
-          onFinish={onFinish}
+          onFinish={onSetServingReceiving}
         >
           <Form.Item
             label="คนเสิร์ฟ"
