@@ -66,7 +66,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
           setPlayer1Data()
           setPlayer2()
           setPlayer2Data()
-          if (err.response.status === 409) {
+          if (err?.response?.status === 409) {
             Modal.info({ title: 'คู่นี้ลงสมัครแล้ว', content: 'ท่านสามารถตรวจสอบผลการประเมินมือได้ที่แท็บรายชื่อ' })
           } else {
             Modal.error({ title: 'ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง' })

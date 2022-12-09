@@ -68,7 +68,7 @@ const MyTournamentCardHomePage = ({ tournament, mutate }) => {
               setSlipModalVisible(true)
               setSelectedTeam(team)
               setSelectedEvent(event)
-            }}>จ่ายเงิน</a>
+            }}>คลิกเพื่อจ่ายเงิน</a>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>

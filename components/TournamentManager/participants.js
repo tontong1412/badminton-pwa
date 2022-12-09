@@ -30,6 +30,7 @@ const Participants = (props) => {
   const { user } = useSelector(state => state)
   const [width, height] = useWindowSize()
   const [form] = Form.useForm()
+  const [isManagerSlip, setIsManagerSlip] = useState(false)
 
   const menu = (event, team) => (
     <Menu>
@@ -51,6 +52,7 @@ const Participants = (props) => {
           setSlipModalVisible(true)
           setSelectedTeam(team)
           setSelectedEvent(event)
+          setIsManagerSlip(true)
         }}>
           ดู/อัพโหลดสลิป
         </div>
@@ -117,10 +119,10 @@ const Participants = (props) => {
             player: team?.team.players.map(player => <div key={player._id} ><PlayerDisplay player={player} /></div>),
             event: event.name,
             allow: { event, team },
-            payment: team.paymentStatus,
+            payment: { text: team.paymentStatus, event, team },
             note: { note: team.note, isInQueue: team.isInQueue },
             shuttlecockCredit: team.shuttlecockCredit,
-            action: <Dropdown overlay={menu(event, team)} trigger={['click', 'hover']} placement="bottomRight">
+            action: <Dropdown overlay={menu(event, team)} trigger={['click']} placement="bottomRight">
               <div>เพิ่มเติม</div>
             </Dropdown>
           })
@@ -241,10 +243,17 @@ const Participants = (props) => {
         align: 'center',
         width: '10%',
         onFilter: (value, record) => record.payment === value,
-        render: text => <div>
+        render: ({ text, event, team }) => <div>
           <Tag color={TRANSACTION[text].COLOR}>
             {TRANSACTION[text].LABEL}
           </Tag>
+          {
+            text === 'idle' && <div style={{ paddingTop: '5px' }}><a onClick={() => {
+              setSlipModalVisible(true)
+              setSelectedTeam(team)
+              setSelectedEvent(event)
+            }}>คลิกเพื่อจ่าย</a></div>
+          }
         </div>,
         filters: [
           {
@@ -322,11 +331,14 @@ const Participants = (props) => {
         showContact />
       <SlipModal
         visible={slipModalVisible}
-        setVisible={setSlipModalVisible}
+        setVisible={(visible) => {
+          setSlipModalVisible(visible)
+          setIsManagerSlip(false)
+        }}
         team={selectedTeam}
         event={selectedEvent}
         mutate={mutate}
-        isManager
+        isManager={isManagerSlip}
         tournament={tournament}
       />
       <ShuttlecockModal

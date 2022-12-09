@@ -47,7 +47,6 @@ const SlipModal = ({ event, team = {}, visible, setVisible, mutate, isManager, t
     }).then(() => {
       mutate()
       setVisible(false)
-      console.log(team)
     })
       .catch((error) => console.log(error))
   }
