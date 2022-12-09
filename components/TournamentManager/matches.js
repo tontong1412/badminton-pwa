@@ -1,5 +1,6 @@
 import { MATCH } from '../../constant'
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import { Table, Tag, Modal, Input, Select, Form } from 'antd'
 import moment from 'moment'
 import 'moment/locale/th'
@@ -25,7 +26,7 @@ const Matches = (props) => {
   const [score, setScore] = useState([])
   const socket = useSocket()
   const { matches, isError, isLoading, mutate } = useMatches(props.tournamentID)
-  const { tournament } = useTournament(props.tournamentID)
+  const { tournament, mutate: mutateTournament } = useTournament(props.tournamentID)
   const [width, height] = useWindowSize()
 
   const handleChange = (pagination, filters, sorter) => {
@@ -35,6 +36,7 @@ const Matches = (props) => {
   useEffect(() => {
     const handleEvent = (payload) => {
       mutate()
+      mutateTournament()
     }
     if (socket) {
       socket.on('update-score', handleEvent)
@@ -73,13 +75,13 @@ const Matches = (props) => {
         title: 'ประเภท',
         dataIndex: 'event',
         align: 'center',
-        width: '8%'
+        width: '5%'
       },
       {
         title: 'เวลา',
         dataIndex: 'schedule',
         align: 'center',
-        width: '10%'
+        width: '7%'
       },
       {
         title: 'รอบ',
@@ -87,9 +89,15 @@ const Matches = (props) => {
         align: 'center',
       },
       {
+        title: 'คูปอง',
+        dataIndex: 'coupon1',
+        width: '4%',
+        align: 'center'
+      },
+      {
         title: 'ผู้เข้าแข่งขัน',
         dataIndex: 'competitor1',
-        width: '25%',
+        width: '20%',
         align: 'center'
       },
       {
@@ -100,7 +108,13 @@ const Matches = (props) => {
       {
         title: 'ผู้เข้าแข่งขัน',
         dataIndex: 'competitor2',
-        width: '25%',
+        width: '20%',
+        align: 'center'
+      },
+      {
+        title: 'คูปอง',
+        dataIndex: 'coupon2',
+        width: '4%',
         align: 'center'
       },
 
@@ -318,6 +332,8 @@ const Matches = (props) => {
         match: match.matchNumber,
         event: <div><div>{match.eventName}</div>{match.step === 'consolation' && <div>สายล่าง</div>}</div>,
         round: match.step === 'group' ? `แบ่งกลุ่ม` : ROUND_NAME[match.round],
+        coupon1: tournament.events.find(e => match.eventID === e._id).teams.find(t => t.team._id === match?.teamA?.team?._id)?.shuttlecockCredit,
+        coupon2: tournament.events.find(e => match.eventID === e._id).teams.find(t => t.team._id === match?.teamB?.team?._id)?.shuttlecockCredit,
         competitor1: match.teamA?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
         competitor2: match.teamB?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
         date: moment(match.date).format('ll'),
@@ -364,3 +380,9 @@ const Matches = (props) => {
   )
 }
 export default Matches
+
+
+{/* <div style={{ paddingLeft: '5px' }}>
+            <Image alt='icon' src='/icon/shuttlecock.png' width={20} height={20} />
+            <div>{match.teamA?.team?.shuttlecockCredit}</div>
+          </div> */}
