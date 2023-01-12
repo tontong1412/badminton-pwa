@@ -208,7 +208,8 @@ const Match = () => {
   const endMatch = async () => {
     await request.put(`/match/${match._id}`, {
       status: 'finished'
-    })
+    }).then(res => mutate())
+      .catch(e => console.log(e))
   }
 
   const endGame = async () => {
@@ -397,7 +398,13 @@ const Match = () => {
             <div style={{ textAlign: 'center', display: 'flex', gap: '10px' }}>
               <Button onClick={() => setSide(!side)}>สลับข้าง</Button>
               {match.teamA.score === 0 && match.teamB.score === 0 && <Button onClick={() => setSettingVisible(true)}>เลือกคนรับ/เสิร์ฟ</Button>}
-              <Button type='danger' onClick={() => endGame()}>จบเกม</Button>
+              <Button type='danger' onClick={() => Modal.confirm({
+                title: 'แน่ใจที่จะจบเกม?',
+                // icon: <ExclamationCircleFilled />,
+                // content: 'Some descriptions',
+                onOk: endGame,
+                onCancel: () => { console.log('Cancel') },
+              })}>จบเกม</Button>
               <Button disabled={undo.length <= 0} onClick={() => onUndo()}>undo</Button>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', paddingTop: '10px' }}>
@@ -406,7 +413,13 @@ const Match = () => {
             </div>
             {match.teamA.score === 0 && match.teamB.score === 0 &&
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', paddingTop: '30px' }}>
-                <Button style={{ width: '100%' }} type='danger' onClick={() => endMatch()}>จบแมตช์</Button>
+                <Button style={{ width: '100%' }} type='danger' onClick={() => Modal.confirm({
+                  title: 'แน่ใจที่จะจบแมตช์นี้?',
+                  // icon: <ExclamationCircleFilled />,
+                  // content: 'Some descriptions',
+                  onOk: endMatch,
+                  onCancel: () => { console.log('Cancel') },
+                })}>จบแมตช์</Button>
               </div>}
           </div>
           <Button
