@@ -109,7 +109,7 @@ const Participants = (props) => {
     const tempParticipant = filteredEvent?.reduce((prev, event) => {
       event.teams.forEach(team => {
         const searchTextLower = searchText.toLowerCase()
-        if (team?.team?.players[0].officialName?.toLowerCase().includes(searchTextLower)
+        if (team?.team?.players[0]?.officialName?.toLowerCase().includes(searchTextLower)
           || team?.team?.players[1]?.officialName?.toLowerCase().includes(searchTextLower)
           || team?.team?.players[0]?.club?.toLowerCase().includes(searchTextLower)
           || team?.team?.players[1]?.club?.toLowerCase().includes(searchTextLower)) {
@@ -247,13 +247,13 @@ const Participants = (props) => {
           <Tag color={TRANSACTION[text].COLOR}>
             {TRANSACTION[text].LABEL}
           </Tag>
-          {
+          {/* {
             text === 'idle' && <div style={{ paddingTop: '5px' }}><a onClick={() => {
               setSlipModalVisible(true)
               setSelectedTeam(team)
               setSelectedEvent(event)
             }}>คลิกเพื่อจ่าย</a></div>
-          }
+          } */}
         </div>,
         filters: [
           {
