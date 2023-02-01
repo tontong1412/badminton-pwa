@@ -13,6 +13,8 @@ import RegisterModal from '../Tournament/RegisterModal'
 import { useSelector } from 'react-redux'
 import ShuttlecockModal from '../Tournament/ShuttlecockModal'
 import { useRouter } from "next/router"
+import MyDocument from './participantsPDF'
+import { PDFDownloadLink } from '@react-pdf/renderer'
 
 const Participants = (props) => {
   const router = useRouter()
@@ -31,6 +33,7 @@ const Participants = (props) => {
   const [width, height] = useWindowSize()
   const [form] = Form.useForm()
   const [isManagerSlip, setIsManagerSlip] = useState(false)
+  const [event, setEvent] = useState({})
 
   const menu = (event, team) => (
     <Menu>
@@ -105,6 +108,7 @@ const Participants = (props) => {
     let filteredEvent = tournament?.events
     if (props.eventID) {
       filteredEvent = filteredEvent?.filter(elm => elm._id === props.eventID)
+      setEvent(filteredEvent[0])
     }
     const tempParticipant = filteredEvent?.reduce((prev, event) => {
       event.teams.forEach(team => {
@@ -302,7 +306,13 @@ const Participants = (props) => {
   }
   return (
     <div>
-      <div style={{ textAlign: 'right', margin: '0 10px' }}>{`ทั้งหมด ${totalTeam} คู่`}</div>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <PDFDownloadLink document={<MyDocument data={event} />} fileName={`participant_${event.name}.pdf`}>
+          {({ blob, url, loading, error }) => (loading ? 'Loading document...' : 'Download')}
+        </PDFDownloadLink>
+        <div style={{ margin: '0 10px' }}>{`ทั้งหมด ${totalTeam} คู่`}</div>
+      </div>
+
       <Table
         dataSource={formatParticipantTable}
         columns={columns()}
@@ -311,6 +321,7 @@ const Participants = (props) => {
         scroll={{ y: height - 350, x: 1000 }}
         pagination={false}
         onChange={(pagination, filters, sorter, extra) => setTotalTeam(extra.currentDataSource.length)} />
+
       {(tournament?.registerOpen || props.isManager) && <AddButton onClick={() => {
         if (user.id) setRegisterModalVisible(true)
         else {
