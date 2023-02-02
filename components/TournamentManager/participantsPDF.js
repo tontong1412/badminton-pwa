@@ -72,20 +72,20 @@ const MyDocument = ({ data }) => {
           {data?.teams?.map((row, i) => (
             <View key={i} style={styles.row} wrap={false}>
               <Text style={styles.row10}>{i + 1}</Text>
-              <Text style={styles.row10}>{moment(row.date).format('DD MMM yyyy')}</Text>
-              <Text style={styles.row10}>{data.name}</Text>
+              <Text style={styles.row10}>{moment(row?.date).format('DD MMM yyyy')}</Text>
+              <Text style={styles.row10}>{data?.name}</Text>
 
 
               <View style={styles.row20}>
-                {row.team.players.map(player => <Text key={player._id}>{player.officialName}</Text>)}
+                {row.team.players.map(player => <Text key={player?._id}>{player?.officialName}</Text>)}
               </View>
 
               <View style={styles.row20}>
-                {row.team.players.map(player => <Text key={player._id}>{player.club}</Text>)}
+                {row.team.players.map(player => <Text key={player?._id}>{player?.club}</Text>)}
               </View>
 
-              <Text style={styles.row8}>{row.paymentStatus === 'paid' ? '/' : ''}</Text>
-              <Text style={styles.row8}>{row.shuttlecockCredit}</Text>
+              <Text style={styles.row8}>{row?.paymentStatus === 'paid' ? '/' : ''}</Text>
+              <Text style={styles.row8}>{row?.shuttlecockCredit}</Text>
               <Text style={styles.row20}>{''}</Text>
             </View>
           ))}
