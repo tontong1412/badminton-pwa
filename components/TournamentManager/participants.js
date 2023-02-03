@@ -14,7 +14,10 @@ import { useSelector } from 'react-redux'
 import ShuttlecockModal from '../Tournament/ShuttlecockModal'
 import { useRouter } from "next/router"
 import MyDocument from './participantsPDF'
-import { PDFDownloadLink } from '@react-pdf/renderer'
+import dynamic from 'next/dynamic'
+const PDFDownloadLink = dynamic(() => import('@react-pdf/renderer'), {
+  ssr: false
+});
 
 const Participants = (props) => {
   const router = useRouter()
