@@ -1,6 +1,7 @@
-import React from 'react';
-import { Page, Text, View, Document, StyleSheet, Font } from '@react-pdf/renderer';
+import React, { useEffect, useState } from 'react';
+import { PDFDownloadLink, Page, Text, View, Document, StyleSheet, Font } from '@react-pdf/renderer';
 import moment from 'moment'
+
 
 
 // Register Font
@@ -94,4 +95,15 @@ const MyDocument = ({ data }) => {
     </Document>
   )
 }
-export default MyDocument
+
+const DownloadDoc = ({ event }) => {
+  const [client, setClient] = useState(false)
+  useEffect(() => {
+    setClient(true)
+  }, [])
+
+  return <PDFDownloadLink document={<MyDocument data={event} />} fileName={`participant_${event.name}.pdf`}>
+    {({ blob, url, loading, error }) => (loading ? 'Loading document...' : 'Download')}
+  </PDFDownloadLink>
+}
+export default DownloadDoc

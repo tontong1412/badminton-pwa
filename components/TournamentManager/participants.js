@@ -13,12 +13,11 @@ import RegisterModal from '../Tournament/RegisterModal'
 import { useSelector } from 'react-redux'
 import ShuttlecockModal from '../Tournament/ShuttlecockModal'
 import { useRouter } from "next/router"
-import MyDocument from './participantsPDF'
 import dynamic from 'next/dynamic'
-import { usePDF, Document, Page } from '@react-pdf/renderer';
-// const { PDFDownloadLink } = dynamic(() => import('@react-pdf/renderer'), {
-//   ssr: false
-// });
+const DownloadPDF = dynamic(() => import('../../components/TournamentManager/participantsPDF'), {
+  ssr: false
+});
+
 
 const Participants = (props) => {
   const router = useRouter()
@@ -38,9 +37,9 @@ const Participants = (props) => {
   const [form] = Form.useForm()
   const [isManagerSlip, setIsManagerSlip] = useState(false)
   const [event, setEvent] = useState({})
-  const [instance, updateInstance] = usePDF({ document: <MyDocument data={event} /> })
+  // const [instance, updateInstance] = usePDF({ document: <MyDocument data={event} /> })
 
-  useEffect(updateInstance, [event])
+  // useEffect(updateInstance, [event])
 
   const menu = (event, team) => (
     <Menu>
@@ -315,14 +314,7 @@ const Participants = (props) => {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        {/* <PDFDownloadLink document={<MyDocument data={event} />} fileName={`participant_${event.name}.pdf`}>
-          {({ blob, url, loading, error }) => (loading ? 'Loading document...' : 'Download')}
-        </PDFDownloadLink> */}
-        <a href={instance.url} download={`participant_${event.name}.pdf`}>
-          Download PDF
-        </a>
-        {/* <Button onClick={updateInstance}>Download</Button> */}
-
+        <DownloadPDF event={event} />
         <div style={{ margin: '0 10px' }}>{`ทั้งหมด ${totalTeam} คู่`}</div>
       </div>
 
