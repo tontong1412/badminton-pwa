@@ -12,7 +12,13 @@ const PlayerDisplay = ({ player, showContact }) => {
       setActivity(recentActivity.data)
     }
     getRecentActivity()
+
+    return () => {
+      setActivity({}); //unmount
+    };
   }, [])
+
+
 
   const playerDetail = (
     <div style={{
