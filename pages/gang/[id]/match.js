@@ -547,6 +547,7 @@ const MatchList = () => {
                     <div className='controller-container'>
                       {!canManage && match.status !== 'finished' && <div onClick={() => getStat(match._id)} className='controller'>สถิติ</div>}
                       {canManage && <Dropdown overlay={menu(match)} placement='topLeft' trigger={['click']}><div className='controller'>เพิ่มเติม</div></Dropdown>}
+                      {!canManage && allowAddQueue && <div className='controller' onClick={() => router.push(`/match/${match._id}`)}>Scoreboard</div>}
                       {canManage && match.status === 'waiting' && <div className='controller' onClick={() => onClickEditMatch(match)}>แก้ไข</div>}
                       {canManage && match.status === 'playing' && <div className='controller' onClick={() => manageShuttleCock(match._id)}>เพิ่มลูก</div>}
                       {canManage && match.status !== 'finished' && <div className='controller' onClick={() => updateStatus(match._id, match.status)}>{match.status === 'waiting' ? 'เริ่มเกม' : 'จบเกม'}</div>}
