@@ -196,7 +196,7 @@ export const useNextMatch = (token, eventID, tournamentID) => {
 
 export const useMatch = (id) => {
   const { data, error, mutate } = useSWR(
-    [`${API_ENDPOINT}/match/${id}`, id],
+    id ? [`${API_ENDPOINT}/match/${id}`, id] : null,
     (url) => fetcher(url)
   )
 
