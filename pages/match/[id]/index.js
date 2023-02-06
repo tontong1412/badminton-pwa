@@ -41,14 +41,14 @@ const Match = () => {
     }
   }, [user, match])
 
-  // useEffect(() => {
-  //   const handleEvent = (payload) => {
-  //     // mutate()
-  //   }
-  //   if (socket) {
-  //     socket.on('update-match', handleEvent)
-  //   }
-  // }, [socket])
+  useEffect(() => {
+    const handleEvent = (payload) => {
+      mutate()
+    }
+    if (socket) {
+      socket.on('update-match', handleEvent)
+    }
+  }, [socket])
 
   const onSetServingReceiving = async (values) => {
     const { server, receiver } = values
