@@ -378,7 +378,7 @@ const Match = () => {
 
 
 
-        {(match.gangID || isUmpire) && match.status === 'playing' && <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexDirection: side ? 'row-reverse' : 'row' }}>
+        {((user && match.gangID) || isUmpire) && match.status === 'playing' && <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexDirection: side ? 'row-reverse' : 'row' }}>
           <Button
             type='primary'
             style={{
