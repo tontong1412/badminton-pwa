@@ -114,9 +114,9 @@ const Match = () => {
       let teamBReceiver
 
       if (match.teamB.score % 2 === 0 && (currentScore + 1) % 2 === 0) {
-        teamBReceiver = match.teamB.serving || 0
+        teamBReceiver = match.teamB.serving
       } else if (match.teamB.score % 2 === 1 && (currentScore + 1) % 2 === 1) {
-        teamBReceiver = match.teamB.serving || 1
+        teamBReceiver = match.teamB.serving
       } else {
         teamBReceiver = Math.abs(match.teamB.serving - 1)
       }
@@ -132,9 +132,9 @@ const Match = () => {
       const currentScore = match.teamB.score
       let teamAReceiver
       if (match.teamA.score % 2 === 0 && (currentScore + 1) % 2 === 0) {
-        teamAReceiver = match.teamA.serving || 0
+        teamAReceiver = match.teamA.serving
       } else if (match.teamA.score % 2 === 1 && (currentScore + 1) % 2 === 1) {
-        teamAReceiver = match.teamA.serving || 1
+        teamAReceiver = match.teamA.serving
       } else {
         teamAReceiver = Math.abs(match.teamA.serving - 1)
       }
@@ -178,9 +178,9 @@ const Match = () => {
           const currentScore = match.teamB.score
           let teamAReceiver
           if (match.teamA.score % 2 === 0 && (currentScore + 1) % 2 === 0) {
-            teamAReceiver = match.teamA.serving || 0
+            teamAReceiver = match.teamA.serving
           } else if (match.teamA.score % 2 === 1 && (currentScore + 1) % 2 === 1) {
-            teamAReceiver = match.teamA.serving || 1
+            teamAReceiver = match.teamA.serving
           } else {
             teamAReceiver = Math.abs(match.teamA.serving - 1)
           }
@@ -416,7 +416,7 @@ const Match = () => {
                 <Button style={{ width: '100%' }} type='danger' onClick={() => Modal.confirm({
                   title: 'แน่ใจที่จะจบแมตช์นี้?',
                   // icon: <ExclamationCircleFilled />,
-                  // content: 'Some descriptions',
+                  content: 'กรุณาตรวจสอบจำนวนลูกที่ใช้ให้ถูกต้องก่อนกดจบแมตช์',
                   onOk: endMatch,
                   onCancel: () => { console.log('Cancel') },
                 })}>จบแมตช์</Button>
