@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { PDFDownloadLink, Page, Text, View, Document, StyleSheet, Font } from '@react-pdf/renderer';
 import moment from 'moment'
+import { ROUND_NAME } from '../../constant';
 
 
 
@@ -70,6 +71,7 @@ const MyDocument = ({ data }) => {
             <Text style={styles.row5}>Match</Text>
             <Text style={styles.row10}>เวลา</Text>
             <Text style={styles.row8}>ประเภท</Text>
+            <Text style={styles.row8}>รอบ</Text>
 
             <Text style={styles.row15}>ผู้แข่งขัน</Text>
             <Text style={styles.row15}>ทีม</Text>
@@ -87,6 +89,7 @@ const MyDocument = ({ data }) => {
                 <Text>{moment(row?.date).format('HH:mm')}</Text>
               </View>
               <Text style={styles.row8}>{row?.eventName}</Text>
+              <Text style={styles.row8}>{row.step === 'group' ? `แบ่งกลุ่ม` : ROUND_NAME[row.round]}</Text>
 
 
               <View style={styles.row15}>
