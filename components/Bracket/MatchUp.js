@@ -4,9 +4,9 @@ import moment from 'moment'
 import { useState } from 'react'
 import { Modal, Form, InputNumber, DatePicker } from 'antd'
 import request from '../../utils/request'
+import PlayerDisplay from '../PlayerDisplay'
 
 const MatchUp = ({ match, isManager }) => {
-  const matchType = (match?.teamA?.team?.players?.length > 1 || match?.teamB?.team?.players?.length > 1) ? MATCH.TYPE.DOUBLE : MATCH.TYPE.SINGLE
   const [modalVisible, setModalVisible] = useState(false)
   const [form] = Form.useForm()
   const onFinish = (values) => {
@@ -38,13 +38,13 @@ const MatchUp = ({ match, isManager }) => {
         <div className='group'>
           <div className={`participant ${match.status === 'finished' ? match.teamA.scoreSet > match.teamB.scoreSet ? 'winner' : 'loser' : null}`}>
             {
-              matchType === MATCH.TYPE.SINGLE
-                ? <span>{match.teamA?.team?.players[0]?.officialName || ((match.matchNumber || match.teamA.scoreSet === 1) ? 'waiting' : 'bye')}</span>
-                // <span>{match.teamA.team.players[0] ? match.teamA.team.players[0]/*.officialName*/ : 'bye'}</span> :
-                : <React.Fragment>
-                  <div>{match.teamA.team?.players[0]?.officialName || ((match.matchNumber || match.teamA.scoreSet === 1) ? 'waiting' : 'bye')}</div>
-                  <div>{match.teamA.team?.players[1]?.officialName || ((match.matchNumber || match.teamA.scoreSet === 1) ? 'waiting' : 'bye')}</div>
-                </React.Fragment>
+              match.teamA.team?.players.map(p =>
+                <PlayerDisplay
+                  key={p._id}
+                  draw
+                  player={p}>
+                  {p.officialName || ((match.matchNumber || match.teamA.scoreSet === 1) ? 'waiting' : 'bye')}
+                </PlayerDisplay>)
             }
           </div>
           {
@@ -58,13 +58,13 @@ const MatchUp = ({ match, isManager }) => {
         <div className='group'>
           <div className={`participant ${match.status === 'finished' ? match.teamB.scoreSet > match.teamA.scoreSet ? 'winner' : 'loser' : null}`}>
             {
-              matchType === MATCH.TYPE.SINGLE
-                // <span>{match.teamB[0] ? match.teamB.team.players[0]/*.officialName*/ : 'bye'}</span> :
-                ? <span>{match.teamB?.team?.players[0]?.officialName || ((match.matchNumber || match.teamB.scoreSet === 1) ? 'waiting' : 'bye')}</span>
-                : <React.Fragment>
-                  <div>{match.teamB?.team?.players[0]?.officialName || ((match.matchNumber || match.teamB.scoreSet === 1) ? 'waiting' : 'bye')} </div>
-                  <div>{match.teamB?.team?.players[1]?.officialName || ((match.matchNumber || match.teamB.scoreSet === 1) ? 'waiting' : 'bye')} </div>
-                </React.Fragment>
+              match.teamB.team?.players.map(p =>
+                <PlayerDisplay
+                  key={p._id}
+                  draw
+                  player={p}>
+                  {p.officialName || ((match.matchNumber || match.teamB.scoreSet === 1) ? 'waiting' : 'bye')}
+                </PlayerDisplay>)
             }
           </div>
           {

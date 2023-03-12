@@ -1,7 +1,7 @@
 import { MATCH } from '../../constant'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { Table, Tag, Modal, Input, Select, Form } from 'antd'
+import { Table, Tag, Modal, Input, Select, Form, InputNumber, Collapse } from 'antd'
 import moment from 'moment'
 import 'moment/locale/th'
 import { useMatches, useTournament, useWindowSize } from '../../utils'
@@ -50,7 +50,8 @@ const Matches = (props) => {
         title: 'Match',
         dataIndex: 'match',
         align: 'center',
-        fixed: 'left'
+        fixed: 'left',
+        width: '4%'
       },
       {
         title: 'สถานะ',
@@ -58,9 +59,10 @@ const Matches = (props) => {
         key: 'status',
         align: 'center',
         fixed: 'left',
-        render: ({ text, court }) => <div>
-          <Tag color={text.COLOR}>{text.LABEL}</Tag>
+        render: ({ text, court, umpire }) => <div>
+          {text.LABEL !== 'playing' && <Tag color={text.COLOR}>{text.LABEL}</Tag>}
           {court ? <Tag color={text.COLOR}>{`คอร์ด ${court}`}</Tag> : null}
+          {umpire ? <Tag color={text.COLOR}>{umpire.officialName}</Tag> : null}
         </div>,
         filters: [
           { text: MATCH.STATUS.waiting.LABEL, value: MATCH.STATUS.waiting.LABEL },
@@ -91,7 +93,7 @@ const Matches = (props) => {
       {
         title: 'คูปอง',
         dataIndex: 'coupon1',
-        width: '4%',
+        width: '5%',
         align: 'center'
       },
       {
@@ -114,7 +116,7 @@ const Matches = (props) => {
       {
         title: 'คูปอง',
         dataIndex: 'coupon2',
-        width: '4%',
+        width: '5%',
         align: 'center'
       },
 
@@ -162,7 +164,8 @@ const Matches = (props) => {
     request.put(`/match/${selectedMatch._id}`, {
       status: 'playing',
       court: values.court,
-      umpire: values.umpire
+      umpire: values.umpire,
+      shuttlecockUsed: values.shuttlecockUsed
     }).then(() => {
       setSelectedCourt()
       setAssignLoading(false)
@@ -181,7 +184,7 @@ const Matches = (props) => {
 
     form.setFieldsValue({
       court: match?.court,
-      umpire: match?.umpire
+      umpire: match?.umpire?._id
     })
 
     getAvailableUmpires(match)
@@ -243,14 +246,14 @@ const Matches = (props) => {
 
   const getAvailableUmpires = (match) => {
     const playingMatches = matches.filter(m => m.status === 'playing' && m._id !== match._id)
-    const occupiedUmpires = playingMatches.map(m => m.umpire)
+    const occupiedUmpires = playingMatches.map(m => m.umpire._id)
     const tempAvailableUmpires = tournament.umpires.filter(u => !occupiedUmpires.includes(u._id))
-    const availableUmpiresWithStatic = tempAvailableUmpires.map(u => {
-      const totalMatchesJudged = matches.filter(m => m.umpire === u._id)
+    const availableUmpiresWithStat = tempAvailableUmpires.map(u => {
+      const totalMatchesJudged = matches.filter(m => m.umpire?._id === u._id)
       u.totalMatchesJudged = totalMatchesJudged.length
       return u
     })
-    setAvailableUmpires(availableUmpiresWithStatic)
+    setAvailableUmpires(availableUmpiresWithStat)
   }
 
   const renderAssignMatchModal = () => {
@@ -294,6 +297,20 @@ const Matches = (props) => {
               </Select.Option>)}
             </Select>
           </Form.Item>
+
+          <Collapse ghost>
+            <Collapse.Panel header="Advance" key="1">
+              <Form.Item
+                label="จำนวนลูกที่ใช้"
+                name="shuttlecockUsed"
+              // rules={[{ required: true, message: 'Please input umpire' }]}
+              >
+                <InputNumber min={0} />
+              </Form.Item>
+            </Collapse.Panel>
+
+          </Collapse>
+
         </Form>
 
       </Modal>
@@ -341,7 +358,11 @@ const Matches = (props) => {
           <div>{moment(match.date).format('l')}</div>
           <div>{moment(match.date).format('LT')}</div>
         </div>,
-        status: { text: MATCH.STATUS[match.status], court: match.status === 'playing' ? match.court : null },
+        status: {
+          text: MATCH.STATUS[match.status],
+          court: match.status !== 'waiting' ? match.court : null,
+          umpire: match.status === 'playing' ? match.umpire : null
+        },
         result: <div>
           {match.scoreLabel.map((set, index) => <div key={`set-${index + 1}`}>{set}</div>)}
           {match.status === 'playing' && <div>{`${match.teamA.score}-${match.teamB.score}`}</div>}

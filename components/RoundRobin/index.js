@@ -3,6 +3,7 @@ import { Table, BackTop } from 'antd'
 import { COLOR, MATCH, GROUP_NAME } from '../../constant'
 import MatchDetail from './matchDetail'
 import { useMatchDraws, useEvent } from '../../utils'
+import PlayerDisplay from '../PlayerDisplay'
 
 const GroupTable = (props) => {
   const [groupMatches, setGroupMatches] = useState([])
@@ -62,7 +63,12 @@ const GroupTable = (props) => {
         const tempMatches = groupMatches.filter(elm => elm.teamA.team._id === team._id || elm.teamB.team._id === team._id)
         const result = {
           key: `${index + 1}`,
-          name: team.players.map(player => <div key={player._id}>{player.officialName}</div>),
+          name: team.players.map(p => <PlayerDisplay
+            key={p._id}
+            draw
+            player={p}>
+            {p.officialName}
+          </PlayerDisplay>),
           diff: 0,
           score: 0,
           [team._id]: 'X'

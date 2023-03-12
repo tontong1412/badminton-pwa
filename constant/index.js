@@ -39,6 +39,10 @@ const EVENT = {
       COLOR: 'red',
       LABEL: 'ไม่ผ่าน'
     },
+    'withdraw': {
+      COLOR: 'purple',
+      LABEL: 'ถอนตัว'
+    }
   }
 }
 

@@ -96,10 +96,10 @@ const SlipModal = ({ event, team = {}, visible, setVisible, mutate, isManager, t
           <div style={{ fontWeight: 'bold', width: '90px' }}>ผู้เล่น 1:</div>
           <div>{team?.team?.players[0]?.officialName}</div>
         </div>
-        <div style={{ display: 'flex', gap: '10px' }}>
+        {event?.type === 'double' && <div style={{ display: 'flex', gap: '10px' }}>
           <div style={{ fontWeight: 'bold', width: '90px' }}>ผู้เล่น 2:</div>
           <div>{team?.team?.players[1]?.officialName}</div>
-        </div>
+        </div>}
         <div style={{ display: 'flex', gap: '10px' }}>
           <div style={{ fontWeight: 'bold', width: '90px' }}>ผู้จัดการทีม:</div>
           <div>{team?.contact?.officialName}</div>

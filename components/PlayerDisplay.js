@@ -4,7 +4,7 @@ import { Popover, Tag } from 'antd'
 import moment from 'moment'
 import Image from 'next/image'
 import { MAP_GENDER } from '../constant'
-const PlayerDisplay = ({ player, showContact }) => {
+const PlayerDisplay = ({ children, player, showContact, draw = false }) => {
   const [activity, setActivity] = useState()
   useEffect(() => {
     const getRecentActivity = async () => {
@@ -85,11 +85,18 @@ const PlayerDisplay = ({ player, showContact }) => {
   )
   return (
     <Popover content={playerDetail} trigger='click'>
-      {player.officialName}
-      <span style={{ marginLeft: '5px' }}>
-        {player.club ? `(${player.club})` : ''}
-      </span>
-    </Popover>
+      {
+        draw ?
+          <div>{children}</div>
+          : <div>
+            {player.officialName}
+            < span style={{ marginLeft: '5px' }}>
+              {player.club ? `(${player.club})` : ''}
+            </span>
+          </div>
+      }
+
+    </Popover >
   )
 }
 export default PlayerDisplay
