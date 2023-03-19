@@ -33,7 +33,12 @@ const GroupTable = (props) => {
 
     group.reduce((result, team, i) => {
       result.push({
-        title: team.players.map((player, j) => <div key={`player-${j + 1}`}>{player.officialName}</div>),
+        title: team.players.map(p => <PlayerDisplay
+          key={p._id}
+          draw
+          player={p}>
+          {p.officialName}
+        </PlayerDisplay>),
         dataIndex: team._id,
         key: `${index + 1}-${i + 1}`,
         align: 'center',
