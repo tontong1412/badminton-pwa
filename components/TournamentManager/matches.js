@@ -60,7 +60,7 @@ const Matches = (props) => {
         align: 'center',
         fixed: 'left',
         render: ({ text, court, umpire }) => <div>
-          {text.LABEL !== 'playing' && <Tag color={text.COLOR}>{text.LABEL}</Tag>}
+          {text.LABEL === 'waiting' && <Tag color={text.COLOR}>{text.LABEL}</Tag>}
           {court ? <Tag color={text.COLOR}>{`คอร์ด ${court}`}</Tag> : null}
           {umpire ? <Tag color={text.COLOR}>{umpire.officialName}</Tag> : null}
         </div>,
@@ -349,8 +349,8 @@ const Matches = (props) => {
         match: match.matchNumber,
         event: <div><div>{match.eventName}</div>{match.step === 'consolation' && <div>สายล่าง</div>}</div>,
         round: match.step === 'group' ? `แบ่งกลุ่ม` : ROUND_NAME[match.round],
-        coupon1: tournament.events.find(e => match.eventID === e._id).teams.find(t => t.team._id === match?.teamA?.team?._id)?.shuttlecockCredit,
-        coupon2: tournament.events.find(e => match.eventID === e._id).teams.find(t => t.team._id === match?.teamB?.team?._id)?.shuttlecockCredit,
+        coupon1: tournament?.events?.find(e => match.eventID === e._id).teams.find(t => t.team._id === match?.teamA?.team?._id)?.shuttlecockCredit,
+        coupon2: tournament?.events?.find(e => match.eventID === e._id).teams.find(t => t.team._id === match?.teamB?.team?._id)?.shuttlecockCredit,
         competitor1: match.teamA?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
         competitor2: match.teamB?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
         date: moment(match.date).format('ll'),
@@ -361,7 +361,7 @@ const Matches = (props) => {
         status: {
           text: MATCH.STATUS[match.status],
           court: match.status !== 'waiting' ? match.court : null,
-          umpire: match.status === 'playing' ? match.umpire : null
+          umpire: match.status !== 'waiting' ? match.umpire : null
         },
         result: <div>
           {match.scoreLabel.map((set, index) => <div key={`set-${index + 1}`}>{set}</div>)}
