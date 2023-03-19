@@ -11,6 +11,7 @@ import ServiceErrorModal from '../ServiceErrorModal'
 import { useSocket } from '../../utils'
 import { useRouter } from 'next/router'
 import { ROUND_NAME } from '../../constant'
+import DownloadDoc from './matchPDF'
 const Matches = (props) => {
   const router = useRouter()
   const [form] = Form.useForm()
@@ -388,6 +389,7 @@ const Matches = (props) => {
   if (isLoading) return <Loading />
   return (
     <div>
+      <DownloadDoc data={matches} />
       <Table
         columns={columns()}
         dataSource={formattedData}
