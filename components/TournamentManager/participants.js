@@ -125,12 +125,8 @@ const Participants = (props) => {
           || team?.team?.players[0]?.club?.toLowerCase().includes(searchTextLower)
           || team?.team?.players[1]?.club?.toLowerCase().includes(searchTextLower)) {
 
-          const shuttlecockUsed = matches?.reduce((prev, curr) => {
-            if (curr.teamA.team?._id === team.team?._id || curr.teamB.team?._id === team.team?._id) {
-              return prev += curr.shuttlecockUsed
-            }
-            return prev
-          }, 0) || 0
+          const shuttlecockUsed = matches?.filter(m => m.teamA.team?._id === team.team?._id || m.teamB.team?._id === team.team?._id)
+            .reduce((prev, curr) => prev += curr.shuttlecockUsed, 0) || 0
 
           prev.push({
             key: team._id,

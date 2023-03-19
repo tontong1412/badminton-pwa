@@ -36,11 +36,10 @@ const Matches = (props) => {
   useEffect(() => {
     const handleEvent = (payload) => {
       mutate()
-      mutateTournament()
     }
     if (socket) {
       socket.on('update-score', handleEvent)
-      socket.on('update-match', handleEvent)
+      if (!props.isManager) socket.on('update-match', handleEvent) // for real-time score
     }
   }, [socket])
 
@@ -149,7 +148,6 @@ const Matches = (props) => {
         setSetScoreLoading(false)
         setSetScoreModal(false)
         setScore([])
-        mutate()
       }).catch(() => {
         Modal.error({ title: 'ผิดพลาด', content: 'กรุณากรอกรูปแบบคะแนนให้ถูกต้อง' })
         setSetScoreLoading(false)
@@ -349,8 +347,16 @@ const Matches = (props) => {
         match: match.matchNumber,
         event: <div><div>{match.eventName}</div>{match.step === 'consolation' && <div>สายล่าง</div>}</div>,
         round: match.step === 'group' ? `แบ่งกลุ่ม` : ROUND_NAME[match.round],
-        coupon1: tournament?.events?.find(e => match.eventID === e._id).teams.find(t => t.team._id === match?.teamA?.team?._id)?.shuttlecockCredit,
-        coupon2: tournament?.events?.find(e => match.eventID === e._id).teams.find(t => t.team._id === match?.teamB?.team?._id)?.shuttlecockCredit,
+        coupon1: tournament?.events?.find(e => match.eventID === e._id).teams
+          .find(t => t.team._id === match?.teamA?.team?._id)?.shuttlecockCredit
+          -
+          matches?.filter(m => m.teamA?.team?._id === match.teamA?.team?._id || m.teamB?.team?._id === match.teamA?.team?._id)
+            .reduce((prev, curr) => prev += curr.shuttlecockUsed, 0) || 0,
+        coupon2: tournament?.events?.find(e => match.eventID === e._id).teams
+          .find(t => t.team._id === match?.teamB?.team?._id)?.shuttlecockCredit
+          -
+          matches?.filter(m => m.teamA?.team?._id === match.teamB?.team?._id || m.teamB?.team?._id === match.teamB?.team?._id)
+            .reduce((prev, curr) => prev += curr.shuttlecockUsed, 0) || 0,
         competitor1: match.teamA?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
         competitor2: match.teamB?.team?.players.map(player => <div key={player._id}>{player.officialName}<span>{`(${player.club})`}</span></div>),
         date: moment(match.date).format('ll'),

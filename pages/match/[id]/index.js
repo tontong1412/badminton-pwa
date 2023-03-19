@@ -74,23 +74,7 @@ const Match = () => {
       matchID: id,
       action,
     }).then(() => mutate())
-      .catch(() => { })
-
-
-    if (match.eventID) { // only tournament realted match has to do this
-      request.post('/event/shuttlecock-credit', {
-        eventID: match.eventID,
-        teamID: match.teamA.team._id,
-        action: action === 'increment' ? 'decrement' : 'increment',
-        amount: 1
-      })
-      request.post('/event/shuttlecock-credit', {
-        eventID: match.eventID,
-        teamID: match.teamB.team._id,
-        action: action === 'increment' ? 'decrement' : 'increment',
-        amount: 1
-      })
-    }
+      .catch(() => Modal.error({ title: 'ผิดพลาด' }))
   }
 
 
