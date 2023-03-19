@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { COLOR, EVENT, TAB_OPTIONS, TRANSACTION } from '../../constant'
 import { useEffect, useState } from 'react'
-import { useTournament, useWindowSize } from '../../utils'
+import { useTournament, useWindowSize, useMatches } from '../../utils'
 import { Table, Button, Tag, Menu, Dropdown, Input, Modal, Form } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import request from '../../utils/request'
@@ -37,6 +37,7 @@ const Participants = (props) => {
   const [form] = Form.useForm()
   const [isManagerSlip, setIsManagerSlip] = useState(false)
   const [event, setEvent] = useState({})
+  const { matches } = useMatches(props.tournamentID)
   // const [instance, updateInstance] = usePDF({ document: <MyDocument data={event} /> })
 
   // useEffect(updateInstance, [event])
@@ -123,6 +124,14 @@ const Participants = (props) => {
           || team?.team?.players[1]?.officialName?.toLowerCase().includes(searchTextLower)
           || team?.team?.players[0]?.club?.toLowerCase().includes(searchTextLower)
           || team?.team?.players[1]?.club?.toLowerCase().includes(searchTextLower)) {
+
+          const shuttlecockUsed = matches?.reduce((prev, curr) => {
+            if (curr.teamA.team?._id === team.team?._id || curr.teamB.team?._id === team.team?._id) {
+              return prev += curr.shuttlecockUsed
+            }
+            return prev
+          }, 0) || 0
+
           prev.push({
             key: team._id,
             date: team.createdAt,
@@ -132,6 +141,8 @@ const Participants = (props) => {
             payment: { text: team.paymentStatus, event, team },
             note: { note: team.note, isInQueue: team.isInQueue },
             shuttlecockCredit: team.shuttlecockCredit,
+            shuttlecockUsed: shuttlecockUsed,
+            shuttlecockRemain: team.shuttlecockCredit - shuttlecockUsed,
             action: <Dropdown overlay={menu(event, team)} trigger={['click']} placement="bottomRight">
               <div>เพิ่มเติม</div>
             </Dropdown>
@@ -281,15 +292,31 @@ const Participants = (props) => {
         ],
       },
       {
-        title: 'คูปองลูก',
+        title: 'คูปองที่ซื้อ',
         dataIndex: 'shuttlecockCredit',
         key: 'shuttlecockCredit',
         align: 'center',
-        width: '10%',
-        defaultSortOrder: 'descend',
-        sortDirections: ['descend', 'ascend', 'descend'],
-        sorter: (a, b) => a.shuttlecockCredit > b.shuttlecockCredit,
+        width: '8%',
       },
+      {
+        title: 'คูปองที่ใช้',
+        dataIndex: 'shuttlecockUsed',
+        key: 'shuttlecockUsed',
+        align: 'center',
+        width: '8%',
+        defaultSortOrder: 'descend',
+        sorter: (a, b) => a.shuttlecockUsed - b.shuttlecockUsed,
+      },
+      {
+        title: 'คูปองคงเหลือ',
+        dataIndex: 'shuttlecockRemain',
+        key: 'shuttlecockRemain',
+        align: 'center',
+        width: '8%',
+        defaultSortOrder: 'descend',
+        sorter: (a, b) => a.shuttlecockRemain - b.shuttlecockRemain
+      },
+
       {
         title: 'หมายเหตุ',
         dataIndex: 'note',
