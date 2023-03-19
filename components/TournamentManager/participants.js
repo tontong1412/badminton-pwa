@@ -337,7 +337,7 @@ const Participants = (props) => {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <DownloadPDF event={event} />
+        {props.isManager ? <div /> : <DownloadPDF event={event} />}
         <div style={{ margin: '0 10px' }}>{`ทั้งหมด ${totalTeam} คู่`}</div>
       </div>
 
