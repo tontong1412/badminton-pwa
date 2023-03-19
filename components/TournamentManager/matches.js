@@ -182,7 +182,8 @@ const Matches = (props) => {
 
     form.setFieldsValue({
       court: match?.court,
-      umpire: match?.umpire?._id
+      umpire: match?.umpire?._id,
+      shuttlecockUsed: match?.shuttlecockUsed
     })
 
     getAvailableUmpires(match)

@@ -356,6 +356,7 @@ const Match = () => {
         </div>
 
         <div>
+          <div style={{ textAlign: 'center', fontSize: '20px' }}>แมตช์ที่: {match.matchNumber}</div>
           {(match.gangID || match.umpire) && <div style={{ textAlign: 'center', fontSize: '20px' }}>จำนวนลูก: {match.shuttlecockUsed} ลูก</div>}
           {match.umpire && <div style={{ textAlign: 'center', fontSize: '20px' }}>ผู้ตัดสิน: {match.umpire?.officialName}</div>}
         </div>
