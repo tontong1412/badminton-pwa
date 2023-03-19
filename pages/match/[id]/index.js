@@ -272,7 +272,7 @@ const Match = () => {
         }}>
 
           <div style={{ width: '35%' }}>
-            {match?.teamA.team.players.map((player, index) => {
+            {match?.teamA?.team?.players.map((player, index) => {
               return (
                 <div
                   key={`teamA-${player._id}`}
@@ -330,7 +330,7 @@ const Match = () => {
 
 
           <div style={{ width: '35%' }}>
-            {match?.teamB.team.players.map((player, index) => {
+            {match?.teamB?.team?.players.map((player, index) => {
               return (
                 <div
                   key={`teamB-${player._id}`}
@@ -449,7 +449,7 @@ const Match = () => {
               >
                 {player.officialName || player.displayName}
               </Select.Option>)}
-              {match.teamB.team.players.map((player, index) => <Select.Option
+              {match?.teamB?.team?.players.map((player, index) => <Select.Option
                 key={`B-${index}`}
                 value={`B-${index}`}
               >
@@ -463,13 +463,13 @@ const Match = () => {
             rules={[{ required: true }]}
           >
             <Select style={{ width: '200px' }}>
-              {match.teamA.team.players.map((player, index) => <Select.Option
+              {match?.teamA?.team?.players.map((player, index) => <Select.Option
                 key={`A-${index}`}
                 value={`A-${index}`}
               >
                 {player.officialName || player.displayName}
               </Select.Option>)}
-              {match.teamB.team.players.map((player, index) => <Select.Option
+              {match?.teamB?.team?.players.map((player, index) => <Select.Option
                 key={`B-${index}`}
                 value={`B-${index}`}>
                 {player.officialName || player.displayName}
