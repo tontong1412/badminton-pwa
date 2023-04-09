@@ -13,11 +13,15 @@ const FIREBASE = {
 const NOTI = {
   VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
 }
+const FACEBOOK = {
+  APP_ID: process.env.NEXT_PUBLIC_FB_APP_ID
+}
 
 export {
   API_ENDPOINT,
   WEB_URL,
   MEDIA_URL,
   FIREBASE,
-  NOTI
+  NOTI,
+  FACEBOOK
 }
