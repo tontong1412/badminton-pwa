@@ -18,13 +18,7 @@ const NextMatch = ({ event, tournamentID }) => {
     const shuttlecockUsed = allMatches?.filter(m => m.teamA.team?._id === team?.team._id || m.teamB.team?._id === team?.team._id)
       .reduce((prev, curr) => prev += curr.shuttlecockUsed, 0) || 0
 
-    const shuttlecockRemain = team?.shuttlecockCredit || 0 - shuttlecockUsed
-    return (
-      <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-        <Image alt='icon' src='/icon/shuttlecock.png' width={20} height={20} />
-        <div>{shuttlecockRemain}</div>
-      </div>
-    )
+    return team?.shuttlecockCredit || 0 - shuttlecockUsed
   }
 
   if (isLoading) return <Loading />
@@ -50,7 +44,10 @@ const NextMatch = ({ event, tournamentID }) => {
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>{moment(matches?.nextMatch[0].date).format('lll')}</div>
-            {remainShuttlecock()}
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <Image alt='icon' src='/icon/shuttlecock.png' width={20} height={20} />
+              <div>{remainShuttlecock()}</div>
+            </div>
           </div>
 
 
@@ -98,6 +95,8 @@ const NextMatch = ({ event, tournamentID }) => {
         <Divider>{event.name}</Divider>
         <div style={{ padding: '0 20px 10px 20px' }}>
           <div style={{ fontSize: '20px', color: COLOR.MINOR_THEME }}>คุณไม่มีแมตช์แข่งแล้ว</div>
+          <div>คูปองคงเหลือ: {remainShuttlecock()}</div>
+          <div>กรุณาเคลียร์คูปองที่โต๊ะกรรมการ</div>
         </div >
       </div>
     )
