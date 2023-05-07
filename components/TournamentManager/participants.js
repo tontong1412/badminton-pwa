@@ -14,6 +14,8 @@ import { useSelector } from 'react-redux'
 import ShuttlecockModal from '../Tournament/ShuttlecockModal'
 import { useRouter } from "next/router"
 import dynamic from 'next/dynamic'
+import { isMobileOnly } from 'react-device-detect'
+import ParticipantMobile from '../Tournament/ParticipantMobile'
 const DownloadPDF = dynamic(() => import('../../components/TournamentManager/participantsPDF'), {
   ssr: false
 });
@@ -336,19 +338,29 @@ const Participants = (props) => {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        {props.isManager ? <div /> : <DownloadPDF event={event} />}
-        <div style={{ margin: '0 10px' }}>{`ทั้งหมด ${totalTeam} คู่`}</div>
-      </div>
 
-      <Table
-        dataSource={formatParticipantTable}
-        columns={columns()}
-        sticky
-        size='small'
-        scroll={{ y: height - 350, x: 1000 }}
-        pagination={false}
-        onChange={(pagination, filters, sorter, extra) => setTotalTeam(extra.currentDataSource.length)} />
+
+
+      {isMobileOnly ?
+        <ParticipantMobile dataSource={formatParticipantTable} isManager={props.isManager} onUpdateTeam={onUpdateTeam} />
+        :
+        <>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            {props.isManager ? <div /> : <DownloadPDF event={event} />}
+            <div style={{ margin: '0 10px' }}>{`ทั้งหมด ${totalTeam} คู่`}</div>
+          </div>
+          <Table
+            dataSource={formatParticipantTable}
+            columns={columns()}
+            sticky
+            size='small'
+            scroll={{ y: height - 350, x: 1000 }}
+            pagination={false}
+            onChange={(pagination, filters, sorter, extra) => setTotalTeam(extra.currentDataSource.length)} />
+        </>
+      }
+
+
 
       {(tournament?.registerOpen || props.isManager) && <AddButton onClick={() => {
         if (user.id) setRegisterModalVisible(true)
