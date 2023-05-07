@@ -270,18 +270,33 @@ const Matches = (props) => {
         destroyOnClose
       >
         <Form
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
           onFinish={onAssignMatch}
           form={form}
         >
           <Form.Item
-            label="คอร์ด"
+            label="สนามที่"
             name="court"
             rules={[{ required: true, message: 'Please input court number' }]}
           >
             <Input placeholder="เลือกคอร์ด" style={{ width: 120 }} onChange={e => setSelectedCourt(e.target.value)} />
           </Form.Item>
+
+
+          <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: '15px' }}>
+            <div style={{ fontWeight: 'bold', paddingBottom: '15px' }}>ประเภท {selectedMatch?.eventName}</div>
+            <div style={{ fontWeight: 'bold', paddingBottom: '15px' }}>รอบ {selectedMatch?.step === 'group' ? `แบ่งกลุ่ม` : ROUND_NAME[selectedMatch?.round]}</div>
+            {selectedMatch?.teamA?.team?.players?.map(p => <div key={p._id} style={{ display: 'flex', width: '350px' }}>
+              <div style={{ width: '200px' }}>{`${p.officialName}`}</div>
+              <div>{`(${p.club || '-'})`}</div>
+            </div>)}
+            <div style={{ fontWeight: 'bold', padding: '15px 0' }}>พบกับ</div>
+            {selectedMatch?.teamB?.team?.players?.map(p => <div key={p._id} style={{ display: 'flex', width: '350px' }}>
+              <div style={{ width: '200px' }}>{`${p.officialName}`}</div>
+              <div>{`(${p.club || '-'})`}</div>
+            </div>)}
+          </div>
+
+
           <Form.Item
             label="กรรมการ"
             name="umpire"
