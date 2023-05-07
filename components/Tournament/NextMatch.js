@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux"
 import { COLOR } from "../../constant"
-import { useNextMatch, useTournament } from "../../utils"
+import { useMatches, useNextMatch, useTournament } from "../../utils"
 import Loading from '../../components/loading'
 import { Divider } from "antd"
 import moment from 'moment'
@@ -8,10 +8,30 @@ import Image from "next/image"
 const NextMatch = ({ event, tournamentID }) => {
   const { user } = useSelector(state => state)
   const { matches, isLoading } = useNextMatch(user.token, event._id, tournamentID)
+  const { matches: allMatches } = useMatches(tournamentID)
   const { tournament } = useTournament(tournamentID)
+
+  const remainShuttlecock = () => {
+
+    const team = event?.teams?.find(elm => elm?.team?.players?.some(e => e?._id === user?.playerID))
+    console.log(team)
+
+    const shuttlecockUsed = allMatches?.filter(m => m.teamA.team?._id === team?.team._id || m.teamB.team?._id === team?.team._id)
+      .reduce((prev, curr) => prev += curr.shuttlecockUsed, 0) || 0
+
+    const shuttlecockRemain = team?.shuttlecockCredit || 0 - shuttlecockUsed
+    return (
+      <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+        <Image alt='icon' src='/icon/shuttlecock.png' width={20} height={20} />
+        <div>{shuttlecockRemain}</div>
+      </div>
+    )
+  }
+
   if (isLoading) return <Loading />
 
   if (matches?.nextMatch.length > 0) {
+
     return (
       <div>
         <Divider>{event.name}</Divider>
@@ -28,12 +48,10 @@ const NextMatch = ({ event, tournamentID }) => {
               : null
             }
           </div>
+
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>{moment(matches?.nextMatch[0].date).format('lll')}</div>
-            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-              <Image alt='icon' src='/icon/shuttlecock.png' width={20} height={20} />
-              <div>{event?.teams?.find(elm => elm?.team?.players?.some(e => e?._id === user?.playerID))?.shuttlecockCredit}</div>
-            </div>
+            {remainShuttlecock()}
           </div>
 
 
