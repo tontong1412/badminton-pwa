@@ -4,8 +4,11 @@ import { Popover, Tag } from 'antd'
 import moment from 'moment'
 import Image from 'next/image'
 import { MAP_GENDER, PLAYER } from '../constant'
+import { useDispatch, useSelector } from 'react-redux'
 const PlayerDisplay = ({ children, player, showContact, draw = false }) => {
   const [activity, setActivity] = useState()
+  const { user } = useSelector(state => state)
+  const [isAdmin, setIsAdmin] = useState(false)
   useEffect(() => {
     const getRecentActivity = async () => {
       const recentActivity = await request.get(`/player/${player._id}/recent-activity`)
@@ -17,6 +20,14 @@ const PlayerDisplay = ({ children, player, showContact, draw = false }) => {
       setActivity({}); //unmount
     };
   }, [])
+
+  useEffect(() => {
+    if (user && user.admin) {
+      setIsAdmin(true)
+    } else {
+      setIsAdmin(false)
+    }
+  }, [user])
 
 
 
@@ -83,6 +94,10 @@ const PlayerDisplay = ({ children, player, showContact, draw = false }) => {
             <div>{player.lineID}</div>
           </div>
         </>
+      }
+      {
+        isAdmin &&
+        <div style={{ marginTop: '20px' }}><a href={`/player/${player?._id}`}>เพิ่มเติม</a></div>
       }
     </div >
   )

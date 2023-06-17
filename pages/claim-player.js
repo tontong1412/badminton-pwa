@@ -56,7 +56,8 @@ const ClaimPlayer = () => {
           displayName: player.displayName,
           club: player.club,
           tel: player?.tel,
-          lineID: player?.lineID
+          lineID: player?.lineID,
+          admin: player?.admin
         }
       })
       setLoading(false)

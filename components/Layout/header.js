@@ -41,7 +41,8 @@ const Header = (props) => {
             club: player?.club,
             photo: player?.photo,
             tel: player?.tel,
-            lineID: player?.lineID
+            lineID: player?.lineID,
+            admin: player?.admin
           }
           localStorage.setItem('rememberMe', true);
           localStorage.setItem('token', login.user.token);

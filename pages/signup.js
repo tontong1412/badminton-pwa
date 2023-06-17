@@ -44,7 +44,7 @@ const Signup = () => {
             tel: player?.tel,
             lineID: player?.lineID,
             birthDate: player?.birthDate,
-            gender: player?.gender
+            gender: player?.gender,
           }
           localStorage.setItem('rememberMe', true);
           localStorage.setItem('token', res.data.user.token);

@@ -48,7 +48,8 @@ const Login = () => {
         tel: player?.tel,
         lineID: player?.lineID,
         birthDate: player?.birthDate,
-        gender: player?.gender
+        gender: player?.gender,
+        admin: player?.admin
       }
       localStorage.setItem('rememberMe', true);
       localStorage.setItem('token', login.user.token);
@@ -98,7 +99,8 @@ const Login = () => {
         tel: player?.tel,
         lineID: player?.lineID,
         birthDate: player?.birthDate,
-        gender: player?.gender
+        gender: player?.gender,
+        admin: player?.admin
       }
       localStorage.setItem('rememberMe', values.remember);
       localStorage.setItem('token', values.remember ? login.user.token : '');
