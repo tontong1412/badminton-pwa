@@ -21,8 +21,8 @@ const NextMatch = ({ event, tournamentID }) => {
   }
 
   const getRemainQueue = (matchNumber) => {
-    const waitingList = allMatches.filter(m => m.status === 'waiting').sort((a, b) => a.matchNumber - b.matchNumber)
-    const matchIndex = waitingList.findIndex(m => m.matchNumber === matchNumber)
+    const waitingList = allMatches?.filter(m => m.status === 'waiting').sort((a, b) => a.matchNumber - b.matchNumber)
+    const matchIndex = waitingList?.findIndex(m => m.matchNumber === matchNumber)
     return matchIndex
   }
 

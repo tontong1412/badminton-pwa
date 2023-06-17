@@ -105,7 +105,7 @@ const Participants = (props) => {
               {team.team?.players?.map(p => <div key={p._id}>{p.officialName}</div>)}
             </>
           ),
-          onOk: () => onLeaveEvent(event._id, team._id)
+          onOk: () => onUpdateTeam(event._id, team._id, 'status', 'withdraw')
         })}>
           ถอนตัว
         </div>

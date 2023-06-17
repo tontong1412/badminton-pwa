@@ -3,7 +3,7 @@ import request from '../utils/request'
 import { Popover, Tag } from 'antd'
 import moment from 'moment'
 import Image from 'next/image'
-import { MAP_GENDER } from '../constant'
+import { MAP_GENDER, PLAYER } from '../constant'
 const PlayerDisplay = ({ children, player, showContact, draw = false }) => {
   const [activity, setActivity] = useState()
   useEffect(() => {
@@ -23,7 +23,7 @@ const PlayerDisplay = ({ children, player, showContact, draw = false }) => {
   const playerDetail = (
     <div style={{
       width: '250px',
-      height: '350px',
+      // height: '350px',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -36,12 +36,15 @@ const PlayerDisplay = ({ children, player, showContact, draw = false }) => {
         objectFit: 'contain',
         marginTop: '10px'
       }}>
-        <Image objectFit='cover' src={player.photo || `/avatar.png`} alt='' width={50} height={50} layout='responsive' />
+        <a href={player?.photo}>
+          <Image objectFit='cover' src={player.photo || `/avatar.png`} alt='' width={50} height={50} layout='responsive' />
+        </a>
       </div>
       <div style={{ display: 'flex', marginTop: '20px', gap: '5px' }}>
         <div >{player.officialName}</div>
-        {player.displayName && <div>{`(${player.displayName})`}</div>}
+        {player.level && <Tag>{PLAYER.LEVEL[player.level]}</Tag>}
       </div>
+      <div>{player.displayName && <div>{`(${player.displayName})`}</div>}</div>
       <div>{`${player.club}`}</div>
 
       {moment().diff(player.birthDate, 'year') ?
@@ -92,6 +95,9 @@ const PlayerDisplay = ({ children, player, showContact, draw = false }) => {
             {player.officialName}
             < span style={{ marginLeft: '5px' }}>
               {player.club ? `(${player.club})` : ''}
+            </span>
+            <span style={{ marginLeft: '5px' }}>
+              {player.level && <Tag>{PLAYER.LEVEL[player.level]}</Tag>}
             </span>
           </div>
       }

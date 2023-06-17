@@ -1,5 +1,6 @@
 import GANG from './gang'
 import COLOR from './color'
+import PLAYER from './player'
 
 const TRANSACTION = {
   paid: {
@@ -223,6 +224,7 @@ const MAP_TOURNAMENT_STATUS_TO_DRAW_TAB = {
 }
 export {
   GANG,
+  PLAYER,
   TAB_OPTIONS,
   COLOR,
   TRANSACTION,
