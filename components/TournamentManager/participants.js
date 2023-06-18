@@ -328,7 +328,7 @@ const Participants = (props) => {
         render: ({ note, isInQueue }) => <div>{`${isInQueue ? 'สำรอง' : ''}${isInQueue && note ? ',' : ''}${note || ''}`}</div>
       }
     ]
-    if (tournament.useHandicap) {
+    if (tournament?.useHandicap) {
       base.push({
         title: 'Handicap',
         dataIndex: 'handicap',
@@ -353,7 +353,7 @@ const Participants = (props) => {
   return (
     <div>
       {isMobileOnly ?
-        <ParticipantMobile dataSource={formatParticipantTable} isManager={props.isManager} onUpdateTeam={onUpdateTeam} handicap={tournament.useHandicap} />
+        <ParticipantMobile dataSource={formatParticipantTable} isManager={props.isManager} onUpdateTeam={onUpdateTeam} handicap={tournament?.useHandicap} />
         :
         <>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
