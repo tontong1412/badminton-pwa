@@ -2,6 +2,7 @@ import { Tag, Input, Checkbox, Collapse } from "antd"
 import { TRANSACTION, EVENT } from "../../constant"
 import Image from "next/image"
 import { useState, useEffect } from "react"
+import moment from 'moment'
 
 const statusOptions = [
   {
@@ -34,8 +35,9 @@ const paymentStatusOption = [
 
 const ParticipantMobile = ({ dataSource, isManager, onUpdateTeam }) => {
   const [displayParticipants, setDisplayParticipants] = useState(dataSource)
+
   useEffect(() => {
-    setDisplayParticipants(dataSource)
+    setDisplayParticipants(dataSource.sort((a, b) => moment(b.date).diff(moment(a.date))))
   }, [dataSource])
 
   const onSearch = (value) => {
@@ -43,21 +45,21 @@ const ParticipantMobile = ({ dataSource, isManager, onUpdateTeam }) => {
     const searchParticipant = dataSource.filter(t => t.allow.team.team.players.some(p =>
       p.officialName?.toLowerCase().includes(searchTextLower) ||
       p.club?.toLowerCase().includes(searchTextLower)
-    ))
+    )).sort((a, b) => moment(b.date).diff(moment(a.date)))
     setDisplayParticipants(searchParticipant)
   }
 
   const onFilterStatus = (checkedValues) => {
     const filterParticipant = [...dataSource].filter(t =>
       checkedValues.includes(t.payment.team.status)
-    )
+    ).sort((a, b) => moment(b.date).diff(moment(a.date)))
     setDisplayParticipants(filterParticipant)
   }
 
   const onFilterPaymentStatus = (checkedValues) => {
     const filterParticipant = [...dataSource].filter(t =>
       checkedValues.includes(t.payment.team.paymentStatus)
-    )
+    ).sort((a, b) => moment(b.date).diff(moment(a.date)))
     setDisplayParticipants(filterParticipant)
   }
   return (
