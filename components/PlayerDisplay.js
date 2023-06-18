@@ -5,7 +5,7 @@ import moment from 'moment'
 import Image from 'next/image'
 import { MAP_GENDER, PLAYER } from '../constant'
 import { useDispatch, useSelector } from 'react-redux'
-const PlayerDisplay = ({ children, player, showContact, draw = false }) => {
+const PlayerDisplay = ({ children, player, showContact, draw = false, handicap }) => {
   const [activity, setActivity] = useState()
   const { user } = useSelector(state => state)
   const [isAdmin, setIsAdmin] = useState(false)
@@ -112,7 +112,7 @@ const PlayerDisplay = ({ children, player, showContact, draw = false }) => {
               {player.club ? `(${player.club})` : ''}
             </span>
             <span style={{ marginLeft: '5px' }}>
-              {player.level && <Tag>{PLAYER.LEVEL[player.level]}</Tag>}
+              {handicap && player.level && <Tag>{PLAYER.LEVEL[player.level]}</Tag>}
             </span>
           </div>
       }

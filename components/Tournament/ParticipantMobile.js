@@ -33,7 +33,7 @@ const paymentStatusOption = [
   }
 ]
 
-const ParticipantMobile = ({ dataSource, isManager, onUpdateTeam }) => {
+const ParticipantMobile = ({ dataSource, isManager, onUpdateTeam, handicap }) => {
   const [displayParticipants, setDisplayParticipants] = useState(dataSource)
 
   useEffect(() => {
@@ -99,7 +99,7 @@ const ParticipantMobile = ({ dataSource, isManager, onUpdateTeam }) => {
             <div>รายการ {p.event}</div>
             <div style={{ display: 'flex' }}>
               {/* หยวนๆได้ +1 */}
-              {p.handicap && <Tag color={p.handicap > 0 ? 'orange' : 'green'}>{p.handicap > 1 && '+'}{p.handicap}</Tag>}
+              {(handicap && (p.handicap || p.handicap === 0)) && <Tag color={p.handicap > 0 ? 'orange' : 'green'}>{`${p.handicap > 0 ? '+' : ''}${p.handicap}`}</Tag>}
 
               <Tag color={EVENT.TEAM_STATUS[p.payment.team.status].COLOR}>{EVENT.TEAM_STATUS[p.payment.team.status].LABEL}</Tag>
               <Tag color={TRANSACTION[p.payment.text].COLOR}> {TRANSACTION[p.payment.text].LABEL}</Tag>

@@ -136,7 +136,7 @@ const Participants = (props) => {
           prev.push({
             key: team._id,
             date: team.createdAt,
-            player: team?.team.players.map(player => <div key={player._id} ><PlayerDisplay player={player} /></div>),
+            player: team?.team.players.map(player => <div key={player._id} ><PlayerDisplay player={player} handicap={tournament.useHandicap} /></div>),
             event: event.name,
             allow: { event, team },
             payment: { text: team.paymentStatus, event, team },
@@ -294,14 +294,6 @@ const Participants = (props) => {
         ],
       },
       {
-        title: 'Handicap',
-        dataIndex: 'handicap',
-        key: 'handicap',
-        align: 'center',
-        sorter: (a, b) => a.handicap - b.handicap,
-        width: '8%',
-      },
-      {
         title: 'คูปองที่ซื้อ',
         dataIndex: 'shuttlecockCredit',
         key: 'shuttlecockCredit',
@@ -336,6 +328,16 @@ const Participants = (props) => {
         render: ({ note, isInQueue }) => <div>{`${isInQueue ? 'สำรอง' : ''}${isInQueue && note ? ',' : ''}${note || ''}`}</div>
       }
     ]
+    if (tournament.useHandicap) {
+      base.push({
+        title: 'Handicap',
+        dataIndex: 'handicap',
+        key: 'handicap',
+        align: 'center',
+        sorter: (a, b) => a.handicap - b.handicap,
+        width: '8%',
+      })
+    }
     if (props.isManager) {
       base.push({
         title: '',
@@ -351,7 +353,7 @@ const Participants = (props) => {
   return (
     <div>
       {isMobileOnly ?
-        <ParticipantMobile dataSource={formatParticipantTable} isManager={props.isManager} onUpdateTeam={onUpdateTeam} />
+        <ParticipantMobile dataSource={formatParticipantTable} isManager={props.isManager} onUpdateTeam={onUpdateTeam} handicap={tournament.useHandicap} />
         :
         <>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
