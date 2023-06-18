@@ -1,5 +1,5 @@
 import { Tag, Input, Checkbox, Collapse } from "antd"
-import { TRANSACTION, EVENT } from "../../constant"
+import { TRANSACTION, EVENT, COLOR } from "../../constant"
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import moment from 'moment'
@@ -97,7 +97,8 @@ const ParticipantMobile = ({ dataSource, isManager, onUpdateTeam }) => {
           }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '15px', borderBottom: '1px solid #eee' }}>
             <div>รายการ {p.event}</div>
-            <div>
+            <div style={{ display: 'flex' }}>
+              {p.handicap && <Tag color={p.handicap > 0 ? 'orange' : 'green'}>{p.handicap > 0 && '+'}{p.handicap}</Tag>}
               <Tag color={EVENT.TEAM_STATUS[p.payment.team.status].COLOR}>{EVENT.TEAM_STATUS[p.payment.team.status].LABEL}</Tag>
               <Tag color={TRANSACTION[p.payment.text].COLOR}> {TRANSACTION[p.payment.text].LABEL}</Tag>
             </div>

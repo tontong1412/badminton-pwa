@@ -130,6 +130,9 @@ const Participants = (props) => {
           const shuttlecockUsed = matches?.filter(m => m.teamA.team?._id === team.team?._id || m.teamB.team?._id === team.team?._id)
             .reduce((prev, curr) => prev += curr.shuttlecockUsed, 0) || 0
 
+          const handicapTeam = team?.team.players.reduce((prev, curr) => curr.level ? prev + curr.level : -100, 0)
+          const handicapDiff = event.handicap && handicapTeam >= 0 && handicapTeam - event.handicap
+
           prev.push({
             key: team._id,
             date: team.createdAt,
@@ -137,6 +140,7 @@ const Participants = (props) => {
             event: event.name,
             allow: { event, team },
             payment: { text: team.paymentStatus, event, team },
+            handicap: handicapDiff,
             note: { note: team.note, isInQueue: team.isInQueue },
             shuttlecockCredit: team.shuttlecockCredit,
             shuttlecockUsed: shuttlecockUsed,
@@ -179,7 +183,7 @@ const Participants = (props) => {
         dataIndex: 'event',
         key: 'event',
         align: 'center',
-        width: '10%',
+        width: '8%',
         fixed: 'left',
         onFilter: (value, record) => record.event === value,
         filters: tournament?.events.map(event => ({
@@ -199,7 +203,7 @@ const Participants = (props) => {
         defaultSortOrder: 'descend',
         sortDirections: ['descend', 'ascend', 'descend'],
         sorter: (a, b) => a.date > b.date,
-        render: text => moment(text).format('DD MMM yyyy')
+        render: text => moment(text).format('DD/MM/yy')
       },
       {
         title: 'ผู้สมัคร',
@@ -290,6 +294,14 @@ const Participants = (props) => {
         ],
       },
       {
+        title: 'Handicap',
+        dataIndex: 'handicap',
+        key: 'handicap',
+        align: 'center',
+        sorter: (a, b) => a.handicap - b.handicap,
+        width: '8%',
+      },
+      {
         title: 'คูปองที่ซื้อ',
         dataIndex: 'shuttlecockCredit',
         key: 'shuttlecockCredit',
@@ -338,9 +350,6 @@ const Participants = (props) => {
 
   return (
     <div>
-
-
-
       {isMobileOnly ?
         <ParticipantMobile dataSource={formatParticipantTable} isManager={props.isManager} onUpdateTeam={onUpdateTeam} />
         :
