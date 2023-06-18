@@ -97,7 +97,7 @@ const Participants = (props) => {
           เพิ่มหมายเหตุ
         </div>
       </Menu.Item>
-      <Menu.Item key='leave-event'>
+      <Menu.Item key='withdraw-event'>
         <div onClick={() => Modal.confirm({
           title: 'แน่ใจที่จะถอนคู่นี้หรือไม่',
           content: (
@@ -108,6 +108,19 @@ const Participants = (props) => {
           onOk: () => onUpdateTeam(event._id, team._id, 'status', 'withdraw')
         })}>
           ถอนตัว
+        </div>
+      </Menu.Item>
+      <Menu.Item key='leave-event'>
+        <div onClick={() => Modal.confirm({
+          title: 'แน่ใจที่จะลบคู่นี้หรือไม่',
+          content: (
+            <>
+              {team.team?.players?.map(p => <div key={p._id}>{p.officialName}</div>)}
+            </>
+          ),
+          onOk: () => onLeaveEvent(event._id, team._id)
+        })}>
+          ลบจากรายชื่อ
         </div>
       </Menu.Item>
     </Menu>
