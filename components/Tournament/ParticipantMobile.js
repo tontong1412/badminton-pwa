@@ -98,7 +98,9 @@ const ParticipantMobile = ({ dataSource, isManager, onUpdateTeam }) => {
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '15px', borderBottom: '1px solid #eee' }}>
             <div>รายการ {p.event}</div>
             <div style={{ display: 'flex' }}>
-              {p.handicap && <Tag color={p.handicap > 0 ? 'orange' : 'green'}>{p.handicap > 0 && '+'}{p.handicap}</Tag>}
+              {/* หยวนๆได้ +1 */}
+              {p.handicap && <Tag color={p.handicap > 0 ? 'orange' : 'green'}>{p.handicap > 1 && '+'}{p.handicap}</Tag>}
+
               <Tag color={EVENT.TEAM_STATUS[p.payment.team.status].COLOR}>{EVENT.TEAM_STATUS[p.payment.team.status].LABEL}</Tag>
               <Tag color={TRANSACTION[p.payment.text].COLOR}> {TRANSACTION[p.payment.text].LABEL}</Tag>
             </div>
