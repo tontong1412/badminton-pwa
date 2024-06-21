@@ -369,13 +369,11 @@ const Participants = (props) => {
         await request.put(`/event/${event._id}`, {
           participantPublished: checked
         })
-        console.log(`Event ${event._id} updated successfully`)
       } catch (error) {
-        console.error(`Failed to update event ${event._id}:`, error)
+        console.error(`Failed to update event`)
       }
     }
   }
-
   if (!props.isManager && !tournament?.events[0].participantPublished) return <div>Participant list is not yet published</div>
   return (
     <div>
