@@ -1,7 +1,7 @@
 import { MATCH } from '../../constant'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { Table, Tag, Modal, Input, Select, Form, InputNumber, Collapse } from 'antd'
+import { Table, Tag, Modal, Input, Select, Form, InputNumber, Collapse, Radio, Space } from 'antd'
 import moment from 'moment'
 import 'moment/locale/th'
 import { useMatches, useTournament, useWindowSize } from '../../utils'
@@ -160,10 +160,14 @@ const Matches = (props) => {
 
   const onAssignMatch = (values) => {
     setAssignLoading(true)
+    let status = 'playing'
+    if (form.isFieldTouched('status')) {
+      status = values.status
+    }
     request.put(`/match/${selectedMatch._id}`, {
-      status: 'playing',
+      status,
       court: values.court,
-      umpire: values.umpire,
+      umpire: status === 'waiting' ? null : values.umpire,
       shuttlecockUsed: values.shuttlecockUsed
     }).then(() => {
       setSelectedCourt()
@@ -184,7 +188,8 @@ const Matches = (props) => {
     form.setFieldsValue({
       court: match?.court,
       umpire: match?.umpire?._id,
-      shuttlecockUsed: match?.shuttlecockUsed
+      shuttlecockUsed: match?.shuttlecockUsed,
+      status: match?.status
     })
 
     getAvailableUmpires(match)
@@ -322,6 +327,19 @@ const Matches = (props) => {
               >
                 <InputNumber min={0} />
               </Form.Item>
+              <Form.Item
+                label="สถานะ"
+                name="status"
+              // rules={[{ required: true, message: 'Please input umpire' }]}
+              >
+                <Radio.Group>
+                  <Space direction="vertical">
+                    <Radio value={'waiting'}>รอแข่ง</Radio>
+                    <Radio value={'playing'}>กำลังแข่ง</Radio>
+                    <Radio value={'finished'}>แข่งเสร็จแล้ว</Radio>
+                  </Space>
+                </Radio.Group>
+              </Form.Item>
             </Collapse.Panel>
 
           </Collapse>
@@ -344,7 +362,10 @@ const Matches = (props) => {
           <div><a onClick={() => handleSetScoreAction(match)}>ลงผลการแข่งขัน</a></div>
         </div>
       case MATCH.STATUS.finished.LABEL:
-        return <a onClick={() => handleSetScoreAction(match)}>แก้ไขผล</a>
+        return <div>
+          <div><a onClick={() => handleAssignMatchAction(match)}>แก้ไขข้อมูล</a></div>
+          <a onClick={() => handleSetScoreAction(match)}>แก้ไขผล</a>
+        </div>
       default:
     }
   }
