@@ -81,7 +81,10 @@ const EventTab = ({ eventID, mode, setMode }) => {
   const onPublished = (checked) => {
     request.put(`/event/${event._id}`, {
       drawPublished: checked
-    }).then(() => mutate())
+    }).then(() => mutate({
+      ...event,
+      status: checked
+    }))
   }
 
   const renderDraw = (event) => {

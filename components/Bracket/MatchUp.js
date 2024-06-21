@@ -38,7 +38,7 @@ const MatchUp = ({ match, isManager }) => {
         <div className='group'>
           <div className={`participant ${match.status === 'finished' ? match.teamA.scoreSet > match.teamB.scoreSet ? 'winner' : 'loser' : null}`}>
             {
-              match.teamA.team?.players.map(p =>
+              match.teamA?.team?.players.map(p =>
                 <PlayerDisplay
                   key={p._id}
                   draw
@@ -58,7 +58,7 @@ const MatchUp = ({ match, isManager }) => {
         <div className='group'>
           <div className={`participant ${match.status === 'finished' ? match.teamB.scoreSet > match.teamA.scoreSet ? 'winner' : 'loser' : null}`}>
             {
-              match.teamB.team?.players.map(p =>
+              match.teamB?.team?.players.map(p =>
                 <PlayerDisplay
                   key={p._id}
                   draw

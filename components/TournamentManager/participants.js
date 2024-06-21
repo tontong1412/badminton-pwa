@@ -370,6 +370,8 @@ const Participants = (props) => {
       })
     })
   }
+
+  if (!props.isManager && !tournament.events[0].participantPublished) return <div>Participant list is not yet published</div>
   return (
     <div>
       {isMobileOnly ?

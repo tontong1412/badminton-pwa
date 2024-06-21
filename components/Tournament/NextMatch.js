@@ -14,7 +14,7 @@ const NextMatch = ({ event, tournamentID }) => {
   const remainShuttlecock = () => {
 
     const team = event?.teams?.find(elm => elm?.team?.players?.some(e => e?._id === user?.playerID))
-    const shuttlecockUsed = allMatches?.filter(m => m.teamA.team?._id === team?.team._id || m.teamB.team?._id === team?.team._id)
+    const shuttlecockUsed = allMatches?.filter(m => m.teamA?.team?._id === team?.team._id || m.teamB?.team?._id === team?.team._id)
       .reduce((prev, curr) => prev += curr.shuttlecockUsed, 0) || 0
     const remain = team?.shuttlecockCredit || 0 - shuttlecockUsed
     return <span style={{ color: remain < 0 ? 'red' : null }}>{remain}</span>
