@@ -1,4 +1,4 @@
-import { Tabs, Radio, Popconfirm, Button, Table } from 'antd'
+import { Tabs, Radio, Popconfirm, Button, Table, Switch } from 'antd'
 import RandomDraw from './RandomDraw'
 import { useEvent } from '../../../utils'
 import { useState } from 'react'
@@ -78,6 +78,12 @@ const EventTab = ({ eventID, mode, setMode }) => {
     }
   }
 
+  const onPublished = (checked) => {
+    request.put(`/event/${event._id}`, {
+      drawPublished: checked
+    }).then(() => mutate())
+  }
+
   const renderDraw = (event) => {
     if (event.format === 'singleElim') {
       return event.order?.singleElim.length > 0 && drawBracket(
@@ -136,6 +142,8 @@ const EventTab = ({ eventID, mode, setMode }) => {
                 <Radio.Button value="knockOut">รอบ Knock Out</Radio.Button>
                 {event.format === 'roundRobinConsolation' && <Radio.Button value="consolation">สายล่าง</Radio.Button>}
               </Radio.Group>}
+
+            <Switch checked={event?.drawPublished} onChange={onPublished} />
             <Popconfirm
               title='แน่ใจที่จะ Reset หรือไม่'
               placement="left"
