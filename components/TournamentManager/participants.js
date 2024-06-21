@@ -364,7 +364,7 @@ const Participants = (props) => {
   }
 
   const onPublished = (checked) => {
-    tournament.events.forEach(async e => {
+    tournament?.events.forEach(async e => {
       await request.put(`/event/${e._id}`, {
         participantPublished: checked
       })
