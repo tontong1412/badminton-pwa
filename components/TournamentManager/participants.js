@@ -377,7 +377,7 @@ const Participants = (props) => {
         :
         <>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            {props.isManager ? '<DownloadPDF event={event} />' : <div />}
+            {props.isManager ? <DownloadPDF event={event} /> : <div />}
             <div style={{ display: 'flex', justifyContent: 'right' }}>
               <div style={{ margin: '0 10px' }}>{`ทั้งหมด ${totalTeam} คู่`}</div>
               {props.controls && <div>Publish: <Switch checked={tournament.events[0].participantPublished} onChange={onPublished} /></div>}
