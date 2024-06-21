@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import MatchUp from './MatchUp'
 import processBracketData from '../../utils/processBracketData'
 import Loading from '../loading'
-import { useMatchDraws } from '../../utils'
+import { useMatchDraws, useEvent } from '../../utils'
 
 const Connector = () => (
   <div className="connector">
@@ -21,9 +21,10 @@ const Winner = ({ matches }) => {
     </div>
   )
 }
-const Bracket = ({ event, isManager, step = 'knockOut' }) => {
+const Bracket = ({ event: eventProps, isManager, step = 'knockOut' }) => {
   const [bracket, setBracket] = useState()
-  const { matches, isLoading, isError } = useMatchDraws(event?._id)
+  const { matches, isLoading, isError } = useMatchDraws(eventProps?._id)
+  const { event } = useEvent(eventProps?._id)
 
   useEffect(() => {
     if (matches) {
@@ -65,6 +66,7 @@ const Bracket = ({ event, isManager, step = 'knockOut' }) => {
 
   if (isLoading || !bracket) return <Loading />
   if (isError) return <div>Error</div>
+  if (!event?.drawPublished) return <div>Draw is not yet published</div>
   const roundArray = Object.keys(bracket)
   return renderBracket(roundArray, bracket)
 

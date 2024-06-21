@@ -21,6 +21,7 @@ const Draws = () => {
   const [tab, setTab] = useState(tournament?.events[0]?._id)
   useEffect(() => {
     dispatch({ type: 'ACTIVE_MENU', payload: TAB_OPTIONS.TOURNAMENT_MANAGER.DRAWS })
+    return () => { };
   }, [])
 
   useEffect(() => {
@@ -29,6 +30,9 @@ const Draws = () => {
     } else {
       setIsManager(false)
     }
+    return () => {
+      setIsManager(false);
+    };
   }, [user, tournament])
 
   const renderDraws = (event) => {
@@ -39,7 +43,7 @@ const Draws = () => {
     } else if (mode === 'consolation') {
       return <Bracket key={event._id} event={event} step='consolation' isManager={isManager} />
     } else if (mode === 'participants') {
-      return <Participants tournamentID={id} eventID={event._id} />
+      return <Participants tournamentID={id} eventID={event._id} isManager={isManager} controls={false} />
     }
     return null
   }

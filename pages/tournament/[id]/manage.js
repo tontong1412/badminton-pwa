@@ -53,7 +53,7 @@ const Manage = () => {
       case 0:
         return <ManageEvent tournamentID={id} />
       case 1:
-        return <Participants isManager tournamentID={id} />
+        return <Participants isManager tournamentID={id} controls />
       case 2:
         return <Draw tournamentID={id} />
       case 3:

@@ -1,8 +1,8 @@
 import moment from 'moment'
 import { COLOR, EVENT, TAB_OPTIONS, TRANSACTION } from '../../constant'
 import { useEffect, useState } from 'react'
-import { useTournament, useWindowSize, useMatches } from '../../utils'
-import { Table, Button, Tag, Menu, Dropdown, Input, Modal, Form } from 'antd'
+import { useTournament, useWindowSize, useMatches, useEvent } from '../../utils'
+import { Table, Button, Tag, Menu, Dropdown, Input, Modal, Form, Switch } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import request from '../../utils/request'
 import PlayerDisplay from '../PlayerDisplay'
@@ -140,7 +140,7 @@ const Participants = (props) => {
           || team?.team?.players[0]?.club?.toLowerCase().includes(searchTextLower)
           || team?.team?.players[1]?.club?.toLowerCase().includes(searchTextLower)) {
 
-          const shuttlecockUsed = matches?.filter(m => m.teamA.team?._id === team.team?._id || m.teamB.team?._id === team.team?._id)
+          const shuttlecockUsed = matches?.filter(m => m.teamA?.team?._id === team.team?._id || m.teamB?.team?._id === team.team?._id)
             .reduce((prev, curr) => prev += curr.shuttlecockUsed, 0) || 0
 
           const handicapTeam = team?.team.players.reduce((prev, curr) => curr.level ? prev + curr.level : -100, 0)
@@ -363,6 +363,13 @@ const Participants = (props) => {
     return base
   }
 
+  const onPublished = (checked) => {
+    tournament.events.forEach(async e => {
+      await request.put(`/event/${e._id}`, {
+        participantPublished: checked
+      })
+    })
+  }
   return (
     <div>
       {isMobileOnly ?
@@ -370,8 +377,11 @@ const Participants = (props) => {
         :
         <>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            {props.isManager ? <div /> : <DownloadPDF event={event} />}
-            <div style={{ margin: '0 10px' }}>{`ทั้งหมด ${totalTeam} คู่`}</div>
+            {props.isManager ? '<DownloadPDF event={event} />' : <div />}
+            <div style={{ display: 'flex', justifyContent: 'right' }}>
+              <div style={{ margin: '0 10px' }}>{`ทั้งหมด ${totalTeam} คู่`}</div>
+              {props.controls && <div>Publish: <Switch checked={tournament.events[0].participantPublished} onChange={onPublished} /></div>}
+            </div>
           </div>
           <Table
             dataSource={formatParticipantTable}
