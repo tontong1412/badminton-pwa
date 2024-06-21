@@ -135,40 +135,39 @@ const EventTab = ({ eventID, mode, setMode }) => {
             <DrawForm event={event} />
           </div>
           :
-          <div style={{ paddingBottom: '5px' }}>
-            {event.format !== 'singleElim' &&
-              <Radio.Group onChange={e => setMode(e.target.value)} value={mode} style={{ marginBottom: 8 }}>
-                {(event.format === 'roundRobin' || event.format === 'roundRobinConsolation') && <Radio.Button value="group">รอบแบ่งกลุ่ม</Radio.Button>}
-                <Radio.Button value="knockOut">รอบ Knock Out</Radio.Button>
-                {event.format === 'roundRobinConsolation' && <Radio.Button value="consolation">สายล่าง</Radio.Button>}
-              </Radio.Group>}
+          <div style={{ width: '100%' }}>
+            <div style={{ paddingBottom: '5px', display: 'flex', justifyContent: 'space-between' }}>
+              {event.format !== 'singleElim' &&
+                <Radio.Group onChange={e => setMode(e.target.value)} value={mode} style={{ marginBottom: 8 }}>
+                  {(event.format === 'roundRobin' || event.format === 'roundRobinConsolation') && <Radio.Button value="group">รอบแบ่งกลุ่ม</Radio.Button>}
+                  <Radio.Button value="knockOut">รอบ Knock Out</Radio.Button>
+                  {event.format === 'roundRobinConsolation' && <Radio.Button value="consolation">สายล่าง</Radio.Button>}
+                </Radio.Group>}
 
-            <Switch checked={event?.drawPublished} onChange={onPublished} />
-            <Popconfirm
-              title='แน่ใจที่จะ Reset หรือไม่'
-              placement="left"
-              onConfirm={() => {
-                request.put(`/event/${event._id}`, {
-                  order: {}
-                }).then(() => mutate())
-              }}
-              okText="Yes"
-              cancelText="No"
-            >
-              <div style={{
-                position: 'absolute',
-                top: '20px',
-                right: '20px'
-              }}><Button
-                type='dashed'
-                onClick={() => { }}
-              >Reset</Button>
+              <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                <div>Publish: <Switch checked={event?.drawPublished} onChange={onPublished} /></div>
+                <Popconfirm
+                  title='แน่ใจที่จะ Reset หรือไม่'
+                  placement="left"
+                  onConfirm={() => {
+                    request.put(`/event/${event._id}`, {
+                      order: {}
+                    }).then(() => mutate())
+                  }}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button
+                    type='dashed'
+                    onClick={() => { }}
+                  >Reset</Button>
+                </Popconfirm>
               </div>
-            </Popconfirm>
+            </div>
             {renderDraw(event)}
           </div>
         }
-      </div>
+      </div >
       }
     </>
   )
