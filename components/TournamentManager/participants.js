@@ -363,12 +363,17 @@ const Participants = (props) => {
     return base
   }
 
-  const onPublished = (checked) => {
-    tournament?.events.forEach(async e => {
-      await request.put(`/event/${e._id}`, {
-        participantPublished: checked
-      })
-    })
+  const onPublished = async (checked) => {
+    for (const event of tournament.events) {
+      try {
+        await request.put(`/event/${event._id}`, {
+          participantPublished: checked
+        })
+        console.log(`Event ${event._id} updated successfully`)
+      } catch (error) {
+        console.error(`Failed to update event ${event._id}:`, error)
+      }
+    }
   }
 
   if (!props.isManager && !tournament?.events[0].participantPublished) return <div>Participant list is not yet published</div>
