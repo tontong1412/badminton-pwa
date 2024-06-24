@@ -374,7 +374,7 @@ const Participants = (props) => {
       }
     }
   }
-  if (!props.isManager && !tournament?.events[0].participantPublished) return <div>Participant list is not yet published</div>
+  if (!props.isManager && !tournament?.events[0]?.participantPublished) return <div>Participant list is not yet published</div>
   return (
     <div>
       {isMobileOnly ?
@@ -385,7 +385,7 @@ const Participants = (props) => {
             {props.controls ? <div /> : <DownloadPDF event={event} />}
             <div style={{ display: 'flex', justifyContent: 'right' }}>
               <div style={{ margin: '0 10px' }}>{`ทั้งหมด ${totalTeam} คู่`}</div>
-              {props.controls && <div>Publish: <Switch checked={tournament.events[0].participantPublished} onChange={onPublished} /></div>}
+              {props.controls && <div>Publish: <Switch checked={tournament.events[0]?.participantPublished} onChange={onPublished} /></div>}
             </div>
           </div>
           <Table
