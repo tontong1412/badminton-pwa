@@ -374,7 +374,13 @@ const Participants = (props) => {
       }
     }
   }
-  if (!props.isManager && !tournament?.events[0]?.participantPublished) return <div>Participant list is not yet published</div>
+  if (!props.isManager && !tournament?.events[0]?.participantPublished) return (
+    <div>
+      <div style={{ color: COLOR.MINOR_THEME, fontSize: '20px' }}>มีผู้สมัครแล้ว {totalTeam} ทีม</div>
+      <div>ทางผู้จัดจะเปิดเผยรายชื่อผู้สมัครในภายหลัง</div>
+      <div>ท่านสามารถตรวจสอบผลการประเมินมือและชำระค่าสมัครได้ที่หน้า Home โดยการกดที่ Logo Badminstar ด้านบน (กรุณา Log in เข้าสู่ระบบ)</div>
+    </div>
+  )
   return (
     <div>
       {isMobileOnly ?
@@ -385,7 +391,7 @@ const Participants = (props) => {
             {props.controls ? <div /> : <DownloadPDF event={event} />}
             <div style={{ display: 'flex', justifyContent: 'right' }}>
               <div style={{ margin: '0 10px' }}>{`ทั้งหมด ${totalTeam} คู่`}</div>
-              {props.controls && <div>Publish: <Switch checked={tournament.events[0]?.participantPublished} onChange={onPublished} /></div>}
+              {props.controls && <div>Publish: <Switch defaultChecked={tournament.events[0]?.participantPublished} onChange={onPublished} /></div>}
             </div>
           </div>
           <Table
