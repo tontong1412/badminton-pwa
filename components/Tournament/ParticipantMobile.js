@@ -113,7 +113,7 @@ const ParticipantMobile = ({ dataSource, isManager, onUpdateTeam, handicap }) =>
                 <div>{p.shuttlecockRemain}</div>
               </div>
             </div>
-            {p.note.note && <div>หมายเหตุ: {p.note.note}</div>}
+            {(p?.note?.note || p?.note?.isInQueue) && <div>{`หมายเหตุ: ${p?.note?.isInQueue ? 'สำรอง' : ''}${p?.note?.isInQueue && p?.note?.note ? ',' : ''}${p?.note?.note || ''}`}</div>}
           </div>
 
           {isManager &&
