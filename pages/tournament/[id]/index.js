@@ -157,6 +157,13 @@ const TournamentManagerID = () => {
         <Button
           style={{ width: '80%', marginBottom: '5px' }}
           type='primary'
+          onClick={() => router.push(`/login`)}>
+          ดูสถานะการสมัครของฉัน
+        </Button>
+
+        <Button
+          style={{ width: '80%', marginBottom: '5px' }}
+          type='primary'
           onClick={() => router.push(`/tournament/${tournament._id}/draws`)}>
           ดูรายชื่อ
         </Button>

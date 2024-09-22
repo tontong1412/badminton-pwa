@@ -286,6 +286,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
           ]}
         >
           <AutoComplete
+            placeholder='ไม่ต้องใส่คำนำหน้าชื่อ'
             options={options}
             onSelect={(data, options) => onSelect(data, options, 'player1')}
             onSearch={onSearch}
@@ -362,6 +363,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
             ]}
           >
             <AutoComplete
+              placeholder='ไม่ต้องใส่คำนำหน้าชื่อ'
               options={options}
               onSelect={(data, options) => onSelect(data, options, 'player2')}
               onSearch={onSearch}

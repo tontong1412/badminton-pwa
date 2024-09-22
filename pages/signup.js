@@ -219,7 +219,7 @@ const Signup = () => {
 
 Signup.getLayout = (page) => {
   return (
-    <Layout>
+    <Layout back={{ href: '/' }}>
       {page}
     </Layout>
   )

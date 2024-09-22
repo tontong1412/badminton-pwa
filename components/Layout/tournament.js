@@ -34,7 +34,7 @@ const TournamentLayout = (props) => {
 
   return (
     <>
-      <Header description='รายการแข่งขันแบดมินตันในประเทศไทย' back={{ href: '/tournament', alias: 'tournament' }} />
+      <Header description='รายการแข่งขันแบดมินตันในประเทศไทย' back={{ href: '/', alias: 'tournament' }} />
       <main>
         <div className='content'>
           {props.children}

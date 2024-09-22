@@ -13,11 +13,15 @@ import { FACEBOOK } from '../config'
 
 const Login = () => {
   const [loading, setLoading] = useState(false)
+  const { user } = useSelector(state => state)
   const router = useRouter()
   const dispatch = useDispatch()
 
   useEffect(() => {
     logEvent(analytics, 'log in')
+    if (user.token) {
+      router.push('/')
+    }
   }, [])
 
 
@@ -106,7 +110,7 @@ const Login = () => {
       localStorage.setItem('token', values.remember ? login.user.token : '');
       dispatch({ type: 'LOGIN', payload: user })
       setLoading(false)
-      router.back()
+      router.push('/')
     } catch (error) {
       Modal.error({
         title: 'Log in ไม่สำเร็จ',
@@ -201,7 +205,7 @@ const Login = () => {
 
 Login.getLayout = (page) => {
   return (
-    <Layout>
+    <Layout back={{ href: '/' }}>
       {page}
     </Layout>
   )

@@ -278,7 +278,7 @@ const Participants = (props) => {
         key: 'payment',
         align: 'center',
         width: '10%',
-        onFilter: (value, record) => record.payment === value,
+        onFilter: (value, record) => record.payment.text === value,
         render: ({ text, event, team }) => <div>
           <Tag color={TRANSACTION[text].COLOR}>
             {TRANSACTION[text].LABEL}
