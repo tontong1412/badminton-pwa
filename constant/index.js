@@ -222,6 +222,13 @@ const MAP_TOURNAMENT_STATUS_TO_DRAW_TAB = {
   'draw': 'participants',
   'arrange': 'participants',
 }
+
+const MAP_BOOKING_COLOR = {
+  paid: '#eee',
+  pending: '#eee',
+  idle: '#eee',
+  select: COLOR.MAIN_THEME
+}
 export {
   GANG,
   PLAYER,
@@ -236,5 +243,6 @@ export {
   MAP_EVENT_TYPE,
   GROUP_NAME,
   ROUND_NAME,
-  MAP_TOURNAMENT_STATUS_TO_DRAW_TAB
+  MAP_TOURNAMENT_STATUS_TO_DRAW_TAB,
+  MAP_BOOKING_COLOR
 }

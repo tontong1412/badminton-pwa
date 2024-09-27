@@ -1,7 +1,7 @@
 import Footer from './footer'
 import Header from './header'
 import { useSelector } from 'react-redux'
-import { UserOutlined, BellOutlined, HomeOutlined, TeamOutlined, TrophyOutlined } from '@ant-design/icons'
+import { UserOutlined, BellOutlined, HomeOutlined, TeamOutlined, TrophyOutlined, ScheduleOutlined } from '@ant-design/icons'
 import { COLOR } from '../../constant'
 
 const AppLayout = (props) => {
@@ -20,6 +20,12 @@ const AppLayout = (props) => {
           icon: <HomeOutlined style={{ fontSize: '24px', color: activeMenu === 'home' ? COLOR.MINOR_THEME : '#aaa' }} />,
           href: '/',
           alias: 'home'
+        },
+        {
+          name: 'จองสนาม',
+          icon: <ScheduleOutlined style={{ fontSize: '24px', color: activeMenu === 'noti' ? COLOR.MINOR_THEME : '#aaa' }} />,
+          href: '/venue',
+          alias: 'venue',
         },
         {
           name: 'ก๊วน',

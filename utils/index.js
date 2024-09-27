@@ -1,4 +1,5 @@
 import useSWR from 'swr'
+import moment from 'moment'
 import axios from 'axios'
 import { API_ENDPOINT } from '../config'
 import { useState, useEffect, useLayoutEffect } from 'react'
@@ -12,6 +13,8 @@ const fetcher = (url, token, params) => axios.get(url, {
   params
 }).then((res) => {
   return res.data
+}).catch(err => {
+  console.log(err)
 })
 
 export const useGang = (id) => {
@@ -245,6 +248,51 @@ export const useBanners = () => {
 
   return {
     banners: data,
+    isLoading: !error && !data,
+    isError: error,
+    mutate
+  }
+}
+
+export const useVenues = () => {
+  const { data, error, mutate } = useSWR(
+    `${API_ENDPOINT}/venue`,
+    fetcher
+  )
+
+  return {
+    venues: data,
+    isLoading: !error && !data,
+    isError: error,
+    mutate
+  }
+}
+
+export const useVenue = (id) => {
+  const { data, error, mutate } = useSWR(
+    id ? [`${API_ENDPOINT}/venue/${id}`, id] : null,
+    (url) => fetcher(url)
+  )
+
+  return {
+    venue: data,
+    isLoading: !error && !data,
+    isError: error,
+    mutate
+  }
+}
+
+export const convertTimeToNumber = (timeStr) => {
+  return parseFloat(timeStr.replace(':', '.'));
+}
+
+export const useBookings = (venueID, date) => {
+  const { data, error, mutate } = useSWR(
+    [`${API_ENDPOINT}/bookings`, date, venueID],
+    (url) => { if (venueID) return fetcher(url, null, { date: date, venue: venueID, }) }
+  )
+  return {
+    bookings: data,
     isLoading: !error && !data,
     isError: error,
     mutate

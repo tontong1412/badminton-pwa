@@ -7,7 +7,7 @@ const initialState = {
   user: {},
   tick: 'init',
   gang: null,
-  activeMenu: 'home'
+  activeMenu: 'home',
 }
 
 // create your reducer
