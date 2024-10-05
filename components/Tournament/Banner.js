@@ -25,6 +25,7 @@ const BannerItem = ({ image, link }) => {
         overflow: 'hidden'
       }}>
       <Image
+        unoptimized
         src={image}
         alt=''
         width={width}

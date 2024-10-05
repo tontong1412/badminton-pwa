@@ -337,7 +337,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
         </Form.Item>
         {player1Data?.photo ?
           <div style={{ width: '110px', height: '110px', border: '1px dashed #ccc', padding: '5px', overflow: 'hidden', borderRadius: '5px' }}>
-            <Image objectFit='contain' src={player1Data.photo} alt='' width={100} height={100} />
+            <Image unoptimized objectFit='contain' src={player1Data.photo} alt='' width={100} height={100} />
           </div>
           : <Form.Item
             name='player1Photo'
@@ -415,7 +415,7 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
           </Form.Item>
           {player2Data?.photo ?
             <div style={{ width: '110px', height: '110px', border: '1px dashed #ccc', padding: '5px', overflow: 'hidden', borderRadius: '5px' }}>
-              <Image objectFit='contain' src={player2Data.photo} alt='' width={100} height={100} />
+              <Image unoptimized objectFit='contain' src={player2Data.photo} alt='' width={100} height={100} />
             </div>
             : <Form.Item
               name='player2Photo'

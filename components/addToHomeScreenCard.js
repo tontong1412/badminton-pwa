@@ -28,6 +28,7 @@ const AddToHomeScreenCard = () => {
             borderRadius: '10px', overflow: 'hidden',
           }}>
             <Image
+              unoptimized
               src='/icon/logo.png'
               alt=''
               width={60}
@@ -59,6 +60,7 @@ const AddToHomeScreenCard = () => {
             borderRadius: '10px', overflow: 'hidden',
           }}>
             <Image
+              unoptimized
               src='/icon/logo.png'
               alt=''
               width={60}

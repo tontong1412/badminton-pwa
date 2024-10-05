@@ -201,6 +201,7 @@ const GangDetail = () => {
     <>
       <div style={{ width: '100%', height: '300px', overflow: 'hidden', borderBottom: '1px solid #eee' }}>
         <Image
+          unoptimized
           src='/icon/logo.png'
           alt=''
           width={100}

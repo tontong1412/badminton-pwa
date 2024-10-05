@@ -295,7 +295,7 @@ const GangID = () => {
           <div key={`player-${player._id}`} className='gang-player'>
             <div className='player-container'>
               <div className='avatar'>
-                <Image objectFit='cover' src={player.photo || `/avatar.png`} alt='' width={50} height={50} layout='responsive' />
+                <Image unoptimized objectFit='cover' src={player.photo || `/avatar.png`} alt='' width={50} height={50} layout='responsive' />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <div className='player-name'>{player.displayName || player.officialName}</div>
@@ -476,7 +476,7 @@ const GangID = () => {
                 </Button>
               </Form.Item>}
             </Form>}
-            {paymentData?.slip && <Image objectFit='contain' src={paymentData.slip} alt='' width={50} height={50} layout='responsive' />}
+            {paymentData?.slip && <Image unoptimized objectFit='contain' src={paymentData.slip} alt='' width={50} height={50} layout='responsive' />}
           </div>
           :
           <Loading />

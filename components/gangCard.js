@@ -26,6 +26,7 @@ const Card = ({ gang }) => {
       }}>
         <div className='gang-img'>
           <Image
+            unoptimized
             src='/icon/logo.png'
             alt=''
             width={150}
@@ -41,7 +42,7 @@ const Card = ({ gang }) => {
               info.map((elm, index) => {
                 return (
                   <div key={`icon-${index}`} className='info-item'>
-                    <Image src={elm.icon} alt='' width={20} height={20} layout='fixed' />
+                    <Image unoptimized src={elm.icon} alt='' width={20} height={20} layout='fixed' />
                     <div className='text'>{elm.text}</div>
                   </div>
                 )
