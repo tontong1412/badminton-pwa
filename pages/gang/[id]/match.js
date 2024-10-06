@@ -515,7 +515,7 @@ const MatchList = () => {
                           return (
                             <div key={`teamA-${player._id}`} className='player-container'>
                               <div className='avatar'>
-                                <Image className='avatar' src={player.photo || `/avatar.png`} alt='' width={35} height={35} objectFit='cover' />
+                                <Image unoptimized className='avatar' src={player.photo || `/avatar.png`} alt='' width={35} height={35} objectFit='cover' />
                               </div>
                               <div className='info'>{player.displayName || player.officialName}</div>
                             </div>
@@ -533,7 +533,7 @@ const MatchList = () => {
                               style={{ flexDirection: 'row-reverse' }}
                             >
                               <div className='avatar'>
-                                <Image className='avatar' src={player.photo || `/avatar.png`} alt='' width={35} height={35} objectFit='cover' />
+                                <Image unoptimized className='avatar' src={player.photo || `/avatar.png`} alt='' width={35} height={35} objectFit='cover' />
                               </div>
                               <div className='info' style={{ marginRight: '5px', marginLeft: 0, textAlign: 'right' }}>{player.displayName || player.officialName}</div>
                             </div>

@@ -109,7 +109,7 @@ const ParticipantMobile = ({ dataSource, isManager, onUpdateTeam, handicap }) =>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div>{p.player}</div>
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                <Image alt='icon' src='/icon/shuttlecock.png' width={20} height={20} />
+                <Image unoptimized alt='icon' src='/icon/shuttlecock.png' width={20} height={20} />
                 <div>{p.shuttlecockRemain}</div>
               </div>
             </div>

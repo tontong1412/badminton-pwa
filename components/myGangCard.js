@@ -20,6 +20,7 @@ const MyGangCard = ({ gang }) => {
         }}>
         <div style={{ width: '80px', height: '80px', border: '1px solid #eee', borderRadius: '40px', overflow: 'hidden' }}>
           <Image
+            unoptimized
             src='/icon/logo.png'
             alt=''
             width={80}

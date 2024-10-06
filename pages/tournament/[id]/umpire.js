@@ -133,7 +133,7 @@ const Manager = () => {
           <div key={`player-${player._id}`} className='gang-player'>
             <div className='player-container'>
               <div className='avatar'>
-                <Image objectFit='cover' src={player.photo || `/avatar.png`} alt='' width={50} height={50} layout='responsive' />
+                <Image unoptimized objectFit='cover' src={player.photo || `/avatar.png`} alt='' width={50} height={50} layout='responsive' />
               </div>
               <div className='player-name'>{player.displayName || player.officialName}<span style={{ color: '#ccc', marginLeft: '10px' }}>{`${player.displayName ? (player.officialName || '') : ''}`}</span></div>
             </div>

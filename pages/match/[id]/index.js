@@ -285,7 +285,7 @@ const Match = () => {
                     flexDirection: side ? 'row-reverse' : 'row'
                   }}>
                   <div style={{ width: '40px', height: '40px', borderRadius: '20px', overflow: 'hidden', objectFit: 'contain' }}>
-                    <Image src={player.photo || `/avatar.png`} alt='' width={40} height={40} objectFit='cover' />
+                    <Image unoptimized src={player.photo || `/avatar.png`} alt='' width={40} height={40} objectFit='cover' />
                   </div>
                   <div>{player.officialName || player.displayName}</div>
                   {match.teamA.serving === index && match.teamA.isServing && <div style={{ padding: '2px 5px', backgroundColor: COLOR.MAIN_THEME, borderRadius: '5px' }}>S</div>}
@@ -344,7 +344,7 @@ const Match = () => {
                   }}
                 >
                   <div style={{ width: '40px', height: '40px', borderRadius: '20px', overflow: 'hidden', objectFit: 'contain' }}>
-                    <Image src={player.photo || `/avatar.png`} alt='' width={40} height={40} objectFit='cover' />
+                    <Image unoptimized src={player.photo || `/avatar.png`} alt='' width={40} height={40} objectFit='cover' />
                   </div>
                   <div className='info' style={{ marginRight: '5px', marginLeft: 0, textAlign: 'right' }}>{player.officialName || player.displayName}</div>
                   {match.teamB.serving === index && match.teamB.isServing && <div style={{ padding: '2px 5px', backgroundColor: COLOR.MAIN_THEME, borderRadius: '5px' }}>S</div>}

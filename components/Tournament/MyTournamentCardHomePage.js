@@ -58,7 +58,7 @@ const MyTournamentCardHomePage = ({ tournament, mutate }) => {
             <Tag color={EVENT.TEAM_STATUS[team?.status]?.COLOR}>{EVENT.TEAM_STATUS[team?.status]?.LABEL}</Tag>
             <Tag color={TRANSACTION[team?.paymentStatus].COLOR}>{TRANSACTION[team?.paymentStatus].LABEL}</Tag>
             {team?.paymentStatus === 'paid' && <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-              <Image alt='icon' src='/icon/shuttlecock.png' width={20} height={20} />
+              <Image unoptimized alt='icon' src='/icon/shuttlecock.png' width={20} height={20} />
               <div>{team?.shuttlecockCredit}</div>
             </div>}
           </div>

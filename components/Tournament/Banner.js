@@ -25,6 +25,7 @@ const BannerItem = ({ image, link }) => {
         overflow: 'hidden'
       }}>
       <Image
+        unoptimized
         src={image.replace('/upload/', '/upload/q_50/')}
         alt=''
         width={width}

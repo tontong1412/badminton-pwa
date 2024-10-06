@@ -50,7 +50,7 @@ const NextMatch = ({ event, tournamentID }) => {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>{moment(matches?.nextMatch[0].date).format('lll')}</div>
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-              <Image alt='icon' src='/icon/shuttlecock.png' width={20} height={20} />
+              <Image unoptimized alt='icon' src='/icon/shuttlecock.png' width={20} height={20} />
               <div>{remainShuttlecock()}</div>
             </div>
           </div>

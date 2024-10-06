@@ -132,7 +132,7 @@ const Login = () => {
   return (
 
     <>
-      <div style={{ width: '250px', height: '250px', margin: 'auto' }}><Image src={logo} alt='logo' /></div>
+      <div style={{ width: '250px', height: '250px', margin: 'auto' }}><Image unoptimized src={logo} alt='logo' /></div>
 
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '15px' }}>
         <FacebookLogin
