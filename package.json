@@ -16,15 +16,13 @@
     "copy-to-clipboard": "3.3.1",
     "dotenv": "10.0.0",
     "firebase": "9.2.0",
-    "interactjs": "^1.10.27",
-    "next": "11.1.2",
-    "next-plugin-antd-less": "1.4.2",
+    "next": "12",
+    "next-plugin-antd-less": "^1.8.0",
     "next-pwa": "5.3.1",
     "next-redux-wrapper": "7.0.4",
     "promptpay-qr": "0.4.4",
     "qrcode": "1.4.4",
     "react": "17.0.2",
-    "react-calendar-timeline": "^0.28.0",
     "react-device-detect": "2.2.2",
     "react-dom": "17.0.2",
     "react-facebook-login": "^4.1.1",
@@ -36,7 +34,7 @@
   "devDependencies": {
     "babel-plugin-import": "1.13.3",
     "eslint": "7.32.0",
-    "eslint-config-next": "11.1.2",
-    "next-compose-plugins": "2.2.1"
+    "eslint-config-next": "12",
+    "next-compose-plugins": "^2.2.1"
   }
 }

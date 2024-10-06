@@ -1,0 +1,15 @@
+services:
+  badminton-pwa:
+    image: node:18
+    ports:
+      - "3000:3000"
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - ./.env.local
+    command: ['/bin/sh', '-c', 'yarn && yarn dev']
+networks:
+  default:
+    name: badmintonnetwork
+    external: true
