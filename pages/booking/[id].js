@@ -166,11 +166,11 @@ const Booking = () => {
             (booking.venue?.payment?.code && booking.venue?.payment?.bank) &&
             <div>
               <div style={{ display: 'flex', gap: '10px' }}>
-                <div style={{ fontWeight: 'bold', width: '70px' }}>ช่องทาง:</div>
+                <div style={{ fontWeight: 'bold', width: '90px' }}>ช่องทาง:</div>
                 <div>{booking.venue?.payment?.bank}</div>
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
-                <div style={{ fontWeight: 'bold', width: '70px' }}>เลขบัญชี:</div>
+                <div style={{ fontWeight: 'bold', width: '90px' }}>เลขบัญชี:</div>
                 <div>{booking.venue?.payment?.code}</div>
                 <div
                   onClick={() => {
@@ -183,7 +183,7 @@ const Booking = () => {
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
-                <div style={{ fontWeight: 'bold', width: '70px' }}>ชื่อบัญชี:</div>
+                <div style={{ fontWeight: 'bold', width: '90px' }}>ชื่อบัญชี:</div>
                 <div>{booking.venue?.payment?.name}</div>
               </div>
             </div>
