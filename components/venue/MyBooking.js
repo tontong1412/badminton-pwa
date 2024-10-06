@@ -34,7 +34,7 @@ const MyBooking = ({ bottomLine }) => {
           key={b.bookingRef}>
           <div style={{ margin: '5px 0', padding: '10px', minWidth: '200px', maxWidth: '250px', border: '1px solid #eee', borderRadius: '5px', boxShadow: '2px 2px 10px -5px rgba(0,0,0,0.75)' }}>
             <div style={{ width: '100%', overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap' }}><ClockCircleOutlined /> {`${dateText(b.date)} - ${findStartTime(b)}`}</div>
-            <div style={{ width: '100%', overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap' }}><EnvironmentOutlined /> {b.venue.name}</div>
+            <div style={{ width: '100%', overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap' }}><EnvironmentOutlined /> {b?.venue?.name}</div>
             <div ><CreditCardOutlined /> <Tag color={TRANSACTION[b?.status].COLOR}>{TRANSACTION[b?.status].LABEL}</Tag></div>
           </div>
         </Link>)}
