@@ -1,5 +1,4 @@
 import useSWR from 'swr'
-import moment from 'moment'
 import axios from 'axios'
 import { API_ENDPOINT } from '../config'
 import { useState, useEffect, useLayoutEffect } from 'react'
@@ -290,6 +289,19 @@ export const useBookings = (venueID, date) => {
   const { data, error, mutate } = useSWR(
     [`${API_ENDPOINT}/bookings`, date, venueID],
     (url) => { if (venueID) return fetcher(url, null, { date: date, venue: venueID, }) }
+  )
+  return {
+    bookings: data,
+    isLoading: !error && !data,
+    isError: error,
+    mutate
+  }
+}
+
+export const useMyBookings = (token) => {
+  const { data, error, mutate } = useSWR(
+    [`${API_ENDPOINT}/bookings/my-booking`, token],
+    (url) => { if (token) return fetcher(url, token) }
   )
   return {
     bookings: data,

@@ -23,7 +23,7 @@ const AppLayout = (props) => {
         },
         {
           name: 'จองสนาม',
-          icon: <ScheduleOutlined style={{ fontSize: '24px', color: activeMenu === 'noti' ? COLOR.MINOR_THEME : '#aaa' }} />,
+          icon: <ScheduleOutlined style={{ fontSize: '24px', color: activeMenu === 'venue' ? COLOR.MINOR_THEME : '#aaa' }} />,
           href: '/venue',
           alias: 'venue',
         },

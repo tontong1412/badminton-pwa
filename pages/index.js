@@ -11,6 +11,7 @@ import AddToHomeScreenCard from '../components/addToHomeScreenCard'
 import RegisteringTournament from '../components/Tournament/RegisteringTournament'
 import Banner from '../components/Tournament/Banner'
 import { isMobileOnly } from 'react-device-detect'
+import MyBooking from '../components/venue/MyBooking'
 
 
 const Home = () => {
@@ -31,6 +32,7 @@ const Home = () => {
     <>
       <Greeting user={user} />
       {isMobileOnly && <Banner />}
+      <MyBooking />
       <MyTournament homePage />
       <RegisteringTournament />
       <MyGang />

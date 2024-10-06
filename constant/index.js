@@ -18,6 +18,10 @@ const TRANSACTION = {
   idle: {
     LABEL: 'ยังไม่จ่าย',
     COLOR: 'red'
+  },
+  expired: {
+    LABEL: 'ยกเลิก',
+    COLOR: 'purple'
   }
 }
 
@@ -67,7 +71,8 @@ const TAB_OPTIONS = {
     DRAWS: 'draws',
     MATCHES: 'matces',
     SETTING: 'setting'
-  }
+  },
+  VENUE: 'venue'
 }
 
 const MATCH = {

@@ -2,18 +2,9 @@ import Layout from '../../../components/Layout'
 import { useRouter } from 'next/router'
 import { COLOR, MAP_BOOKING_COLOR } from '../../../constant'
 import moment from 'moment'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Table, Button, Drawer, Modal, Input, Radio, Form, InputNumber, Space } from 'antd'
-import { PlusCircleOutlined } from '@ant-design/icons'
-import { isMobile } from 'react-device-detect'
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
-
-import 'swiper/css';
-import { useEffect, useState } from 'react'
-import { Pagination, Navigation } from 'swiper/modules'
+import { Table, Button, Drawer, Modal, Input, Radio, Form, InputNumber, Space, DatePicker, Checkbox } from 'antd'
+import { PlusCircleOutlined, DeleteOutlined, CaretRightOutlined, CaretLeftOutlined } from '@ant-design/icons'
+import { useEffect, useState, useRef } from 'react'
 import { useVenue, convertTimeToNumber, useBookings } from '../../../utils'
 import { useDispatch, useSelector } from 'react-redux'
 import request from '../../../utils/request'
@@ -34,23 +25,24 @@ const findPriceForTime = (time, timeSlots) => {
 
 const Venue = () => {
   const router = useRouter()
-  const dispatch = useDispatch()
   const { id } = router.query
+  const tableRef = useRef(null);
   const { booking: bookingState, user } = useSelector(state => state)
   const { venue, isLoading, isError, mutate } = useVenue(id)
-  const [swiperRef, setSwiperRef] = useState(null);
   const [column, setColumn] = useState([])
   const [row, setRow] = useState([])
-  const [selectedDay, setSelectedDay] = useState(moment().startOf('day'))
+  const [selectedDay, setSelectedDay] = useState(moment().add(1, 'hour').set({ minute: 0, second: 0 }))
   const [selectedSlots, setSelectedSlots] = useState(bookingState?.slots || [])
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [totalPrice, setTotalPrice] = useState(bookingState?.totalPrice || 0)
-  const { bookings } = useBookings(id, selectedDay)
+  const { bookings, mutate: mutateBooking } = useBookings(id, selectedDay)
   const [isManager, setIsManager] = useState(false)
   const [bookingName, setBookingName] = useState('')
   const [bookingNameModalVisible, setBookingNameModalVisible] = useState(false)
   const [form] = Form.useForm()
   const [radioValue, setRadioValue] = useState()
+
+
 
   useEffect(() => {
     if (user && venue && (venue.managers?.map(e => e._id).includes(user.playerID) || (user.playerID === venue.creator))) {
@@ -61,43 +53,72 @@ const Venue = () => {
 
   }, [user, venue])
 
+  useEffect(() => {
+    mutateBooking([id, selectedDay])
+  }, [selectedDay, id])
+
+  const getOperateTime = (venue) => {
+    let operatingHours = venue?.operatingHours?.find(d => d.day === selectedDay.locale('en').format('dddd')) || venue?.operatingHours?.find(d => d.day === 'Default')
+    const openTimeNum = parseFloat(operatingHours?.openTime)
+    const closeTimeNum = parseFloat(operatingHours?.closeTime)
+    return {
+      openTime: operatingHours?.openTime,
+      closeTime: operatingHours?.closeTime,
+      openTimeNum,
+      closeTimeNum,
+    }
+  }
+
 
   useEffect(() => {
     if (!venue) return null
-    let operatingHours = venue?.operatingHours.find(d => d.day === selectedDay.locale('en').format('dddd')) || venue?.operatingHours.find(d => d.day === 'Default')
-    const openTimeNum = parseFloat(operatingHours.openTime);
-    const closeTimeNum = parseFloat(operatingHours.closeTime);
+    const { openTimeNum, closeTimeNum } = getOperateTime(venue)
 
     const tempCol = [];
     for (let hour = openTimeNum; hour <= closeTimeNum; hour++) {
-      const formattedTime = hour.toFixed(2).padStart(5, '0');
-      tempCol.push({
-        title: formattedTime,
-        dataIndex: formattedTime,
-        align: 'center',
-        width: '150px',
-        onCell: (row, rowIndex) => {
-          return {
-            onClick: () => onSelectSlot(row.court, formattedTime, row[formattedTime]),
-            style: {
-              backgroundColor: MAP_BOOKING_COLOR[row[formattedTime]?.booking?.status]
-            }
-          }
-        },
-        render: (item) => {
-          if (item?.booking?.name) {
+      const formattedTime = hour.toFixed(2).padStart(5, '0')
+      if (isManager || (selectedDay.startOf('day') >= moment().startOf('day') && hour >= moment().hour()) || (selectedDay.startOf('day') > moment().startOf('day'))) {
+        tempCol.push({
+          title: formattedTime,
+          dataIndex: formattedTime,
+          align: 'center',
+          width: '100px',
+          onCell: (row, rowIndex) => {
             return {
-              children: isManager ? <div>
-                <div> {item?.booking?.name}</div>
-                <div>{item?.booking?.note}</div>
-              </div> : null,
+              onClick: () => onSelectSlot(row.court, formattedTime, row[formattedTime]),
+              style: {
+                backgroundColor: MAP_BOOKING_COLOR[row[formattedTime]?.booking?.status]
+              }
             }
-          } else {
-            return <PlusCircleOutlined style={{ fontSize: '20px', color: '#ccc' }
-            } />
+          },
+          render: (item) => {
+            if (item?.booking?.name) {
+              if (item?.booking?.name === 'selected') {
+                return <DeleteOutlined style={{ fontSize: '20px', color: COLOR.MINOR_THEME }} />
+              } else if (isManager) {
+                return <div>
+                  <div> {item?.booking?.name}</div>
+                  <div>{item?.booking?.note}</div>
+                </div>
+              } else if (item?.booking?.isPublic) {
+                return <div>
+                  <div> {item?.booking?.name}</div>
+                </div>
+              } else {
+                return null
+              }
+            } else {
+              const isBookable = isManager || (selectedDay.startOf('day') >= moment().startOf('day') && hour >= moment().hour()) || (selectedDay.startOf('day') > moment().startOf('day'))
+              if (isBookable) {
+                return <PlusCircleOutlined style={{ fontSize: '20px', color: COLOR.MINOR_THEME }} />
+              }
+              return null
+
+            }
           }
-        }
-      });
+        });
+      }
+
     }
 
     tempCol.splice(0, 0, {
@@ -105,7 +126,7 @@ const Venue = () => {
       dataIndex: "court",
       key: "court",
       fixed: "left",
-      width: '150px',
+      width: '120px',
       align: 'center',
       onCell: (record, rowIndex) => ({
         style: {
@@ -119,7 +140,7 @@ const Venue = () => {
     const tempRow = venue?.courts?.reduce((rows, court, index) => {
       let courtObject = { court }
       bookings?.forEach(item => {
-        item.slots.filter(s => s.court._id == court._id).forEach(b => {
+        item.slots?.filter(s => s.court._id == court._id).forEach(b => {
           courtObject = {
             ...courtObject,
             [b.time]: { court, booking: item }
@@ -150,11 +171,13 @@ const Venue = () => {
     const price = findPriceForTime(selectedTime, priceOfDay.timeSlots)
     const tempTotalPrice = totalPrice
 
+    const isBookable = isManager || (selectedDay.startOf('day') >= moment().startOf('day') && parseInt(selectedTime) >= moment().hour()) || (selectedDay.startOf('day') > moment().startOf('day'))
+
     if (index !== -1) {
       setTotalPrice(tempTotalPrice - price)
       tempSelectedSlot.splice(index, 1);  // Remove 1 element at the found index
     } else {
-      if (!booking) {
+      if (!booking && isBookable) {
         tempSelectedSlot = [
           ...selectedSlots,
           {
@@ -174,6 +197,12 @@ const Venue = () => {
   }
 
   const onContinueBooking = () => {
+    if (!user.token) {
+      Modal.info({
+        title: 'กรุณาเข้าสู่ระบบ',
+        onOk: () => router.push('/login')
+      })
+    }
     if (isManager) {
       setBookingNameModalVisible(true)
     } else {
@@ -185,21 +214,22 @@ const Venue = () => {
   const onContinueToPayment = (values) => {
     setBookingNameModalVisible(false)
 
-    request.post('/venue/book', {
+    request.post('/bookings', {
       venue: venue._id,
       slots: selectedSlots,
       price: values.price === 'free' ? 0 : totalPrice,
       date: selectedDay,
       name: values.name || user.displayName || user.officialName,
       note: values.note,
+      isCustomer: !isManager
     },
       user.token)
       .then(res => {
-        console.log(res.data)
         if (isManager) {
           setSelectedSlots([])
           setTotalPrice(0)
-
+          mutateBooking()
+          form.resetFields()
         } else {
           router.push(`/booking/${res.data._id}`)
         }
@@ -209,55 +239,79 @@ const Venue = () => {
       })
   }
 
+  const disabledDate = (current) => {
+    const startOfToday = moment().startOf('day')
+    const threeMonthsFromNow = moment().add(3, 'months').endOf('day')
+    const nextYear = moment().add(1, 'year').endOf('year')
+    if (isManager) {
+      return current && current > nextYear
+    }
+
+    return current && (current < startOfToday || current > threeMonthsFromNow);
+  }
+
+  const disableTime = (current) => {
+    if (isManager) {
+      return false
+    }
+    return current && (current) < moment().startOf('hour')
+  }
+  useEffect(() => {
+    console.log('Table Ref:', tableRef.current);
+  }, []);
+
+
   return (
-    <Layout>
-      <div>
-        สนามแบด
+    <Layout back={{ href: '/venue' }}>
+      <div style={{ fontSize: '24px', textAlign: 'center', margin: '20px', color: COLOR.MINOR_THEME }}>
+        {venue?.name}
       </div>
       <div style={{ margin: 'auto' }}>
-        <Swiper
-          style={{ width: isMobile ? '100%' : '80%' }}
-          onSwiper={setSwiperRef}
-          slidesPerView={7}
-          centeredSlides={false}
-          spaceBetween={30}
-          pagination={{
-            type: 'fraction',
-          }}
-          navigation={true}
-          modules={[Pagination, Navigation]}
-          className="mySwiper"
-        >
-          <SwiperSlide>
-            <div style={{ backgroundColor: '#fafafa', height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <div>slider 1</div>
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>Slide 2</SwiperSlide>
-          <SwiperSlide>Slide 3</SwiperSlide>
-          <SwiperSlide>Slide 4</SwiperSlide>
-          <SwiperSlide>Slide 5</SwiperSlide>
-          <SwiperSlide>Slide 6</SwiperSlide>
-          <SwiperSlide>Slide 7</SwiperSlide>
-          <SwiperSlide>Slide 8</SwiperSlide>
-          <SwiperSlide>Slide 9</SwiperSlide>
-          <SwiperSlide>Slide 10</SwiperSlide>
-        </Swiper>
+        <div style={{ display: 'flex', gap: '5px', justifyContent: 'center' }}>
 
-        <Table
-          columns={column}
-          dataSource={row}
-          bordered
-          pagination={false}
-          scroll={{ x: 1500, y: 500 }}
-          size='small'
-          style={{
-            margin: '20px auto',
-            width: isMobile ? '100%' : '80%',
-            zIndex: '-999',
-            pageBreakAfter: 'always'
-          }}
-        />
+
+          <Button disabled={selectedDay.startOf('day') <= moment().startOf('day')} size='large' type='primary' onClick={() => setSelectedDay(moment(selectedDay).subtract(1, 'day'))}><CaretLeftOutlined style={{ fontSize: '16px' }} /></Button>
+          <DatePicker
+            size='large'
+            value={selectedDay}
+            onOk={(date) => setSelectedDay(date)}
+            onChange={(date) => setSelectedDay(date)}
+            disabledDate={disabledDate}
+            disabledHours={disableTime}
+            showNow={false}
+            // format="ddd, DD MMM - HH:mm" // wait for auto scroll feature
+            format="ddd, DD MMM YYYY"
+            // showTime={{
+            //   format: 'HH',
+            //   hideDisabledOptions: true,
+            //   disabledHours: () => {
+            //     const { openTimeNum, closeTimeNum } = getOperateTime(venue)
+            //     const allHours = Array.from(Array(24).keys())
+            //     return allHours.filter(hour => hour < openTimeNum || hour > closeTimeNum)
+            //   }
+            // }}
+            defaultValue={selectedDay}
+          />
+          <Button size='large' type='primary' onClick={() => setSelectedDay(moment(selectedDay).add(1, 'day'))}><CaretRightOutlined style={{ fontSize: '16px' }} /></Button>
+        </div>
+        <div >
+          <Table
+            ref={tableRef}
+            columns={column}
+            dataSource={row}
+            bordered
+            pagination={false}
+            scroll={{ y: 500 }}
+            size='small'
+            style={{
+              margin: '20px auto',
+              maxWidth: '1500px',
+              zIndex: '-999',
+              pageBreakAfter: 'always'
+            }}
+          />
+        </div>
+
         {totalPrice > 0 && <div style={{
           position: 'absolute',
           bottom: '80px',
