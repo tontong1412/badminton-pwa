@@ -194,7 +194,6 @@ const Venue = () => {
       }
     }
     setSelectedSlots(tempSelectedSlot)
-    console.log('totalPrice', totalPrice)
   }
 
   const onContinueBooking = () => {
@@ -222,7 +221,8 @@ const Venue = () => {
       date: selectedDay,
       name: values.name || user.displayName || user.officialName,
       note: values.note,
-      isCustomer: !isManager
+      isCustomer: !isManager,
+      status: isManager ? 'paid' : 'idle'
     },
       user.token)
       .then(res => {
@@ -257,9 +257,6 @@ const Venue = () => {
     }
     return current && (current) < moment().startOf('hour')
   }
-  useEffect(() => {
-    console.log('Table Ref:', tableRef.current);
-  }, []);
 
 
   return (

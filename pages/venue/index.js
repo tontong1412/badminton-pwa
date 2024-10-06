@@ -25,7 +25,7 @@ const Venue = () => {
         venues?.map(v => <div key={v._id}>
           <Card
             actions={[
-              <div key='detail'>ติดต่อสอบถาม</div>,
+              // <div key='detail'>ติดต่อสอบถาม</div>,
               <Link key='book' href={`/venue/${v._id}`}
                 passHref><div > จอง</div></Link>,
             ]}
