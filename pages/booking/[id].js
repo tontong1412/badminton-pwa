@@ -55,15 +55,13 @@ const Booking = () => {
       const remainingTime = calculateTimeRemaining(booking?.expiresAt);
       if (remainingTime <= 0) {
         clearInterval(interval); // Stop countdown when expired
-      }
-      setTimeRemaining(remainingTime);
-      if (remainingTime <= 0) {
         Modal.info({
           title: 'หมดเวลา',
           content: 'กรุณาทำการจองใหม่อีกครั้ง',
           onOk: () => router.push('/venue')
         })
       }
+      setTimeRemaining(remainingTime);
     }, 1000); // Update every second
 
 

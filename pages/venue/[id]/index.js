@@ -1,8 +1,8 @@
 import Layout from '../../../components/Layout'
 import { useRouter } from 'next/router'
-import { COLOR, MAP_BOOKING_COLOR } from '../../../constant'
+import { COLOR, MAP_BOOKING_COLOR, TRANSACTION } from '../../../constant'
 import moment from 'moment'
-import { Table, Button, Drawer, Modal, Input, Radio, Form, InputNumber, Space, DatePicker, Checkbox } from 'antd'
+import { Table, Button, Drawer, Modal, Input, Radio, Form, InputNumber, Space, DatePicker, Checkbox, Divider, Tag, Popconfirm, message } from 'antd'
 import { PlusCircleOutlined, DeleteOutlined, CaretRightOutlined, CaretLeftOutlined } from '@ant-design/icons'
 import { useEffect, useState, useRef } from 'react'
 import { useVenue, convertTimeToNumber, useBookings } from '../../../utils'
@@ -41,6 +41,8 @@ const Venue = () => {
   const [bookingNameModalVisible, setBookingNameModalVisible] = useState(false)
   const [form] = Form.useForm()
   const [radioValue, setRadioValue] = useState()
+  const [bookingInfoModalVisible, setBookingInfoModalVisible] = useState(false)
+  const [selectedBooking, setSelectedBooking] = useState(null)
 
 
 
@@ -191,6 +193,11 @@ const Venue = () => {
           }
         ]
         setTotalPrice(tempTotalPrice + price)
+      } else {
+        if (isManager) {
+          setSelectedBooking(booking.booking)
+          setBookingInfoModalVisible(true)
+        }
       }
     }
     setSelectedSlots(tempSelectedSlot)
@@ -209,6 +216,16 @@ const Venue = () => {
       setBookingName(user.displayName || user.officialName)
       onContinueToPayment({ name: user.displayName || user.officialName })
     }
+  }
+
+  const onRemoveBooking = (id) => {
+    request.remove(`/bookings/${id}`, user.token)
+      .then(res => {
+        setBookingInfoModalVisible(false)
+        message.success('successful')
+        mutateBooking()
+      })
+      .catch(err => message.error(err.response.data))
   }
 
   const onContinueToPayment = (values) => {
@@ -429,7 +446,73 @@ const Venue = () => {
             <Input.TextArea rows={3} />
           </Form.Item>
         </Form>
+      </Modal>
+      <Modal
+        title='ข้อมูลการจอง'
+        visible={bookingInfoModalVisible}
+        onCancel={() => setBookingInfoModalVisible(false)}
+        footer={null}
+      >
+        <div >
+          {/* <div style={{ fontSize: '18px', color: COLOR.MINOR_THEME, textAlign: 'center' }}>การจอง: {selectedBooking?.bookingRef}</div>
+          <Divider /> */}
+          <div style={{ margin: '10px' }}>
+            <div style={{ display: 'flex', gap: '5px' }}><div style={{ fontWeight: 'bold', color: COLOR.MINOR_THEME, width: '80px' }}>รหัส</div> <div>{selectedBooking?.bookingRef}</div></div>
+            <div style={{ display: 'flex', gap: '5px' }}><div style={{ fontWeight: 'bold', color: COLOR.MINOR_THEME, width: '80px' }}>ชื่อ</div> <div>{selectedBooking?.name}</div></div>
+            <div style={{ display: 'flex', gap: '5px' }}><div style={{ fontWeight: 'bold', color: COLOR.MINOR_THEME, width: '80px' }}>สนาม</div> <div>{venue?.name}</div></div>
+            <div style={{ display: 'flex', gap: '5px' }}><div style={{ fontWeight: 'bold', color: COLOR.MINOR_THEME, width: '80px' }}>วันที่</div> <div>{moment(selectedBooking?.date).format('LL')}</div></div>
+            <div style={{ display: 'flex', gap: '5px' }}><div style={{ fontWeight: 'bold', color: COLOR.MINOR_THEME, width: '80px' }}>สถานะ</div> <Tag color={TRANSACTION[selectedBooking?.status]?.COLOR}>{TRANSACTION[selectedBooking?.status]?.LABEL}</Tag></div>
+            <div style={{ display: 'flex', gap: '5px' }}><div style={{ fontWeight: 'bold', color: COLOR.MINOR_THEME, width: '80px' }}>หมายเหตุ</div> <div>{selectedBooking?.note || '-'}</div></div>
+          </div>
+        </div>
+        <div>
+          <div style={{ display: 'flex', padding: '10px', justifyContent: 'space-between', borderBottom: '1px #eee solid' }}>
+            <div style={{ display: 'flex', fontWeight: 'bold', color: COLOR.MINOR_THEME }}>
+              <div style={{ width: '80px' }}>เวลา</div>
+              <div style={{ width: '100px' }}>สนาม</div>
+              <div style={{ width: '80px' }}>ราคา</div>
+            </div>
+          </div>
 
+          {
+            selectedBooking?.slots.sort((a, b) => {
+              if (convertTimeToNumber(a.time) - convertTimeToNumber(b.time) === 0) {
+                if (a.court.name > b.court.name) return 1
+                if (a.court.name < b.court.name) return -1
+              }
+              return convertTimeToNumber(a.time) - convertTimeToNumber(b.time)
+            }).map((slot, index) =>
+              <div key={index} style={{ maxWidth: '600px', display: 'flex', padding: '10px', justifyContent: 'space-between', borderBottom: '1px #eee solid' }}>
+                <div style={{ display: 'flex' }}>
+                  <div style={{ width: '80px' }}>{slot.time}</div>
+                  <div style={{ width: '100px' }}>{slot.court.name}</div>
+                  <div style={{ width: '80px' }}>{slot.price}</div>
+                </div>
+                {/* <Popconfirm
+                  title="ลบสนามนี้ออกจากการจองของคุณ?"
+                  onConfirm={() => onRemovePlayer(player._id)}
+                  onCancel={() => { }}
+                  okText="Yes"
+                  cancelText="No"
+                  placement="topRight"
+                ><div
+                  style={{ marginLeft: '5px', color: 'red' }}>
+                    <DeleteOutlined />
+                  </div>
+                </Popconfirm> */}
+              </div>)
+          }
+        </div>
+
+        <div style={{ fontSize: '20px', color: COLOR.MINOR_THEME, textAlign: 'center', marginTop: '20px' }}>รวม {selectedBooking?.price} บาท</div>
+        <Popconfirm
+          title="แน่ใจที่จะลบการจองหรือไม่?"
+          onConfirm={() => onRemoveBooking(selectedBooking._id)}
+          onCancel={() => { }}
+          okText="Yes"
+          cancelText="No">
+          <div style={{ textAlign: 'center', marginTop: '20px' }}><Button type="danger">ยกเลิกการจองนี้</Button></div>
+        </Popconfirm>
 
       </Modal>
     </Layout >
