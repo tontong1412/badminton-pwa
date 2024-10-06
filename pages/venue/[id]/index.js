@@ -75,7 +75,7 @@ const Venue = () => {
     const { openTimeNum, closeTimeNum } = getOperateTime(venue)
 
     const tempCol = [];
-    for (let hour = openTimeNum; hour <= closeTimeNum; hour++) {
+    for (let hour = openTimeNum; hour < closeTimeNum; hour++) {
       const formattedTime = hour.toFixed(2).padStart(5, '0')
       if (isManager || (selectedDay.startOf('day') >= moment().startOf('day') && hour >= moment().hour()) || (selectedDay.startOf('day') > moment().startOf('day'))) {
         tempCol.push({
@@ -194,6 +194,7 @@ const Venue = () => {
       }
     }
     setSelectedSlots(tempSelectedSlot)
+    console.log('totalPrice', totalPrice)
   }
 
   const onContinueBooking = () => {
@@ -294,23 +295,31 @@ const Venue = () => {
           />
           <Button size='large' type='primary' onClick={() => setSelectedDay(moment(selectedDay).add(1, 'day'))}><CaretRightOutlined style={{ fontSize: '16px' }} /></Button>
         </div>
-        <div >
-          <Table
-            ref={tableRef}
-            columns={column}
-            dataSource={row}
-            bordered
-            pagination={false}
-            scroll={{ y: 500 }}
-            size='small'
-            style={{
-              margin: '20px auto',
-              maxWidth: '1500px',
-              zIndex: '-999',
-              pageBreakAfter: 'always'
-            }}
-          />
-        </div>
+        {
+          column.length < 2 ?
+            <div style={{ textAlign: 'center', margin: '20px' }}>
+              <div style={{ fontSize: '20px', marginBottom: '10px' }}>สนามปิดทำการแล้วสำหรับวันนี้</div>
+              <Button onClick={() => setSelectedDay(moment(selectedDay).add(1, 'day'))}>จองวันพรุ่งนี้</Button>
+            </div>
+            :
+            <Table
+              ref={tableRef}
+              columns={column}
+              dataSource={row}
+              bordered
+              pagination={false}
+              scroll={{ y: 500 }}
+              size='small'
+              style={{
+                margin: '20px auto',
+                maxWidth: '1500px',
+                zIndex: '-999',
+                pageBreakAfter: 'always'
+              }}
+            />
+
+        }
+
 
         {totalPrice > 0 && <div style={{
           position: 'absolute',
