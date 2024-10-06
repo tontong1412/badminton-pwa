@@ -127,7 +127,7 @@ const ClaimPlayer = () => {
       >
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{ width: '100px', height: '100px', borderRadius: '100px', overflow: 'hidden', border: '1px solid #eee' }}><Image unoptimized objectFit='cover' src={playerExistData?.profile.photo || `/avatar.png`} alt='' width={100} height={100} /></div>
+          <div style={{ width: '100px', height: '100px', borderRadius: '100px', overflow: 'hidden', border: '1px solid #eee' }}><Image unoptimized objectFit='cover' src={playerExistData?.profile.photo?.replace('/upload/', '/upload/q_10/') || `/avatar.png`} alt='' width={100} height={100} /></div>
           <div style={{ fontWeight: 'bold', marginTop: '10px', fontSize: '18px' }}>{playerExistData?.profile.officialName}</div>
           {playerExistData?.events.length > 0 &&
             <div style={{ width: '100%' }}>

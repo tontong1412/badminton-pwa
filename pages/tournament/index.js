@@ -55,7 +55,7 @@ const Tournament = () => {
                   <div style={{ width: '40%' }}>
                     <Image
                       unoptimized
-                      src={tournament?.logo || '/icon/logo.png'}
+                      src={tournament?.logo?.replace('/upload/', '/upload/q_10/') || '/icon/logo.png'}
                       alt=''
                       width={150}
                       height={150}

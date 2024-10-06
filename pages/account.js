@@ -78,7 +78,7 @@ const Account = () => {
       <div style={{ textAlign: 'center', marginTop: '10px' }}>
         <div style={{ position: 'relative', width: '100px', height: '100px', margin: 'auto' }}>
           <div style={{ width: '100%', height: '100%', borderRadius: '50px', overflow: 'hidden', border: '1px solid #eee' }}>
-            <Image unoptimized objectFit='cover' src={imageUrl || user?.photo || `/avatar.png`} alt='' width={100} height={100} />
+            <Image unoptimized objectFit='cover' src={imageUrl || user?.photo?.replace('/upload/', '/upload/q_10/') || `/avatar.png`} alt='' width={100} height={100} />
           </div>
           <Upload
             action={`${API_ENDPOINT}/mock`}

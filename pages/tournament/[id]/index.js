@@ -66,7 +66,7 @@ const TournamentManagerID = () => {
     <Layout>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
         <div style={{ widht: '200px', height: '200px', overflow: 'hidden', margin: 'auto', marginTop: '20px' }}>
-          <Image unoptimized alt='logo' src={tournament?.logo || '/icon/logo.png'} objectFit='contain' width={200} height={200} />
+          <Image unoptimized alt='logo' src={tournament?.logo?.replace('/upload/', '/upload/q_10/') || '/icon/logo.png'} objectFit='contain' width={200} height={200} />
         </div>
         <h2>{tournament.name}</h2>
         <div>{`${moment(tournament.startDate).format('ll')}-${moment(tournament.endDate).format('ll')}`}</div>
@@ -145,7 +145,7 @@ const TournamentManagerID = () => {
               {tournament.sponsors?.map((sp, i) =>
                 <div key={i + 1}
                   style={{ widht: '60px', height: '60px', overflow: 'hidden', margin: 'auto' }}>
-                  <Image unoptimized alt='logo' src={sp} objectFit='contain' width={60} height={60} />
+                  <Image unoptimized alt='logo' src={sp?.replace('/upload/', '/upload/q_10/')} objectFit='contain' width={60} height={60} />
                 </div>)}
             </div>
           </>
@@ -198,7 +198,7 @@ const TournamentManagerID = () => {
           centered
           modalRender={() => <div style={{ width: '100%', margin: 'auto' }}>
             <Image unoptimized alt='logo'
-              src={tournament?.poster || '/icon/logo.png'}
+              src={tournament?.poster?.replace('/upload/', '/upload/q_10/') || '/icon/logo.png'}
               width={434}
               height={614}
               objectFit='cover'

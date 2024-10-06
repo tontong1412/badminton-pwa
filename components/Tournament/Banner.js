@@ -26,7 +26,7 @@ const BannerItem = ({ image, link }) => {
       }}>
       <Image
         unoptimized
-        src={image.replace('/upload/', '/upload/q_50/')}
+        src={image.replace('/upload/', '/upload/q_20/')}
         alt=''
         width={width}
         height={height}

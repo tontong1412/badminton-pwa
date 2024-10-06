@@ -147,7 +147,7 @@ const SlipModal = ({ event, team = {}, visible, setVisible, mutate, isManager, t
       </div>
       {
         (slipImage || team?.slip) ?
-          <Image objectFit='contain' src={slipImage || team.slip?.replace('/upload/', '/upload/q_30/')} alt='' width={50} height={50} layout='responsive' unoptimized />
+          <Image objectFit='contain' src={slipImage || team.slip?.replace('/upload/', '/upload/q_10/')} alt='' width={50} height={50} layout='responsive' unoptimized />
           : <div style={{ width: '100%', textAlign: 'center', padding: '10px', backgroundColor: '#eee', borderRadius: '5px' }}>ยังไม่ได้อัพโหลดสลิป</div>
       }
     </Modal>

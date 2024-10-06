@@ -50,7 +50,7 @@ const RegisteringTournament = (props, ref) => {
                   <div style={{ width: '120px', height: '120px', borderRadius: '5px', overflow: 'hidden' }}>
                     <Image
                       unoptimized
-                      src={tournament?.logo || '/icon/logo.png'}
+                      src={tournament?.logo?.replace('/upload/', '/upload/q_10/') || '/icon/logo.png'}
                       alt=''
                       width={120}
                       height={120}

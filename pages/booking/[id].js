@@ -137,7 +137,7 @@ const Booking = () => {
           </div>
           {
             (slipImage || booking?.slip) ?
-              <div><Image objectFit='contain' src={slipImage || booking.slip.replace('/uplaod/', '/upload/q_30/')} alt='' width={50} height={50} layout='responsive' unoptimized /></div>
+              <div><Image objectFit='contain' src={slipImage || booking.slip.replace('/uplaod/', '/upload/q_10/')} alt='' width={50} height={50} layout='responsive' unoptimized /></div>
               : <div style={{ width: '350px', textAlign: 'center', padding: '10px', backgroundColor: '#eee', borderRadius: '5px' }}>ยังไม่ได้อัพโหลดสลิป</div>
           }
 
