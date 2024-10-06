@@ -48,7 +48,7 @@ const PlayerDisplay = ({ children, player, showContact, draw = false, handicap }
         marginTop: '10px'
       }}>
         <a href={player?.photo}>
-          <Image unoptimized objectFit='cover' src={player.photo?.replace('/upload/', '/upload/q_30/') || `/avatar.png`} alt='' width={50} height={50} layout='responsive' unoptimized />
+          <Image unoptimized objectFit='cover' src={player.photo?.replace('/upload/', '/upload/q_30/') || `/avatar.png`} alt='' width={50} height={50} layout='responsive' />
         </a>
       </div>
       <div style={{ display: 'flex', marginTop: '20px', gap: '5px' }}>
