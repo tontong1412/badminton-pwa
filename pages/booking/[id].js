@@ -111,16 +111,16 @@ const Booking = () => {
       message.error(JSON.stringify(info, null, 1));
     }
   }
-  if (!booking) return null
+  if (!booking) return <Layout back={{ href: '/venue' }} />
   return (
     <Layout back={{ href: '/venue' }}>
       <div style={{ maxWidth: '600px', fontSize: '18px', marginTop: '30px', }}>
         <div >
-          <div style={{ fontSize: '25px', color: COLOR.MINOR_THEME, textAlign: 'center' }}>การจอง: {booking.bookingRef}</div>
+          <div style={{ fontSize: '25px', color: COLOR.MINOR_THEME, textAlign: 'center' }}>การจอง: {booking?.bookingRef}</div>
           <Divider />
           <div style={{ margin: '10px' }}>
-            <div style={{ display: 'flex', gap: '5px' }}><div style={{ fontWeight: 'bold', color: COLOR.MINOR_THEME, width: '80px' }}>สนาม</div> <div>{booking.venue.name}</div></div>
-            <div style={{ display: 'flex', gap: '5px' }}><div style={{ fontWeight: 'bold', color: COLOR.MINOR_THEME, width: '80px' }}>วันที่</div> <div>{moment(booking.date).format('LL')}</div></div>
+            <div style={{ display: 'flex', gap: '5px' }}><div style={{ fontWeight: 'bold', color: COLOR.MINOR_THEME, width: '80px' }}>สนาม</div> <div>{booking?.venue.name}</div></div>
+            <div style={{ display: 'flex', gap: '5px' }}><div style={{ fontWeight: 'bold', color: COLOR.MINOR_THEME, width: '80px' }}>วันที่</div> <div>{moment(booking?.date).format('LL')}</div></div>
             <div style={{ display: 'flex', gap: '5px' }}><div style={{ fontWeight: 'bold', color: COLOR.MINOR_THEME, width: '80px' }}>สถานะ</div> <Tag color={TRANSACTION[booking?.status].COLOR}>{TRANSACTION[booking?.status].LABEL}</Tag> {booking?.status === 'idle' && `เหลือเวลา ${formatTime(timeRemaining)}`}</div>
             {booking?.status === 'idle' && <div style={{ marginTop: '5px', padding: '10px', fontSize: '16px', border: '1px solid orange', backgroundColor: 'rgb(250,200,70,0.4)', borderRadius: '5px' }}>กรุณาอัพโหลดสลิปภายใน 10 นาที มิเช่นนั้นจะถือว่าการจองไม่สำเร็จ และระบบจะยกเลิกการจองนี้</div>}
           </div>
@@ -164,30 +164,30 @@ const Booking = () => {
           }
         </div>
 
-        <div style={{ fontSize: '20px', color: COLOR.MINOR_THEME, textAlign: 'center', marginTop: '20px' }}>รวม {booking.price} บาท</div>
+        <div style={{ fontSize: '20px', color: COLOR.MINOR_THEME, textAlign: 'center', marginTop: '20px' }}>รวม {booking?.price} บาท</div>
 
         <Divider>ช่องทางโอนเงิน</Divider>
         {qrSVG &&
           <div style={{ textAlign: 'center' }}>
             <div style={{ maxWidth: '250px', margin: '0 auto' }} dangerouslySetInnerHTML={{ __html: qrSVG }} />
-            <div style={{ marginTop: '-20px', marginBottom: '10px' }}>{booking.venue?.payment?.name}</div>
+            <div style={{ marginTop: '-20px', marginBottom: '10px' }}>{booking?.venue?.payment?.name}</div>
           </div>
         }
 
         <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: '10px', width: '100%' }}>
           {
-            (booking.venue?.payment?.code && booking.venue?.payment?.bank) &&
+            (booking?.venue?.payment?.code && booking?.venue?.payment?.bank) &&
             <div>
               <div style={{ display: 'flex', gap: '10px' }}>
                 <div style={{ fontWeight: 'bold', width: '90px' }}>ช่องทาง:</div>
-                <div>{booking.venue?.payment?.bank}</div>
+                <div>{booking?.venue?.payment?.bank}</div>
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
                 <div style={{ fontWeight: 'bold', width: '90px' }}>เลขบัญชี:</div>
-                <div>{booking.venue?.payment?.code}</div>
+                <div>{booking?.venue?.payment?.code}</div>
                 <div
                   onClick={() => {
-                    copy(booking.venue?.payment?.code)
+                    copy(booking?.venue?.payment?.code)
                     message.success('copied')
                   }}
                   style={{ color: COLOR.MINOR_THEME }}>
@@ -197,13 +197,13 @@ const Booking = () => {
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
                 <div style={{ fontWeight: 'bold', width: '90px' }}>ชื่อบัญชี:</div>
-                <div>{booking.venue?.payment?.name}</div>
+                <div>{booking?.venue?.payment?.name}</div>
               </div>
             </div>
           }
           {
             (slipImage || booking?.slip) ?
-              <div><Image objectFit='contain' src={slipImage || booking.slip.replace('/uplaod/', '/upload/q_10/')} alt='' width={50} height={50} layout='responsive' unoptimized /></div>
+              <div><Image objectFit='contain' src={slipImage || booking?.slip.replace('/uplaod/', '/upload/q_10/')} alt='' width={50} height={50} layout='responsive' unoptimized /></div>
               : <div style={{ width: '350px', textAlign: 'center', padding: '10px', backgroundColor: '#eee', borderRadius: '5px' }}>ยังไม่ได้อัพโหลดสลิป</div>
           }
 
