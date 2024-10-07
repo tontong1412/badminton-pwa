@@ -3,6 +3,7 @@ import Layout from '../../components/Layout/noFooter'
 import { convertTimeToNumber } from "../../utils"
 import { COLOR, TRANSACTION } from "../../constant"
 import { Popconfirm, Button, Divider, Upload, message, Tag, Modal } from 'antd'
+import { CheckCircleOutlined } from '@ant-design/icons'
 import request from '../../utils/request'
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
@@ -55,11 +56,13 @@ const Booking = () => {
       const remainingTime = calculateTimeRemaining(booking?.expiresAt);
       if (remainingTime <= 0) {
         clearInterval(interval); // Stop countdown when expired
-        Modal.info({
-          title: 'หมดเวลา',
-          content: 'กรุณาทำการจองใหม่อีกครั้ง',
-          onOk: () => router.push('/venue')
-        })
+        if (booking?.status === 'idle') {
+          Modal.info({
+            title: 'หมดเวลา',
+            content: 'กรุณาทำการจองใหม่อีกครั้ง',
+            onOk: () => router.push('/venue')
+          })
+        }
       }
       setTimeRemaining(remainingTime);
     }, 1000); // Update every second
@@ -90,6 +93,10 @@ const Booking = () => {
           setLoadingImage(false)
           setSlipImage()
           setBooking(res.data)
+          Modal.success({
+            title: 'สำเร็จ',
+            content: 'การจองเสร็จสิ้น'
+          })
         }).catch((err) => {
           setLoadingImage(false)
           setSlipImage()
