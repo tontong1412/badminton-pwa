@@ -7,8 +7,8 @@ import request from '../utils/request'
 import Layout from '../components/Layout/noFooter'
 import { useState, useEffect } from 'react'
 import { analytics, logEvent } from '../utils/firebase'
-// import FacebookLogin from 'react-facebook-login'
-// import { FACEBOOK } from '../config';
+import FacebookLogin from 'react-facebook-login'
+import { FACEBOOK } from '../config';
 
 const Signup = () => {
   const [loading, setLoading] = useState(false)
@@ -108,7 +108,7 @@ const Signup = () => {
 
       <div style={{ width: '250px', height: '250px', margin: 'auto' }}><Image unoptimized src={logo} alt='logo' /></div>
 
-      {/* <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '15px' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '15px' }}>
         <FacebookLogin
           appId={FACEBOOK.APP_ID}
           // autoLoad={true}
@@ -118,7 +118,7 @@ const Signup = () => {
           cssClass='facebook-login-button'
         />
       </div>
-      <Divider>Or</Divider> */}
+      <Divider>Or</Divider>
       <Form
         form={form}
         name='basic'
