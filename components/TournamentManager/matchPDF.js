@@ -59,7 +59,6 @@ const styles = StyleSheet.create({
   },
 })
 
-const data = [1, 2, 3]
 // Create Document Component
 const MyDocument = ({ data }) => {
   return (
@@ -81,7 +80,7 @@ const MyDocument = ({ data }) => {
             <Text style={styles.row8}>คูปองลูก</Text>
             <Text style={styles.row10}>หมายเหตุ</Text>
           </View>
-          {data?.sort((a, b) => a.matchNumber - b.matchNumber).map((row, i) => (
+          {data?.filter(a => a.matchNumber != undefined)?.sort((a, b) => a.matchNumber - b.matchNumber).map((row, i) => (
             <View key={i} style={styles.row} wrap={false}>
               <Text style={{ ...styles.row5, textAlign: 'center' }}>{row.matchNumber}</Text>
               <View style={styles.row10}>
