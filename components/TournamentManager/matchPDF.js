@@ -81,7 +81,7 @@ const MyDocument = ({ data }) => {
             <Text style={styles.row8}>คูปองลูก</Text>
             <Text style={styles.row10}>หมายเหตุ</Text>
           </View>
-          {data?.map((row, i) => (
+          {data?.sort((a, b) => a.matchNumber - b.matchNumber).map((row, i) => (
             <View key={i} style={styles.row} wrap={false}>
               <Text style={{ ...styles.row5, textAlign: 'center' }}>{row.matchNumber}</Text>
               <View style={styles.row10}>
