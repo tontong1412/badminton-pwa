@@ -71,7 +71,6 @@ const Venue = () => {
     }
   }
 
-
   useEffect(() => {
     if (!venue) return null
     const { openTimeNum, closeTimeNum } = getOperateTime(venue)
@@ -341,6 +340,23 @@ const Venue = () => {
                   pageBreakAfter: 'always'
                 }}
               />
+
+          }
+
+          {
+            isManager &&
+            <div style={{ textAlign: 'center' }}>
+              <Divider>สำหรับผู้จัดการสนาม</Divider>
+              <div style={{ color: COLOR.MINOR_THEME, fontSize: '18px' }}>สรุปการจอง</div>
+              <div>ลูกค้าจองผ่านระบบ: {bookings?.filter(b => b.isCustomer).reduce((prev, current) => prev += current.slots.length, 0)} ชั่วโมง</div>
+              <div>จองผ่านสนาม: {bookings?.filter(b => b.isCustomer === false).reduce((prev, current) => prev += current.slots.length, 0)} ชั่วโมง</div>
+              <div>รวม: {bookings?.reduce((prev, current) => prev += current.slots?.length, 0)} ชั่วโมง</div>
+              <br />
+              <div>รายรับผ่านระบบ: {bookings?.filter(b => b.isCustomer).reduce((prev, current) => prev += current.price, 0)} บาท</div>
+              <div>รายรับผ่านสนาม: {bookings?.filter(b => b.isCustomer === false).reduce((prev, current) => prev += current.price || 0, 0)} บาท</div>
+              <div>รวม: {bookings?.reduce((prev, current) => prev += current.price || 0, 0)} บาท</div>
+              <div></div>
+            </div>
 
           }
         </div >
