@@ -204,6 +204,7 @@ const Venue = () => {
   }
 
   const onContinueBooking = () => {
+    setDrawerVisible(false)
     if (!user.token) {
       Modal.info({
         title: 'กรุณาเข้าสู่ระบบ',
@@ -278,76 +279,89 @@ const Venue = () => {
 
   return (
     <Layout back={{ href: '/venue' }}>
-      <div style={{ fontSize: '24px', textAlign: 'center', margin: '20px', color: COLOR.MINOR_THEME }}>
-        {venue?.name}
-      </div>
-      <div style={{ margin: 'auto' }}>
-        <div style={{ display: 'flex', gap: '5px', justifyContent: 'center' }}>
-
-
-          <Button disabled={!isManager && selectedDay.startOf('day') <= moment().startOf('day')} size='large' type='primary' onClick={() => setSelectedDay(moment(selectedDay).subtract(1, 'day'))}><CaretLeftOutlined style={{ fontSize: '16px' }} /></Button>
-          <DatePicker
-            allowClear={false}
-            size='large'
-            value={selectedDay}
-            onOk={(date) => setSelectedDay(date)}
-            onChange={(date) => setSelectedDay(date)}
-            disabledDate={disabledDate}
-            disabledHours={disableTime}
-            showNow={false}
-            // format="ddd, DD MMM - HH:mm" // wait for auto scroll feature
-            format="ddd, DD MMM YYYY"
-            // showTime={{
-            //   format: 'HH',
-            //   hideDisabledOptions: true,
-            //   disabledHours: () => {
-            //     const { openTimeNum, closeTimeNum } = getOperateTime(venue)
-            //     const allHours = Array.from(Array(24).keys())
-            //     return allHours.filter(hour => hour < openTimeNum || hour > closeTimeNum)
-            //   }
-            // }}
-            defaultValue={selectedDay}
-          />
-          <Button size='large' type='primary' onClick={() => setSelectedDay(moment(selectedDay).add(1, 'day'))}><CaretRightOutlined style={{ fontSize: '16px' }} /></Button>
+      <div style={{ maxWidth: '1300px', margin: 'auto' }}>
+        <img
+          height={400}
+          width={'100%'}
+          style={{ objectFit: 'cover' }}
+          alt={venue?.name}
+          src={venue?.image || '/icon/logo.png'}
+        />
+        <div style={{ fontSize: '24px', textAlign: 'center', margin: '20px', color: COLOR.MINOR_THEME }}>
+          {venue?.name}
         </div>
-        {
-          column.length < 2 ?
-            <div style={{ textAlign: 'center', margin: '20px' }}>
-              <div style={{ fontSize: '20px', marginBottom: '10px' }}>สนามปิดทำการแล้วสำหรับวันนี้</div>
-              <Button onClick={() => setSelectedDay(moment(selectedDay).add(1, 'day'))}>จองวันพรุ่งนี้</Button>
-            </div>
-            :
-            <Table
-              ref={tableRef}
-              columns={column}
-              dataSource={row}
-              bordered
-              pagination={false}
-              scroll={{ y: 500 }}
-              size='small'
-              style={{
-                margin: '20px auto',
-                maxWidth: '1500px',
-                zIndex: '-999',
-                pageBreakAfter: 'always'
-              }}
+        <div style={{ margin: 'auto', width: '100%', marginBottom: '100px' }}>
+          <div style={{ display: 'flex', gap: '5px', justifyContent: 'center' }}>
+
+
+            <Button disabled={!isManager && selectedDay.startOf('day') <= moment().startOf('day')} size='large' type='primary' onClick={() => setSelectedDay(moment(selectedDay).subtract(1, 'day'))}><CaretLeftOutlined style={{ fontSize: '16px' }} /></Button>
+            <DatePicker
+              allowClear={false}
+              size='large'
+              value={selectedDay}
+              onOk={(date) => setSelectedDay(date)}
+              onChange={(date) => setSelectedDay(date)}
+              disabledDate={disabledDate}
+              disabledHours={disableTime}
+              showNow={false}
+              // format="ddd, DD MMM - HH:mm" // wait for auto scroll feature
+              format="ddd, DD MMM YYYY"
+              // showTime={{
+              //   format: 'HH',
+              //   hideDisabledOptions: true,
+              //   disabledHours: () => {
+              //     const { openTimeNum, closeTimeNum } = getOperateTime(venue)
+              //     const allHours = Array.from(Array(24).keys())
+              //     return allHours.filter(hour => hour < openTimeNum || hour > closeTimeNum)
+              //   }
+              // }}
+              defaultValue={selectedDay}
             />
+            <Button size='large' type='primary' onClick={() => setSelectedDay(moment(selectedDay).add(1, 'day'))}><CaretRightOutlined style={{ fontSize: '16px' }} /></Button>
+          </div>
+          {
+            column.length < 2 ?
+              <div style={{ textAlign: 'center', margin: '20px' }}>
+                <div style={{ fontSize: '20px', marginBottom: '10px' }}>สนามปิดทำการแล้วสำหรับวันนี้</div>
+                <Button onClick={() => setSelectedDay(moment(selectedDay).add(1, 'day'))}>จองวันพรุ่งนี้</Button>
+              </div>
+              :
+              <Table
+                ref={tableRef}
+                columns={column}
+                dataSource={row}
+                bordered
+                pagination={false}
+                scroll={{ y: 500 }}
+                size='small'
+                style={{
+                  margin: '20px auto',
+                  maxWidth: '1300px',
+                  zIndex: '-999',
+                  pageBreakAfter: 'always'
+                }}
+              />
 
-        }
-
+          }
+        </div >
 
         {totalPrice > 0 && <div style={{
-          position: 'absolute',
+          position: 'fixed',
           bottom: '80px',
-          width: 'calc(100% - 20px)',
+          // width: '100%',
+          // maxWidth: '1300px',
+          width: 'calc(100% - 4px)',
+          maxWidth: '1296px',
           border: '1px solid #ddd',
           borderRadius: '5px',
           padding: '10px',
-          margin: '10px',
+          margin: '2px',
           boxShadow: '2px 2px 5px -5px rgba(0,0,0,0.75)',
           display: 'flex',
           alignItems: 'flex-end',
           justifyContent: 'space-between',
+          zIndex: 1000,
+          backgroundColor: 'white'
         }}>
           <div>
             <div style={{ color: COLOR.MINOR_THEME }} >Total price</div>
@@ -405,7 +419,8 @@ const Venue = () => {
             </div>
           </div>
         </Drawer>
-      </div >
+
+      </div>
       <Modal
         title="ฺBooking Detail"
         visible={bookingNameModalVisible}

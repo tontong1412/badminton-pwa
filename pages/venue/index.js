@@ -42,7 +42,7 @@ const Venue = () => {
                 height={150}
                 style={{ objectFit: 'cover' }}
                 alt="example"
-                src={v.coverPhoto || '/icon/logo.png'}
+                src={v.image || '/icon/logo.png'}
               />
             }
           >
