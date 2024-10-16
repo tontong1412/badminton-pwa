@@ -287,6 +287,7 @@ const Venue = () => {
 
           <Button disabled={selectedDay.startOf('day') <= moment().startOf('day')} size='large' type='primary' onClick={() => setSelectedDay(moment(selectedDay).subtract(1, 'day'))}><CaretLeftOutlined style={{ fontSize: '16px' }} /></Button>
           <DatePicker
+            allowClear={false}
             size='large'
             value={selectedDay}
             onOk={(date) => setSelectedDay(date)}

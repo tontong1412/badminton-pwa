@@ -8,7 +8,7 @@ const AppLayout = (props) => {
   const { activeMenu } = useSelector(state => state)
   return (
     <>
-      <Header />
+      <Header {...props} />
       <main>
         <div className='content'>
           {props.children}
