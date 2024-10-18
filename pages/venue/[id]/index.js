@@ -47,7 +47,7 @@ const Venue = () => {
 
 
   useEffect(() => {
-    if (user && venue && (venue.managers?.map(e => e._id).includes(user.playerID) || (user.playerID === venue.creator))) {
+    if (user && venue && (venue.managers?.includes(user.playerID) || (user.playerID === venue.creator))) {
       setIsManager(true)
     } else {
       setIsManager(false)
@@ -161,7 +161,7 @@ const Venue = () => {
     }, [])
     setRow(tempRow)
 
-  }, [venue, selectedDay, selectedSlots, bookings])
+  }, [venue, selectedDay, selectedSlots, bookings, isManager])
 
   const onSelectSlot = (court, selectedTime, booking) => {
     let tempSelectedSlot = [...selectedSlots]
@@ -384,8 +384,8 @@ const Venue = () => {
             <div style={{ color: COLOR.MINOR_THEME }} ><span style={{ fontSize: '24px', fontWeight: 'bold' }}>{totalPrice}</span> Baht</div>
           </div>
           <div style={{ display: 'flex', gap: '5px' }}>
-            <Button size='large' onClick={() => setDrawerVisible(true)}>Detail</Button>
-            <Button size='large' type='primary' onClick={onContinueBooking}>Continue</Button>
+            <Button size='large' onClick={() => setDrawerVisible(true)}>รายละเอียด</Button>
+            <Button size='large' type='primary' onClick={onContinueBooking}>จอง</Button>
           </div>
         </div>}
 
@@ -430,8 +430,8 @@ const Venue = () => {
               <div style={{ color: COLOR.MINOR_THEME }} ><span style={{ fontSize: '24px', fontWeight: 'bold' }}>{totalPrice}</span> Baht</div>
             </div>
             <div style={{ display: 'flex', gap: '5px' }}>
-              <Button size='large' onClick={() => setDrawerVisible(false)}>Back</Button>
-              <Button size='large' type='primary' onClick={onContinueBooking}>Continue</Button>
+              <Button size='large' onClick={() => setDrawerVisible(false)}>กลับไปเลือกใหม่</Button>
+              <Button size='large' type='primary' onClick={onContinueBooking}>จอง</Button>
             </div>
           </div>
         </Drawer>
