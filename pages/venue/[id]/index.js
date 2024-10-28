@@ -257,6 +257,12 @@ const Venue = () => {
       })
   }
 
+  const onChangeDay = (day) => {
+    setSelectedDay(day)
+    setSelectedSlots([])
+    setTotalPrice(0)
+  }
+
   const disabledDate = (current) => {
     const startOfToday = moment().startOf('day')
     const threeMonthsFromNow = moment().add(3, 'months').endOf('day')
@@ -293,7 +299,7 @@ const Venue = () => {
           <div style={{ display: 'flex', gap: '5px', justifyContent: 'center' }}>
 
 
-            <Button disabled={!isManager && selectedDay.startOf('day') <= moment().startOf('day')} size='large' type='primary' onClick={() => setSelectedDay(moment(selectedDay).subtract(1, 'day'))}><CaretLeftOutlined style={{ fontSize: '16px' }} /></Button>
+            <Button disabled={!isManager && selectedDay.startOf('day') <= moment().startOf('day')} size='large' type='primary' onClick={() => onChangeDay(moment(selectedDay).subtract(1, 'day'))}><CaretLeftOutlined style={{ fontSize: '16px' }} /></Button>
             <DatePicker
               allowClear={false}
               size='large'
@@ -316,7 +322,7 @@ const Venue = () => {
               // }}
               defaultValue={selectedDay}
             />
-            <Button size='large' type='primary' onClick={() => setSelectedDay(moment(selectedDay).add(1, 'day'))}><CaretRightOutlined style={{ fontSize: '16px' }} /></Button>
+            <Button size='large' type='primary' onClick={() => onChangeDay(moment(selectedDay).add(1, 'day'))}><CaretRightOutlined style={{ fontSize: '16px' }} /></Button>
           </div>
           {
             column.length < 2 ?
