@@ -37,7 +37,11 @@ const Matches = () => {
   }, [])
 
   if (!matches || isLoading) return <Loading />
-  if (!tournament?.matchPublished) return <div>matches are not published</div>
+  if (!tournament?.matchPublished) return (<Layout>
+    <h2 style={{ marginBottom: 0 }}>{tournament?.name}</h2>
+    <h2>รายการแข่งขัน</h2><div>matches are not published</div>
+  </Layout>
+  )
 
   return (
     <Layout>
