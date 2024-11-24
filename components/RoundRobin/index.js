@@ -109,7 +109,7 @@ const GroupTable = (props) => {
     setColumns(processColumn(event?.order.group))
     setDataSource(processDataSource(event?.order.group))
   }, [event, groupMatches])
-  if (!event?.drawPublished) return <div>Draw is not yet published</div>
+  if (!event?.drawPublished && !props.isManager) return <div>Draw is not yet published</div>
 
   return (
     <div >

@@ -66,7 +66,7 @@ const Bracket = ({ event: eventProps, isManager, step = 'knockOut' }) => {
 
   if (isLoading || !bracket) return <Loading />
   if (isError) return <div>Error</div>
-  if (!event?.drawPublished) return <div>Draw is not yet published</div>
+  if (!event?.drawPublished && !isManager) return <div>Draw is not yet published</div>
   const roundArray = Object.keys(bracket)
   return renderBracket(roundArray, bracket)
 
