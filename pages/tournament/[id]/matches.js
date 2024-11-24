@@ -37,6 +37,7 @@ const Matches = () => {
   }, [])
 
   if (!matches || isLoading) return <Loading />
+  if (!tournament?.matchPublished) return <div>matches are not published</div>
 
   return (
     <Layout>
