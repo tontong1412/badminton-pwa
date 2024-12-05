@@ -337,7 +337,8 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
         </Form.Item>
         {player1Data?.photo ?
           <div style={{ width: '110px', height: '110px', border: '1px dashed #ccc', padding: '5px', overflow: 'hidden', borderRadius: '5px' }}>
-            <Image unoptimized objectFit='contain' src={`/avatar.png` || player1Data.photo?.replace('/upload/', '/upload/q_10/')} alt='' width={100} height={100} />
+            <Image unoptimized objectFit='contain' src={player1Data.photo?.replace('/upload/', '/upload/q_10/')} alt='' width={100} height={100} />
+            {/* <Image unoptimized objectFit='contain' src={`/avatar.png` || player1Data.photo?.replace('/upload/', '/upload/q_10/')} alt='' width={100} height={100} /> */}
           </div>
           : <Form.Item
             name='player1Photo'
@@ -415,7 +416,8 @@ const RegisterModal = ({ visible, setVisible, tournamentID }) => {
           </Form.Item>
           {player2Data?.photo ?
             <div style={{ width: '110px', height: '110px', border: '1px dashed #ccc', padding: '5px', overflow: 'hidden', borderRadius: '5px' }}>
-              <Image unoptimized objectFit='contain' src={`/avatar.png` || player2Data.photo?.replace('/upload/', '/upload/q_10/')} alt='' width={100} height={100} />
+              <Image unoptimized objectFit='contain' src={player2Data.photo?.replace('/upload/', '/upload/q_10/')} alt='' width={100} height={100} />
+              {/* <Image unoptimized objectFit='contain' src={`/avatar.png` || player2Data.photo?.replace('/upload/', '/upload/q_10/')} alt='' width={100} height={100} /> */}
             </div>
             : <Form.Item
               name='player2Photo'

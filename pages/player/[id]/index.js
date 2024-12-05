@@ -79,7 +79,7 @@ const Player = () => {
           marginTop: '10px'
         }}>
           <a href={player?.photo}>
-            <Image unoptimized objectFit='cover' src={`/avatar.png` || player.photo?.replace('/upload/', '/upload/q_10/') || `/avatar.png`} alt='' width={50} height={50} layout='responsive' />
+            <Image unoptimized objectFit='cover' src={player.photo?.replace('/upload/', '/upload/q_10/') || `/avatar.png`} alt='' width={50} height={50} layout='responsive' />
           </a>
         </div>
         <div style={{ display: 'flex', marginTop: '20px', gap: '5px' }}>

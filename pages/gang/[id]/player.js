@@ -295,7 +295,8 @@ const GangID = () => {
           <div key={`player-${player._id}`} className='gang-player'>
             <div className='player-container'>
               <div className='avatar'>
-                <Image unoptimized objectFit='cover' src={`/avatar.png` || player.photo?.replace('/upload/', '/upload/q_10/') || `/avatar.png`} alt='' width={50} height={50} layout='responsive' />
+                <Image unoptimized objectFit='cover' src={player.photo?.replace('/upload/', '/upload/q_10/') || `/avatar.png`} alt='' width={50} height={50} layout='responsive' />
+                {/* <Image unoptimized objectFit='cover' src={`/avatar.png` || player.photo?.replace('/upload/', '/upload/q_10/') || `/avatar.png`} alt='' width={50} height={50} layout='responsive' /> */}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <div className='player-name'>{player.displayName || player.officialName}</div>
